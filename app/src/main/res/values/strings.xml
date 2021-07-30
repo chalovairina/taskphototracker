@@ -12,6 +12,8 @@
     <string name="delete_all">Delete All</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
+    <string name="successfully_added">Successfully added!</string>
+    <string name="empty_data">Empty data!</string>
 
     <string-array name="priorities">
         <item>High Priority</item>

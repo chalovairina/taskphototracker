@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/tasksFragment"
-        android:name="com.chari.ic.todoapp.fragments.TasksFragment"
+        android:name="com.chari.ic.todoapp.fragments.tasks_fragment.TasksFragment"
         android:label="@string/todo_list"
         tools:layout="@layout/fragment_tasks" >
         <action
@@ -27,18 +27,20 @@
     </fragment>
     <fragment
         android:id="@+id/addFragment"
-        android:name="com.chari.ic.todoapp.fragments.AddFragment"
+        android:name="com.chari.ic.todoapp.fragments.add_fragment.AddFragment"
         android:label="@string/add"
         tools:layout="@layout/fragment_add" >
         <action
             android:id="@+id/action_addFragment_to_tasksFragment"
+            app:popUpTo="@id/tasksFragment"
+            app:popUpToInclusive="true"
             app:destination="@id/tasksFragment"
             app:enterAnim="@anim/from_left"
             app:exitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/updateFragment"
-        android:name="com.chari.ic.todoapp.fragments.UpdateFragment"
+        android:name="com.chari.ic.todoapp.fragments.update_fragment.UpdateFragment"
         android:label="@string/update"
         tools:layout="@layout/fragment_update" >
         <action
@@ -46,5 +48,8 @@
             app:destination="@id/tasksFragment"
             app:enterAnim="@anim/from_right"
             app:exitAnim="@anim/to_left" />
+        <argument
+            android:name="currentTask"
+            app:argType="com.chari.ic.todoapp.data.database.entities.ToDoTask" />
     </fragment>
 </navigation>
