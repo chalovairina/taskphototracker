@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/tasks_list_layout"
-    tools:context=".fragments.TasksFragment">
+    tools:context=".fragments.tasks_fragment.TasksFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

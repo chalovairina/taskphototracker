@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    tools:context=".fragments.AddFragment">
+    tools:context=".fragments.add_fragment.AddFragment">
 
     <EditText
-        android:id="@+id/title_et"
+        android:id="@+id/title_editText"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:paddingStart="24dp"
@@ -31,10 +31,10 @@
         android:entries="@array/priorities"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_et" />
+        app:layout_constraintTop_toBottomOf="@id/title_editText" />
 
     <EditText
-        android:id="@+id/description_et"
+        android:id="@+id/description_editText"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
