@@ -176,7 +176,7 @@ class ToDoTaskAdapter(
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         if (item?.itemId == R.id.delete_task) {
             selectedTasks.keys.forEach {
-                task -> toDoViewModel.deleteToDoTask(task)
+                task -> toDoViewModel.deleteTask(task)
             }
             showSnackBar(String.format(activity.getString(R.string.items_deleted), selectedTasks.size))
             mode?.finish()

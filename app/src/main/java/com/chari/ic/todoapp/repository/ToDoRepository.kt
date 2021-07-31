@@ -9,18 +9,22 @@ class ToDoRepository private constructor(
     private val toDoDao: ToDoDao
 ) {
 
-    val getAllData: LiveData<List<ToDoTask>> = toDoDao.getAllTasks()
+    val getAllTasks: LiveData<List<ToDoTask>> = toDoDao.getAllTasks()
 
-    suspend fun insert(toDoTask: ToDoTask) {
+    suspend fun insertTask(toDoTask: ToDoTask) {
         toDoDao.insertTask(toDoTask)
     }
 
-    suspend fun update(toDoTask: ToDoTask) {
+    suspend fun updateTask(toDoTask: ToDoTask) {
         toDoDao.updateTask(toDoTask)
     }
 
-    suspend fun delete(toDoTask: ToDoTask) {
+    suspend fun deleteTask(toDoTask: ToDoTask) {
         toDoDao.deleteTask(toDoTask)
+    }
+
+    suspend fun deleteAll() {
+        toDoDao.deleteAll()
     }
 
     companion object {

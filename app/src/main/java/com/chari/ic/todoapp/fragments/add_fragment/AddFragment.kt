@@ -5,14 +5,11 @@ import android.os.Bundle
 import android.view.*
 import android.widget.EditText
 import android.widget.Spinner
-import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
-import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.TaskEditFragment
 import com.chari.ic.todoapp.repository.ToDoRepository
@@ -80,7 +77,7 @@ class AddFragment: TaskEditFragment() {
                 getPriority(priority),
                 description
             )
-            toDoViewModel.insertToDoTask(data)
+            toDoViewModel.insertTask(data)
             makeToast( getString(R.string.successfully_added))
             findNavController().navigate(R.id.action_addFragment_to_tasksFragment)
         } else {

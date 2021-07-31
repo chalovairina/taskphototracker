@@ -17,4 +17,7 @@ interface ToDoDao {
 
     @Delete
     suspend fun deleteTask(toDoTask: ToDoTask)
+
+    @Query("DELETE FROM todo_tasks")
+    suspend fun deleteAll()
 }

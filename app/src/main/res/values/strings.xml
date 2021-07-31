@@ -19,6 +19,12 @@
     <string name="fill_in_title_field">Fill in the title field!</string>
     <string name="items_selected">%s item(s) selected</string>
     <string name="items_deleted">%s item(s) deleted</string>
+    <string name="yes">YES</string>
+    <string name="all_tasks_deleted">All tasks deleted</string>
+    <string name="no">NO</string>
+    <string name="delete_tasks">Delete all tasks</string>
+    <string name="sure_to_delete_all_tasks">Are you sure you want to delete all tasks?</string>
+    <string name="no_data">No Data</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>

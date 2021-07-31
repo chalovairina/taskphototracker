@@ -3,21 +3,17 @@ package com.chari.ic.todoapp.fragments.update_fragment
 import android.app.Application
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.EditText
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
-import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.TaskEditFragment
 import com.chari.ic.todoapp.repository.ToDoRepository
-import com.chari.ic.todoapp.utils.Constants
 
 class UpdateFragment : TaskEditFragment() {
     private val args by navArgs<UpdateFragmentArgs>()
@@ -94,7 +90,7 @@ class UpdateFragment : TaskEditFragment() {
                 getPriority(priority),
                 description
             )
-            toDoViewModel.updateToDoTask(updatedTask)
+            toDoViewModel.updateTask(updatedTask)
             makeToast(getString(R.string.successfully_updated))
             findNavController().navigate(R.id.action_updateFragment_to_tasksFragment)
         } else {
