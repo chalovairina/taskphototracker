@@ -15,6 +15,10 @@ class ToDoRepository private constructor(
         toDoDao.insertTask(toDoTask)
     }
 
+    suspend fun update(toDoTask: ToDoTask) {
+        toDoDao.updateTask(toDoTask)
+    }
+
     companion object {
         private var INSTANCE: ToDoRepository? = null
 

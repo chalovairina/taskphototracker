@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
+import com.chari.ic.todoapp.utils.Constants
 
 class ToDoTaskAdapter(diffUtil: DiffUtil.ItemCallback<ToDoTask>): ListAdapter<ToDoTask, ToDoTaskAdapter.ToDoViewHolder>(diffUtil) {
 
@@ -39,14 +39,14 @@ class ToDoTaskAdapter(diffUtil: DiffUtil.ItemCallback<ToDoTask>): ListAdapter<To
             titleTv.text = toDoTask.title
             descriptionTv.text = toDoTask.description
             val priority = toDoTask.priority
-            setCardPriorityColor(priority)
+            setPriorityColor(priority)
         }
 
-        private fun setCardPriorityColor(priority: Priority) {
+        private fun setPriorityColor(priority: Priority) {
             val color = when (priority) {
-                Priority.HIGH -> R.color.red
-                Priority.MEDIUM -> R.color.yellow
-                Priority.LOW -> R.color.green
+                Priority.HIGH -> Constants.PRIORITY_COLOR_HIGH
+                Priority.MEDIUM -> Constants.PRIORITY_COLOR_MEDIUM
+                Priority.LOW -> Constants.PRIORITY_COLOR_LOW
             }
             priorityIndicator.background.setTint(ContextCompat.getColor(itemView.context, color))
         }

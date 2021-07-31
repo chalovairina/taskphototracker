@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -19,11 +18,7 @@ import com.chari.ic.todoapp.repository.ToDoRepository
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TasksFragment : Fragment() {
-    private lateinit var addBtn: FloatingActionButton
-    private lateinit var tasksListLayout: ConstraintLayout
-    private lateinit var recyclerView: RecyclerView
-
-    private val toDoViewModel: ToDoViewModel by lazy {
+    val toDoViewModel: ToDoViewModel by lazy {
         ViewModelProvider(
             this,
             ToDoViewModelFactory(
@@ -32,6 +27,10 @@ class TasksFragment : Fragment() {
             ))
             .get(ToDoViewModel::class.java)
     }
+
+    private lateinit var addBtn: FloatingActionButton
+    private lateinit var tasksListLayout: ConstraintLayout
+    private lateinit var recyclerView: RecyclerView
 
     private object TODO_TASKS_DIFF_UTIL: DiffUtil.ItemCallback<ToDoTask>() {
         override fun areItemsTheSame(oldItem: ToDoTask, newItem: ToDoTask): Boolean {

@@ -1,14 +1,15 @@
-package com.chari.ic.todoapp.fragments.add_fragment
+package com.chari.ic.todoapp.fragments.update_fragment
 
 import android.app.Application
 import android.os.Bundle
 import android.view.*
+import androidx.fragment.app.Fragment
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
@@ -16,11 +17,12 @@ import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.TaskEditFragment
 import com.chari.ic.todoapp.repository.ToDoRepository
+import com.chari.ic.todoapp.utils.Constants
 
-class AddFragment: TaskEditFragment() {
-    private lateinit var titleEt: EditText
-    private lateinit var descriptionEt: EditText
-    private lateinit var prioritySpinner: Spinner
+class UpdateFragment : TaskEditFragment() {
+    private val args by navArgs<UpdateFragmentArgs>()
+
+    private lateinit var currentTask: ToDoTask
 
     private val toDoViewModel: ToDoViewModel by lazy {
         ViewModelProvider(
@@ -28,13 +30,19 @@ class AddFragment: TaskEditFragment() {
             ToDoViewModelFactory(
                 requireContext().applicationContext as Application,
                 ToDoRepository.getRepository()
-            ))
+            )
+        )
             .get(ToDoViewModel::class.java)
     }
+
+    private lateinit var currentTitle: EditText
+    private lateinit var currentDescription: EditText
+    private lateinit var priorityIndicator: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        currentTask = args.currentTask
         setHasOptionsMenu(true)
     }
 
@@ -42,10 +50,10 @@ class AddFragment: TaskEditFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_add, container, false)
-        titleEt = view.findViewById(R.id.title_editText)
-        descriptionEt = view.findViewById(R.id.description_editText)
-        prioritySpinner = view.findViewById(R.id.priority_spinner)
+        val view = inflater.inflate(R.layout.fragment_update, container, false)
+        currentTitle = view.findViewById(R.id.current_title_editText)
+        currentDescription = view.findViewById(R.id.current_description_editText)
+        priorityIndicator = view.findViewById(R.id.current_priority_spinner)
 
         return view
     }
@@ -53,38 +61,45 @@ class AddFragment: TaskEditFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        prioritySpinner.onItemSelectedListener = toDoViewModel.listener
+        currentTitle.setText(currentTask.title)
+        currentDescription.setText(currentTask.description)
+
+        priorityIndicator.onItemSelectedListener = toDoViewModel.listener
+
+        priorityIndicator.setSelection(getPriorityPosition(currentTask.priority))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.add_fragment_menu, menu)
+        inflater.inflate(R.menu.update_fragment_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_add) {
-            insertData()
+        if (item.itemId == R.id.menu_save) {
+            updateTask()
         }
 
         return super.onOptionsItemSelected(item)
     }
 
-    private fun insertData() {
-        val title = titleEt.text.toString()
-        val description = descriptionEt.text.toString()
-        val priority = prioritySpinner.selectedItem.toString()
+    private fun updateTask() {
+        val id =  currentTask.id
+        val title = currentTitle.text.toString()
+        val description = currentDescription.text.toString()
+        val priority = priorityIndicator.selectedItem.toString()
         val validated = verifyDataFromUser(title)
         if (validated) {
-            val data = ToDoTask(
-                0,
+            val updatedTask = ToDoTask(
+                id,
                 title,
                 getPriority(priority),
                 description
             )
-            toDoViewModel.insertToDoTask(data)
-            makeToast( getString(R.string.successfully_added))
-            findNavController().navigate(R.id.action_addFragment_to_tasksFragment)
+            toDoViewModel.updateToDoTask(updatedTask)
+            makeToast(getString(R.string.successfully_updated))
+            findNavController().navigate(R.id.action_updateFragment_to_tasksFragment)
         } else {
             makeToast(getString(R.string.fill_in_title_field))
         }
     }
+
 }

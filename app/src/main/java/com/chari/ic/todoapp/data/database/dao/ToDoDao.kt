@@ -1,10 +1,7 @@
 package com.chari.ic.todoapp.data.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 
 @Dao
@@ -14,4 +11,7 @@ interface ToDoDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTask(toDoTask: ToDoTask)
+
+    @Update
+    suspend fun updateTask(toDoTask: ToDoTask)
 }

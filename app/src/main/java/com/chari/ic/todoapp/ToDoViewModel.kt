@@ -9,8 +9,10 @@ import androidx.core.view.get
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.repository.ToDoRepository
+import com.chari.ic.todoapp.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -26,19 +28,24 @@ class ToDoViewModel(
         }
     }
 
+    fun updateToDoTask(toDoTask: ToDoTask) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.update(toDoTask)
+        }
+    }
+
     // TODO - if no use -> move to fragment
     val listener: AdapterView.OnItemSelectedListener = object: AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             when (position) {
-                0 -> (parent?.getChildAt(0) as TextView).setTextColor(ContextCompat.getColor(application, R.color.red))
-                1 -> (parent?.getChildAt(0) as TextView).setTextColor(ContextCompat.getColor(application, R.color.yellow))
-                2 -> (parent?.getChildAt(0) as TextView).setTextColor(ContextCompat.getColor(application, R.color.green))
+                Constants.PRIORITY_POSITION_HIGH -> (parent?.getChildAt(0) as TextView).setTextColor(ContextCompat.getColor(application, R.color.red))
+                Constants.PRIORITY_POSITION_MEDIUM -> (parent?.getChildAt(0) as TextView).setTextColor(ContextCompat.getColor(application, R.color.yellow))
+                Constants.PRIORITY_POSITION_LOW -> (parent?.getChildAt(0) as TextView).setTextColor(ContextCompat.getColor(application, R.color.green))
             }
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
 
         }
-
     }
 }
