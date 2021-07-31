@@ -44,7 +44,12 @@ class TasksFragment : Fragment() {
         }
     }
 
-    private val adapter: ToDoTaskAdapter by lazy { ToDoTaskAdapter(TODO_TASKS_DIFF_UTIL) }
+    private val adapter: ToDoTaskAdapter by lazy {
+        ToDoTaskAdapter(
+            requireActivity(),
+            toDoViewModel,
+            TODO_TASKS_DIFF_UTIL
+        ) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,5 +93,11 @@ class TasksFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tasks_fragment_menu, menu)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        adapter.clearContextualActionMode()
     }
 }

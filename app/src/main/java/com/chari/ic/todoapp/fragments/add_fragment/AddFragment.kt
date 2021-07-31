@@ -53,7 +53,7 @@ class AddFragment: TaskEditFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        prioritySpinner.onItemSelectedListener = toDoViewModel.listener
+        prioritySpinner.onItemSelectedListener = listener
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

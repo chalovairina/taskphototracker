@@ -19,6 +19,10 @@ class ToDoRepository private constructor(
         toDoDao.updateTask(toDoTask)
     }
 
+    suspend fun delete(toDoTask: ToDoTask) {
+        toDoDao.deleteTask(toDoTask)
+    }
+
     companion object {
         private var INSTANCE: ToDoRepository? = null
 

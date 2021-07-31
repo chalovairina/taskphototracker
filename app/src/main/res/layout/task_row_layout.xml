@@ -18,8 +18,10 @@
         app:strokeColor="@color/strokeColor"
         app:strokeWidth="1dp">
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/task_row_background"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/cardBackgroundColor">
             <ImageView
                 android:id="@+id/priority_indicator"
                 android:layout_width="16dp"

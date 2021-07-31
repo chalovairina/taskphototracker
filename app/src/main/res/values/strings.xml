@@ -17,6 +17,8 @@
     <string name="empty_data">Empty data!</string>
     <string name="successfully_updated">Successfully updated!</string>
     <string name="fill_in_title_field">Fill in the title field!</string>
+    <string name="items_selected">%s item(s) selected</string>
+    <string name="items_deleted">%s item(s) deleted</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>

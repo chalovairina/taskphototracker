@@ -64,7 +64,7 @@ class UpdateFragment : TaskEditFragment() {
         currentTitle.setText(currentTask.title)
         currentDescription.setText(currentTask.description)
 
-        priorityIndicator.onItemSelectedListener = toDoViewModel.listener
+        priorityIndicator.onItemSelectedListener = listener
 
         priorityIndicator.setSelection(getPriorityPosition(currentTask.priority))
     }
