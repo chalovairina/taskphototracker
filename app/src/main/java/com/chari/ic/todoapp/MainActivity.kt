@@ -2,6 +2,7 @@ package com.chari.ic.todoapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -18,6 +19,13 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
 
         setupActionBarWithNavController(navController)
+
+        val onBackPressedCallback = object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                navController.popBackStack()
+            }
+        }
+        onBackPressedDispatcher.addCallback(onBackPressedCallback)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.*
 import android.widget.EditText
 import android.widget.Spinner
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.chari.ic.todoapp.R
+import com.chari.ic.todoapp.ToDoApplication
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
@@ -19,14 +21,11 @@ class AddFragment: TaskEditFragment() {
     private lateinit var descriptionEt: EditText
     private lateinit var prioritySpinner: Spinner
 
-    private val toDoViewModel: ToDoViewModel by lazy {
-        ViewModelProvider(
-            this,
-            ToDoViewModelFactory(
-                requireContext().applicationContext as Application,
-                ToDoRepository.getRepository()
-            ))
-            .get(ToDoViewModel::class.java)
+    private val toDoViewModel by viewModels<ToDoViewModel> {
+        ToDoViewModelFactory(
+//                requireContext().applicationContext as Application,
+            ToDoRepository.getRepository()
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,12 +68,12 @@ class AddFragment: TaskEditFragment() {
         val title = titleEt.text.toString()
         val description = descriptionEt.text.toString()
         val priority = prioritySpinner.selectedItem.toString()
-        val validated = verifyDataFromUser(title)
+        val validated = verifyTitle(title)
         if (validated) {
             val data = ToDoTask(
                 0,
                 title,
-                getPriority(priority),
+                getPriorityByName(priority),
                 description
             )
             toDoViewModel.insertTask(data)

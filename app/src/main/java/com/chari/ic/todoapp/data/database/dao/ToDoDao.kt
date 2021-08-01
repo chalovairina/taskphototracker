@@ -9,7 +9,7 @@ interface ToDoDao {
     @Query("SELECT * FROM todo_tasks ORDER BY id ASC")
     fun getAllTasks(): LiveData<List<ToDoTask>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(toDoTask: ToDoTask)
 
     @Update

@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.*
 import android.widget.EditText
 import android.widget.Spinner
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.chari.ic.todoapp.R
+import com.chari.ic.todoapp.ToDoApplication
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
@@ -20,15 +22,11 @@ class UpdateFragment : TaskEditFragment() {
 
     private lateinit var currentTask: ToDoTask
 
-    private val toDoViewModel: ToDoViewModel by lazy {
-        ViewModelProvider(
-            this,
+    private val toDoViewModel by viewModels<ToDoViewModel> {
             ToDoViewModelFactory(
-                requireContext().applicationContext as Application,
+//                requireContext().applicationContext as Application,
                 ToDoRepository.getRepository()
             )
-        )
-            .get(ToDoViewModel::class.java)
     }
 
     private lateinit var currentTitle: EditText
@@ -62,7 +60,7 @@ class UpdateFragment : TaskEditFragment() {
 
         priorityIndicator.onItemSelectedListener = listener
 
-        priorityIndicator.setSelection(getPriorityPosition(currentTask.priority))
+        priorityIndicator.setSelection(getPositionByPriority(currentTask.priority))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -82,12 +80,12 @@ class UpdateFragment : TaskEditFragment() {
         val title = currentTitle.text.toString()
         val description = currentDescription.text.toString()
         val priority = priorityIndicator.selectedItem.toString()
-        val validated = verifyDataFromUser(title)
+        val validated = verifyTitle(title)
         if (validated) {
             val updatedTask = ToDoTask(
                 id,
                 title,
-                getPriority(priority),
+                getPriorityByName(priority),
                 description
             )
             toDoViewModel.updateTask(updatedTask)

@@ -14,23 +14,7 @@ open class TaskEditFragment: Fragment() {
 
     val listener: AdapterView.OnItemSelectedListener = object: AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            when (position) {
-                Constants.PRIORITY_POSITION_HIGH -> (parent?.getChildAt(0) as TextView)
-                    .setTextColor(
-                        ContextCompat.getColor(requireContext().applicationContext,
-                            Constants.PRIORITY_COLOR_HIGH
-                        ))
-                Constants.PRIORITY_POSITION_MEDIUM -> (parent?.getChildAt(0) as TextView)
-                    .setTextColor(
-                        ContextCompat.getColor(requireContext().applicationContext,
-                            Constants.PRIORITY_COLOR_MEDIUM
-                        ))
-                Constants.PRIORITY_POSITION_LOW -> (parent?.getChildAt(0) as TextView)
-                    .setTextColor(
-                        ContextCompat.getColor(requireContext().applicationContext,
-                            Constants.PRIORITY_COLOR_LOW
-                        ))
-            }
+            getPriorityColorByPriorityPosition(parent, position)
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -38,7 +22,27 @@ open class TaskEditFragment: Fragment() {
         }
     }
 
-    protected fun getPriority(priority: String): Priority {
+    private fun getPriorityColorByPriorityPosition(parent: AdapterView<*>?, position: Int) {
+        when (position) {
+            Constants.PRIORITY_POSITION_HIGH -> (parent?.getChildAt(0) as TextView)
+                .setTextColor(
+                    ContextCompat.getColor(requireContext().applicationContext,
+                        Constants.PRIORITY_COLOR_HIGH
+                    ))
+            Constants.PRIORITY_POSITION_MEDIUM -> (parent?.getChildAt(0) as TextView)
+                .setTextColor(
+                    ContextCompat.getColor(requireContext().applicationContext,
+                        Constants.PRIORITY_COLOR_MEDIUM
+                    ))
+            Constants.PRIORITY_POSITION_LOW -> (parent?.getChildAt(0) as TextView)
+                .setTextColor(
+                    ContextCompat.getColor(requireContext().applicationContext,
+                        Constants.PRIORITY_COLOR_LOW
+                    ))
+        }
+    }
+
+    protected fun getPriorityByName(priority: String): Priority {
         return when (priority) {
             getString(R.string.priority_high) -> Priority.HIGH
             getString(R.string.priority_medium) -> Priority.MEDIUM
@@ -47,7 +51,7 @@ open class TaskEditFragment: Fragment() {
         }
     }
 
-    protected fun getPriorityPosition(priority: Priority): Int {
+    protected fun getPositionByPriority(priority: Priority): Int {
         return when (priority) {
             Priority.HIGH -> Constants.PRIORITY_POSITION_HIGH
             Priority.MEDIUM -> Constants.PRIORITY_POSITION_MEDIUM
@@ -55,7 +59,7 @@ open class TaskEditFragment: Fragment() {
         }
     }
 
-    protected fun verifyDataFromUser(title: String): Boolean {
+    protected fun verifyTitle(title: String): Boolean {
         return title.isNotEmpty()
     }
 

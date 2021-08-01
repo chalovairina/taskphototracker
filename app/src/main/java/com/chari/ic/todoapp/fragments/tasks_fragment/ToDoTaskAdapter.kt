@@ -104,18 +104,18 @@ class ToDoTaskAdapter(
         holder: ToDoTaskAdapter.ToDoViewHolder,
         task: ToDoTask
     ) {
-        val needSelected: Boolean
+        val needSelection: Boolean
         if (selectedTasks.containsKey(task)) {
-            needSelected = false
+            needSelection = false
             selectedTasks.remove(task)
         } else {
-            needSelected = true
+            needSelection = true
             selectedTasks[task] = holder
         }
 
         checkSelectionStyle(
             holder,
-            needSelected
+            needSelection
         )
         checkSelectedTasksSize()
     }
@@ -140,10 +140,10 @@ class ToDoTaskAdapter(
     ) {
         val backgroundColor = if (needSelection) R.color.cardBackgroundLightColor else R.color.cardBackgroundColor
         val strokeColor = if (needSelection) R.color.colorPrimary else R.color.strokeColor
+
         holder.itemView.findViewById<ConstraintLayout>(R.id.task_row_background)
             .setBackgroundColor(
-                ContextCompat.getColor(activity, backgroundColor)
-            )
+                ContextCompat.getColor(activity, backgroundColor))
         holder.itemView.findViewById<MaterialCardView>(R.id.task_card).strokeColor =
             ContextCompat.getColor(activity, strokeColor)
     }
@@ -159,9 +159,12 @@ class ToDoTaskAdapter(
     }
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        mode?.menuInflater?.inflate(R.menu.tasks_action_mode_menu, menu)
-        actionMode = mode!!
+        mode?.let {
+            it.menuInflater?.inflate(R.menu.tasks_action_mode_menu, menu)
+            actionMode = mode
+        }
         applyStatusBarColor(R.color.actionModeStatusBarColor)
+
         return true
     }
 

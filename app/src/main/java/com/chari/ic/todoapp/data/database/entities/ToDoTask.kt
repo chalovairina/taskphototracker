@@ -20,7 +20,7 @@ data class ToDoTask(
 
         other as ToDoTask
 
-        if (id != other.id) return false
+        if (title != other.title) return false
 
         return true
     }

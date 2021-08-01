@@ -1,15 +1,17 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = "1.5.21"
+    ext.kotlin_version = "1.5.20"
+    ext.navigationVersion = '2.4.0-alpha02'
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.2"
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.5"
+        // for firebase
+        classpath 'com.google.gms:google-services:4.3.10'
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.28-alpha"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -26,4 +28,35 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    androidXVersion = '1.0.0'
+    // 1.4.0 clashes with some other libs
+    androidXTestCoreVersion = '1.3.0'
+    androidXTestExtKotlinRunnerVersion = '1.1.3'
+    androidXTestRulesVersion = '1.2.0'
+    androidXAnnotations = '1.2.0'
+    androidXLegacySupport = '1.0.0'
+    appCompatVersion = '1.3.1'
+    archLifecycleVersion = '2.3.1'
+    archTestingVersion = '2.1.0'
+    cardVersion = '1.0.0'
+    coroutinesVersion = '1.5.0'
+    dexMakerVersion = '2.12.1'
+    // for instrumented test on fragments - version confirmed as workable, 3.4.0 gives error
+    espressoVersion = '3.4.0'
+    fragmentVersion = '1.3.6'
+    fragmentKtxVersion = '1.3.6'
+    hamcrestVersion = '1.3'
+    junitVersion = '4.13.2'
+    materialVersion = '1.3.0'
+    mockitoVersion = '3.12.4'
+    multiDexVersion = '2.0.1'
+    recyclerViewVersion = '1.2.1'
+    robolectricVersion = '4.6.1'
+    roomVersion = '2.4.0-alpha04'
+    rulesVersion = '1.0.1'
+    timberVersion = '4.7.1'
+    truthVersion = '1.1.2'
 }

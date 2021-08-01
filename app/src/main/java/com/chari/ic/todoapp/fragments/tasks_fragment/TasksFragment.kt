@@ -2,6 +2,7 @@ package com.chari.ic.todoapp.fragments.tasks_fragment
 
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,12 +10,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chari.ic.todoapp.R
+import com.chari.ic.todoapp.ToDoApplication
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
@@ -22,14 +25,11 @@ import com.chari.ic.todoapp.repository.ToDoRepository
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TasksFragment : Fragment() {
-    val toDoViewModel: ToDoViewModel by lazy {
-        ViewModelProvider(
-            this,
-            ToDoViewModelFactory(
-                requireContext().applicationContext as Application,
-                ToDoRepository.getRepository()
-            ))
-            .get(ToDoViewModel::class.java)
+    val toDoViewModel by viewModels<ToDoViewModel> {
+        ToDoViewModelFactory(
+//                requireContext().applicationContext as Application,
+            ToDoRepository.getRepository()
+        )
     }
 
     private lateinit var addBtn: FloatingActionButton
@@ -115,7 +115,7 @@ class TasksFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    // show AlertDialog to confirm all tasks deletion
+    // show AlertDialog to confirm all cachedTasks deletion
     private fun confirmRemoveAll() {
         AlertDialog.Builder(requireContext())
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
@@ -130,6 +130,7 @@ class TasksFragment : Fragment() {
     }
 
     private fun setViewVisibilityWithNoData(hasNoData: Boolean) {
+        Log.d("MyLargetest", "Ui update thread: ${Thread.currentThread()}")
         if (hasNoData) {
             noDataTextView.visibility = View.VISIBLE
             noDataImageView.visibility = View.VISIBLE
