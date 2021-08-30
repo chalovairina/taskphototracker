@@ -1,20 +1,18 @@
 package com.chari.ic.todoapp.fragments.add_fragment
 
-import android.app.Application
 import android.os.Bundle
 import android.view.*
 import android.widget.EditText
 import android.widget.Spinner
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.chari.ic.todoapp.R
-import com.chari.ic.todoapp.ToDoApplication
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.TaskEditFragment
 import com.chari.ic.todoapp.repository.ToDoRepository
+import com.chari.ic.todoapp.utils.PriorityUtils.getPriorityByName
 
 class AddFragment: TaskEditFragment() {
     private lateinit var titleEt: EditText
@@ -23,7 +21,6 @@ class AddFragment: TaskEditFragment() {
 
     private val toDoViewModel by viewModels<ToDoViewModel> {
         ToDoViewModelFactory(
-//                requireContext().applicationContext as Application,
             ToDoRepository.getRepository()
         )
     }
@@ -68,7 +65,7 @@ class AddFragment: TaskEditFragment() {
         val title = titleEt.text.toString()
         val description = descriptionEt.text.toString()
         val priority = prioritySpinner.selectedItem.toString()
-        val validated = verifyTitle(title)
+        val validated = verifyInputData(title)
         if (validated) {
             val data = ToDoTask(
                 0,

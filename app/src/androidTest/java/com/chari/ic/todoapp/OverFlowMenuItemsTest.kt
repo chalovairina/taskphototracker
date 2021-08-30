@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.NavController
 import androidx.navigation.testing.TestNavHostController
 import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
@@ -13,9 +12,7 @@ import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
-import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.chari.ic.todoapp.data.database.ToDoDatabase
@@ -23,7 +20,7 @@ import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter
 import com.chari.ic.todoapp.repository.ToDoRepository
-import com.chari.ic.todoapp.utils.Constants
+import com.chari.ic.todoapp.utils.PriorityUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -36,6 +33,7 @@ import java.io.IOException
 
 @LargeTest
 @ExperimentalCoroutinesApi
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)
 class OverFlowMenuItemsTest {
     @get:Rule
@@ -72,7 +70,6 @@ class OverFlowMenuItemsTest {
     @Throws(IOException::class)
     fun tearDown() {
         mainCoroutineRule.runBlockingTest {
-            Log.d("MyLargetest", "croroutine running resetRepository: ${Thread.currentThread()}")
             repository.resetRepository()
         }
         database.clearAllTables()
@@ -86,11 +83,8 @@ class OverFlowMenuItemsTest {
         activityScenario.moveToState(Lifecycle.State.RESUMED)
         activityScenario.onActivity {
                 activity ->
-            Log.d("MyLargetest", "scenario.onactivity thread: ${Thread.currentThread()}")
             navController.setGraph(R.navigation.my_nav)
         }
-
-        Log.d("MyLargetest", "Test running thread: ${Thread.currentThread()}")
 
         onView(withId(R.id.recyclerView))
             .perform(
@@ -106,7 +100,7 @@ class OverFlowMenuItemsTest {
         onView(withId(R.id.current_title_editText)).perform(replaceText(newTitle))
         onView(withId(R.id.current_description_editText)).perform(replaceText(newDescription))
         onView(withId(R.id.current_priority_spinner)).perform(click())
-        onData(`is`(instanceOf(String::class.java))).atPosition(Constants.PRIORITY_POSITION_HIGH)
+        onData(`is`(instanceOf(String::class.java))).atPosition(PriorityUtils.PRIORITY_POSITION_HIGH)
             .perform(click())
 
         onView(withId(R.id.menu_save)).perform(click())
@@ -114,6 +108,8 @@ class OverFlowMenuItemsTest {
         assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
         onView(withId(R.id.recyclerView))
             .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(0))
+            .check(matches((hasDescendant(withChild(withText(newTitle))))))
+            .check(matches((hasDescendant(withChild(withText(newDescription))))))
 
         activityScenario.moveToState(Lifecycle.State.DESTROYED)
         // so that ui is not updated due to tearDown() method call
@@ -122,10 +118,8 @@ class OverFlowMenuItemsTest {
 
     @Test
     fun test2_addFragment_clickOnAddMenuItem_taskAddedToTasksFragment_checkIfDisplayed() {
-
         val navController = TestNavHostController(context)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-//        activityScenario.moveToState(Lifecycle.State.RESUMED)
         activityScenario.onActivity {
                 activity ->
             navController.setGraph(R.navigation.my_nav)
@@ -139,26 +133,28 @@ class OverFlowMenuItemsTest {
         onView(withId(R.id.title_editText)).perform(typeText(newTitle))
         onView(withId(R.id.description_editText)).perform(typeText(newDescription))
         onView(withId(R.id.priority_spinner)).perform(click())
-        onData(`is`(instanceOf(String::class.java))).atPosition(Constants.PRIORITY_POSITION_HIGH)
+        onData(`is`(instanceOf(String::class.java))).atPosition(PriorityUtils.PRIORITY_POSITION_HIGH)
             .perform(click())
 
         onView(withId(R.id.menu_add)).perform(click())
 
         assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
-        onView(withId(R.id.recyclerView))
-            .perform(scrollTo<ToDoTaskAdapter.ToDoViewHolder>(hasDescendant(withChild(withText(newTitle)))))
+        onView(withId(R.id.recyclerView)).check(matches(isDisplayed()))
+        onView(withId(R.id.no_data_textView)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.no_data_imageView)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.recyclerView)).check(matches(hasChildCount(4)))
+            .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(4))
+            .check(matches((hasDescendant(withChild(withText(newTitle))))))
+            .check(matches((hasDescendant(withChild(withText(newDescription))))))
 
-//        activityScenario.moveToState(Lifecycle.State.DESTROYED)
+        // so that ui is not updated due to tearDown() method call
         activityScenario.close()
     }
 
-    // fails because after deleteAll ui is updated and throws exception as to updating not from ui thread
-    @Ignore
     @Test
     fun test3_tasksFragment_clickOnDeleteAllMenuItem_taskDeletedFromTasksFragment_checkIfDisplayed() {
         val navController = TestNavHostController(context)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-//        activityScenario.moveToState(Lifecycle.State.RESUMED)
         activityScenario.onActivity {
                 activity ->
             navController.setGraph(R.navigation.my_nav)
@@ -168,15 +164,14 @@ class OverFlowMenuItemsTest {
         onView(withText("Delete All")).perform(click())
 
         onView(withText("YES"))
-//            .inRoot(isDialog())
             .check(matches(isDisplayed()))
             .perform(click())
 
         assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
+        onView(withId(R.id.recyclerView)).check(matches(withEffectiveVisibility(Visibility.INVISIBLE)))
+        onView(withId(R.id.no_data_textView)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        onView(withId(R.id.no_data_imageView)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
-//        onView(withId(R.id.recyclerView)).check(has)
-
-//        activityScenario.moveToState(Lifecycle.State.DESTROYED)
         activityScenario.close()
     }
 }

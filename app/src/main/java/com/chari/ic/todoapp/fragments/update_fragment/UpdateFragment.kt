@@ -1,37 +1,32 @@
 package com.chari.ic.todoapp.fragments.update_fragment
 
-import android.app.Application
 import android.os.Bundle
 import android.view.*
-import android.widget.EditText
-import android.widget.Spinner
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.chari.ic.todoapp.R
-import com.chari.ic.todoapp.ToDoApplication
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
+import com.chari.ic.todoapp.databinding.FragmentUpdateBinding
 import com.chari.ic.todoapp.fragments.TaskEditFragment
 import com.chari.ic.todoapp.repository.ToDoRepository
+import com.chari.ic.todoapp.utils.PriorityUtils
 
 class UpdateFragment : TaskEditFragment() {
     private val args by navArgs<UpdateFragmentArgs>()
+
+    private var _binding: FragmentUpdateBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var currentTask: ToDoTask
 
     private val toDoViewModel by viewModels<ToDoViewModel> {
             ToDoViewModelFactory(
-//                requireContext().applicationContext as Application,
                 ToDoRepository.getRepository()
             )
     }
-
-    private lateinit var currentTitle: EditText
-    private lateinit var currentDescription: EditText
-    private lateinit var priorityIndicator: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,24 +38,18 @@ class UpdateFragment : TaskEditFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_update, container, false)
-        currentTitle = view.findViewById(R.id.current_title_editText)
-        currentDescription = view.findViewById(R.id.current_description_editText)
-        priorityIndicator = view.findViewById(R.id.current_priority_spinner)
+    ): View {
+        _binding = FragmentUpdateBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.task = currentTask
 
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        currentTitle.setText(currentTask.title)
-        currentDescription.setText(currentTask.description)
-
-        priorityIndicator.onItemSelectedListener = listener
-
-        priorityIndicator.setSelection(getPositionByPriority(currentTask.priority))
+        binding.currentPrioritySpinner.onItemSelectedListener = listener
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -76,18 +65,15 @@ class UpdateFragment : TaskEditFragment() {
     }
 
     private fun updateTask() {
-        val id =  currentTask.id
-        val title = currentTitle.text.toString()
-        val description = currentDescription.text.toString()
-        val priority = priorityIndicator.selectedItem.toString()
-        val validated = verifyTitle(title)
+        val validated = verifyInputData(binding.currentTitleEditText.text.toString())
         if (validated) {
-            val updatedTask = ToDoTask(
-                id,
-                title,
-                getPriorityByName(priority),
-                description
+            val updatedTask = createTask(
+                currentTask.id,
+                binding.currentTitleEditText.text.toString(),
+                binding.currentPrioritySpinner.selectedItem.toString(),
+                binding.currentDescriptionEditText.text.toString()
             )
+
             toDoViewModel.updateTask(updatedTask)
             makeToast(getString(R.string.successfully_updated))
             findNavController().navigate(R.id.action_updateFragment_to_tasksFragment)
@@ -96,4 +82,18 @@ class UpdateFragment : TaskEditFragment() {
         }
     }
 
+    private fun createTask(
+        id: Int,
+        title: String,
+        priority: String,
+        description: String
+    ): ToDoTask {
+        return ToDoTask(id, title, PriorityUtils.getPriorityByName(priority), description)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _binding = null
+    }
 }

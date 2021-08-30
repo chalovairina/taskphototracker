@@ -8,13 +8,18 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.data.database.entities.Priority
-import com.chari.ic.todoapp.utils.Constants
+import com.chari.ic.todoapp.utils.PriorityUtils
 
 open class TaskEditFragment: Fragment() {
 
     val listener: AdapterView.OnItemSelectedListener = object: AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            getPriorityColorByPriorityPosition(parent, position)
+            (view as TextView).setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    PriorityUtils.getColorByPriorityPosition(position)
+                )
+            )
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -22,44 +27,7 @@ open class TaskEditFragment: Fragment() {
         }
     }
 
-    private fun getPriorityColorByPriorityPosition(parent: AdapterView<*>?, position: Int) {
-        when (position) {
-            Constants.PRIORITY_POSITION_HIGH -> (parent?.getChildAt(0) as TextView)
-                .setTextColor(
-                    ContextCompat.getColor(requireContext().applicationContext,
-                        Constants.PRIORITY_COLOR_HIGH
-                    ))
-            Constants.PRIORITY_POSITION_MEDIUM -> (parent?.getChildAt(0) as TextView)
-                .setTextColor(
-                    ContextCompat.getColor(requireContext().applicationContext,
-                        Constants.PRIORITY_COLOR_MEDIUM
-                    ))
-            Constants.PRIORITY_POSITION_LOW -> (parent?.getChildAt(0) as TextView)
-                .setTextColor(
-                    ContextCompat.getColor(requireContext().applicationContext,
-                        Constants.PRIORITY_COLOR_LOW
-                    ))
-        }
-    }
-
-    protected fun getPriorityByName(priority: String): Priority {
-        return when (priority) {
-            getString(R.string.priority_high) -> Priority.HIGH
-            getString(R.string.priority_medium) -> Priority.MEDIUM
-            getString(R.string.priority_low) -> Priority.LOW
-            else -> Priority.LOW
-        }
-    }
-
-    protected fun getPositionByPriority(priority: Priority): Int {
-        return when (priority) {
-            Priority.HIGH -> Constants.PRIORITY_POSITION_HIGH
-            Priority.MEDIUM -> Constants.PRIORITY_POSITION_MEDIUM
-            Priority.LOW -> Constants.PRIORITY_POSITION_LOW
-        }
-    }
-
-    protected fun verifyTitle(title: String): Boolean {
+    protected fun verifyInputData(title: String): Boolean {
         return title.isNotEmpty()
     }
 

@@ -14,7 +14,8 @@ import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import com.chari.ic.todoapp.utils.Constants
+import com.chari.ic.todoapp.databinding.TaskRowLayoutBinding
+import com.chari.ic.todoapp.utils.PriorityUtils
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 
@@ -31,14 +32,11 @@ class ToDoTaskAdapter(
     private val selectedTasks = mutableMapOf<ToDoTask, ToDoViewHolder>()
     private lateinit var currentTaskView: View
 
-    inner class ToDoViewHolder(itemView: View):
-        RecyclerView.ViewHolder(itemView),
+    inner class ToDoViewHolder(private val binding: TaskRowLayoutBinding):
+        RecyclerView.ViewHolder(binding.root),
         View.OnClickListener,
         View.OnLongClickListener
     {
-        private val titleTv = itemView.findViewById<TextView>(R.id.title_textView)
-        private val descriptionTv = itemView.findViewById<TextView>(R.id.description_textView)
-        private val priorityIndicator = itemView.findViewById<ImageView>(R.id.priority_indicator)
         var currentTask: ToDoTask? = null
 
         init {
@@ -73,31 +71,15 @@ class ToDoTaskAdapter(
         }
 
         fun bind(toDoTask: ToDoTask) {
+            binding.task = toDoTask
+
             currentTaskView = this.itemView
-            fillTask(toDoTask)
+            currentTask = toDoTask
             checkSelectionStyle(
                 this,
                 selectedTasks.containsKey(toDoTask)
             )
         }
-
-        private fun fillTask(toDoTask: ToDoTask) {
-            currentTask = toDoTask
-            titleTv.text = toDoTask.title
-            descriptionTv.text = toDoTask.description
-            val priority = toDoTask.priority
-            setPriorityColor(priority)
-        }
-
-        private fun setPriorityColor(priority: Priority) {
-            val color = when (priority) {
-                Priority.HIGH -> Constants.PRIORITY_COLOR_HIGH
-                Priority.MEDIUM -> Constants.PRIORITY_COLOR_MEDIUM
-                Priority.LOW -> Constants.PRIORITY_COLOR_LOW
-            }
-            priorityIndicator.background.setTint(ContextCompat.getColor(itemView.context, color))
-        }
-
     }
 
     private fun selectTask(
@@ -149,9 +131,10 @@ class ToDoTaskAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.task_row_layout, parent, false)
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = TaskRowLayoutBinding.inflate(inflater, parent, false)
 
-        return ToDoViewHolder(view)
+        return ToDoViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ToDoViewHolder, position: Int) {

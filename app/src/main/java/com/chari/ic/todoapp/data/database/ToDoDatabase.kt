@@ -9,7 +9,6 @@ import com.chari.ic.todoapp.data.database.dao.ToDoDao
 import com.chari.ic.todoapp.data.database.entities.Converter
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.utils.Constants.DATABASE_NAME
-import kotlinx.coroutines.runBlocking
 
 @TypeConverters(Converter::class)
 @Database(

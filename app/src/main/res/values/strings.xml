@@ -25,6 +25,8 @@
     <string name="delete_tasks">Delete all tasks</string>
     <string name="sure_to_delete_all_tasks">Are you sure you want to delete all tasks?</string>
     <string name="no_data">No Data</string>
+    <string name="my_title">My Title</string>
+    <string name="some_random_description">Some random description</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>

@@ -21,23 +21,21 @@ import com.chari.ic.todoapp.ToDoApplication
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
+import com.chari.ic.todoapp.databinding.FragmentTasksBinding
 import com.chari.ic.todoapp.repository.ToDoRepository
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TasksFragment : Fragment() {
-    val toDoViewModel by viewModels<ToDoViewModel> {
+    private val toDoViewModel by viewModels<ToDoViewModel> {
         ToDoViewModelFactory(
 //                requireContext().applicationContext as Application,
             ToDoRepository.getRepository()
         )
     }
 
-    private lateinit var addBtn: FloatingActionButton
-    private lateinit var tasksListLayout: ConstraintLayout
-    private lateinit var recyclerView: RecyclerView
+    private var _binding: FragmentTasksBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var noDataImageView: ImageView
-    private lateinit var noDataTextView: TextView
 
     private object TODO_TASKS_DIFF_UTIL: DiffUtil.ItemCallback<ToDoTask>() {
         override fun areItemsTheSame(oldItem: ToDoTask, newItem: ToDoTask): Boolean {
@@ -67,15 +65,13 @@ class TasksFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view =  inflater.inflate(R.layout.fragment_tasks, container, false)
-        addBtn = view.findViewById(R.id.add_button)
-        tasksListLayout = view.findViewById(R.id.tasks_list_layout)
-        recyclerView = view.findViewById(R.id.recyclerView)
-        noDataImageView = view.findViewById(R.id.no_data_imageView)
-        noDataTextView = view.findViewById(R.id.no_data_textView)
+    ): View {
+        _binding =  FragmentTasksBinding.inflate(inflater, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewmodel = toDoViewModel
+        binding.adapter = adapter
 
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,24 +79,14 @@ class TasksFragment : Fragment() {
 
         setupAdapter()
 
-        toDoViewModel.getAllTasks.observe(viewLifecycleOwner) {
-            data ->
-            if (!data.isNullOrEmpty()) {
-                setViewVisibilityWithNoData(false)
-                adapter.submitList(data)
-            } else {
-                setViewVisibilityWithNoData(true)
-            }
-        }
-
-        addBtn.setOnClickListener {
+        binding.addButton.setOnClickListener {
             findNavController().navigate(R.id.action_tasksFragment_to_addFragment)
         }
     }
 
     private fun setupAdapter() {
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -129,22 +115,10 @@ class TasksFragment : Fragment() {
             .show()
     }
 
-    private fun setViewVisibilityWithNoData(hasNoData: Boolean) {
-        Log.d("MyLargetest", "Ui update thread: ${Thread.currentThread()}")
-        if (hasNoData) {
-            noDataTextView.visibility = View.VISIBLE
-            noDataImageView.visibility = View.VISIBLE
-            recyclerView.visibility = View.INVISIBLE
-        } else {
-            noDataTextView.visibility = View.INVISIBLE
-            noDataImageView.visibility = View.INVISIBLE
-            recyclerView.visibility = View.VISIBLE
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
 
+        _binding = null
         adapter.clearContextualActionMode()
     }
 }
