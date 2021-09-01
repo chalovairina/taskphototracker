@@ -27,6 +27,9 @@
     <string name="no_data">No Data</string>
     <string name="my_title">My Title</string>
     <string name="some_random_description">Some random description</string>
+    <string name="successfully_deleted_task">Successfully removed task: %s</string>
+    <string name="deleted_task">Deleted: %s</string>
+    <string name="undo">UNDO</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>

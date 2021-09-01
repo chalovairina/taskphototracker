@@ -1,7 +1,10 @@
 package com.chari.ic.todoapp.fragments.update_fragment
 
+import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -50,6 +53,13 @@ class UpdateFragment : TaskEditFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.currentPrioritySpinner.onItemSelectedListener = listener
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("UpdateFragment", "onResume")
+
+        showKeyboard(binding.currentTitleEditText)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

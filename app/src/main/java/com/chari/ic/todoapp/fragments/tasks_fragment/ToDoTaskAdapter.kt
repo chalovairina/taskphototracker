@@ -1,23 +1,20 @@
 package com.chari.ic.todoapp.fragments.tasks_fragment
 
 import android.view.*
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
-import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.TaskRowLayoutBinding
-import com.chari.ic.todoapp.utils.PriorityUtils
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
+import java.util.*
 
 class ToDoTaskAdapter(
     private val activity: FragmentActivity,
@@ -35,13 +32,12 @@ class ToDoTaskAdapter(
     inner class ToDoViewHolder(private val binding: TaskRowLayoutBinding):
         RecyclerView.ViewHolder(binding.root),
         View.OnClickListener,
-        View.OnLongClickListener
-    {
-        var currentTask: ToDoTask? = null
+        View.OnLongClickListener {
+        private var currentTask: ToDoTask? = null
 
         init {
-            itemView.setOnClickListener(this)
-            itemView.setOnLongClickListener(this)
+            binding.root.setOnClickListener(this)
+            binding.root.setOnLongClickListener(this)
         }
 
         /**  Single click */
@@ -52,33 +48,35 @@ class ToDoTaskAdapter(
                 } else {
                     val action =
                         TasksFragmentDirections.actionTasksFragmentToUpdateFragment(currentTask!!)
-                    itemView.findNavController().navigate(action)
+                    binding.root.findNavController().navigate(action)
                 }
             }
         }
 
         /**  Long click */
         override fun onLongClick(v: View?): Boolean {
-            return if (!inMultiSelectionMode) {
+            if (!inMultiSelectionMode) {
                 inMultiSelectionMode = true
                 activity.startActionMode(this@ToDoTaskAdapter)
-                currentTask?.let { selectTask(this, it) }
-                true
-            } else {
-                currentTask?.let { selectTask(this, it) }
-                true
             }
+            currentTask?.let { selectTask(this, it) }
+
+            return true
         }
 
         fun bind(toDoTask: ToDoTask) {
             binding.task = toDoTask
-
-            currentTaskView = this.itemView
+            currentTaskView = binding.root
             currentTask = toDoTask
             checkSelectionStyle(
                 this,
                 selectedTasks.containsKey(toDoTask)
             )
+        }
+
+        fun setBackgroundColor(taskRowBackgroundColor: Int, taskCardStrokeColor: Int) {
+            binding.taskRowBackground.setBackgroundColor(taskRowBackgroundColor)
+            binding.taskCard.strokeColor = taskCardStrokeColor
         }
     }
 
@@ -95,25 +93,8 @@ class ToDoTaskAdapter(
             selectedTasks[task] = holder
         }
 
-        checkSelectionStyle(
-            holder,
-            needSelection
-        )
+        checkSelectionStyle(holder, needSelection)
         checkSelectedTasksSize()
-    }
-
-    private fun checkSelectedTasksSize() {
-        when (selectedTasks.size) {
-            0 -> {
-                actionMode.finish()
-            }
-            else -> {
-                actionMode.title = String.format(
-                    activity.getString(R.string.items_selected),
-                    selectedTasks.size
-                )
-            }
-        }
     }
 
     private fun checkSelectionStyle(
@@ -123,23 +104,32 @@ class ToDoTaskAdapter(
         val backgroundColor = if (needSelection) R.color.cardBackgroundLightColor else R.color.cardBackgroundColor
         val strokeColor = if (needSelection) R.color.colorPrimary else R.color.strokeColor
 
-        holder.itemView.findViewById<ConstraintLayout>(R.id.task_row_background)
-            .setBackgroundColor(
-                ContextCompat.getColor(activity, backgroundColor))
-        holder.itemView.findViewById<MaterialCardView>(R.id.task_card).strokeColor =
+        holder.setBackgroundColor(
+            ContextCompat.getColor(activity, backgroundColor),
             ContextCompat.getColor(activity, strokeColor)
+        )
     }
+
+    private fun checkSelectedTasksSize() =
+        when (selectedTasks.size) {
+            0 -> actionMode.finish()
+            else -> actionMode.title = String.format(
+                    activity.getString(R.string.items_selected),
+                    selectedTasks.size
+                )
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = TaskRowLayoutBinding.inflate(inflater, parent, false)
-
         return ToDoViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ToDoViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
+    fun getItemByPosition(position: Int): ToDoTask = getItem(position)
 
     override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
         mode?.let {
@@ -194,4 +184,89 @@ class ToDoTaskAdapter(
             actionMode.finish()
         }
     }
+
+    val dragAndSwipeToDeleteCallback = object: ItemTouchHelper.SimpleCallback(
+        ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+        ItemTouchHelper.END
+    ) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            clearContextualActionMode()
+
+            val fromPosition = viewHolder.absoluteAdapterPosition
+            val toPosition = target.absoluteAdapterPosition
+            val itemList = this@ToDoTaskAdapter.currentList.toMutableList()
+            if (fromPosition < toPosition) {
+                for (i in fromPosition until toPosition) {
+                    val fromTask = itemList.get(i)
+                    val toTask = itemList.get(Integer.min(i + 1, itemList.size - 1))
+                    swapTasksInDatabase(fromTask, toTask)
+                    Collections.swap(
+                        itemList,
+                        i,
+                        i + 1
+                    )
+                    this@ToDoTaskAdapter.submitList(itemList)
+                }
+            } else {
+                for (i in fromPosition downTo toPosition + 1) {
+                    val fromTask = itemList.get(i)
+                    val toTask = itemList.get(Math.max(i - 1, 0))
+                    swapTasksInDatabase(fromTask, toTask)
+                    Collections.swap(
+                        itemList,
+                        i,
+                        i - 1
+                    )
+                    this@ToDoTaskAdapter.submitList(itemList)
+                }
+            }
+            for (task in itemList) {
+                toDoViewModel.updateTask(task)
+            }
+
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val position = viewHolder.absoluteAdapterPosition
+            val taskToDelete = this@ToDoTaskAdapter.getItemByPosition(position)
+            toDoViewModel.deleteTask(taskToDelete)
+            Toast.makeText(
+                currentTaskView.context,
+                String.format(
+                    currentTaskView.context
+                        .getString(R.string.successfully_deleted_task, taskToDelete.title)
+                ),
+                Toast.LENGTH_SHORT
+            ).show()
+            tryToRestoreDeletedTask(taskToDelete)
+        }
+    }
+
+    private fun swapTasksInDatabase(fromTask: ToDoTask?, toTask: ToDoTask?) {
+        if (fromTask != null && toTask != null) {
+            val fromTaskId = fromTask.id
+            val toTaskId = toTask.id
+            fromTask.id = toTaskId
+            toTask.id = fromTaskId
+        }
+    }
+
+    private fun tryToRestoreDeletedTask(deletedTask: ToDoTask) {
+        val context = currentTaskView.context
+        Snackbar.make(
+            currentTaskView,
+            String.format(context.getString(R.string.deleted_task), deletedTask.title),
+            Snackbar.LENGTH_LONG
+        )
+            .setAction(context.getString(R.string.undo)) {
+                toDoViewModel.insertTask(deletedTask)
+            }
+            .show()
+    }
+
 }

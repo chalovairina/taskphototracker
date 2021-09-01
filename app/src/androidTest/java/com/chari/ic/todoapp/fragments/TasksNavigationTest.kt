@@ -43,6 +43,15 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.*
 import org.junit.runner.RunWith
 import java.io.IOException
+import com.chari.ic.todoapp.data.source.AndroidFakeToDoRepository
+import com.chari.ic.todoapp.fragments.add_fragment.AddFragment
+import com.chari.ic.todoapp.fragments.add_fragment.AddFragmentDirections
+import com.chari.ic.todoapp.fragments.tasks_fragment.TasksFragmentDirections
+import com.chari.ic.todoapp.repository.Repository
+import com.chari.ic.todoapp.utils.PriorityUtils
+import org.hamcrest.Matchers
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 @MediumTest
 @ExperimentalCoroutinesApi
@@ -54,16 +63,15 @@ class TasksNavigationTest {
     @get:Rule
     var mainCoroutineRule = MainAndroidCoroutineRule()
 
-    private lateinit var context: Context
-    private lateinit var toDoViewModel: ToDoViewModel
-    private lateinit var repository: ToDoRepository
-    private lateinit var database: ToDoDatabase
-
+    protected lateinit var context: Context
+    protected lateinit var repository: ToDoRepository
+    protected lateinit var database: ToDoDatabase
+    private lateinit var navController: NavController
 
     @Before
     fun setUp() {
+        navController = mock(NavController::class.java)
         context = ApplicationProvider.getApplicationContext()
-
         database = Room.inMemoryDatabaseBuilder(
             context,
             ToDoDatabase::class.java
@@ -72,11 +80,6 @@ class TasksNavigationTest {
             .build()
         ToDoRepository.initialize(database.getToDoDao())
         repository = ToDoRepository.getRepository()
-        val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
-        val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
-        val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
-        mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3) }
-        toDoViewModel = ToDoViewModel(repository, Dispatchers.Main)
     }
 
     @After
@@ -91,27 +94,26 @@ class TasksNavigationTest {
 
     @Test
     fun clickAddFAB_navigateToAddFragment() {
-        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
         val scenario = launchFragmentInContainer<TasksFragment>(
             Bundle(),
             R.style.Theme_TODOApp
         )
 
         scenario.onFragment {
-            fragment ->
-            navController.setGraph(R.navigation.my_nav)
-            Navigation.setViewNavController(fragment.requireView(), navController)
+            Navigation.setViewNavController(it.view!!, navController)
         }
 
         onView(withId(R.id.add_button)).perform(click())
 
-        assertThat(navController.currentDestination?.id, equalTo(R.id.addFragment))
+        verify(navController).navigate(R.id.action_tasksFragment_to_addFragment)
         scenario.moveToState(Lifecycle.State.DESTROYED)
     }
 
     @Test
     fun clickOnRecyclerViewItem_navigateToUpdateFragment() {
-        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
+        val task = ToDoTask(0, "Homework", Priority.HIGH, "My homework")
+        mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task) }
+
         val scenario = launchFragmentInContainer<TasksFragment>(
             Bundle(),
             R.style.Theme_TODOApp
@@ -119,35 +121,15 @@ class TasksNavigationTest {
 
         scenario.onFragment {
                 fragment ->
-            navController.setGraph(R.navigation.my_nav)
             Navigation.setViewNavController(fragment.requireView(), navController)
         }
 
         onView(withId(R.id.recyclerView))
             .perform(actionOnItemAtPosition<ToDoTaskAdapter.ToDoViewHolder>(0, click()))
 
-        assertThat(navController.currentDestination?.id, equalTo(R.id.updateFragment))
+        verify(navController).navigate(TasksFragmentDirections.actionTasksFragmentToUpdateFragment(task))
 
         scenario.moveToState(Lifecycle.State.DESTROYED)
-    }
-
-    @Test
-    fun navigateFromTasksToAddFragment_checkPreviousBackEntryIsTasksFragment() {
-        val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        activityScenario.moveToState(Lifecycle.State.RESUMED)
-        activityScenario.onActivity {
-            activity ->
-            navController.setGraph(R.navigation.my_nav)
-        }
-
-        runOnUiThread {
-            navController.navigate(R.id.action_tasksFragment_to_addFragment)
-        }
-        assertThat(navController.currentDestination?.id, equalTo(R.id.addFragment))
-        assertThat(navController.previousBackStackEntry?.destination?.id, equalTo(R.id.tasksFragment))
-
-        activityScenario.close()
     }
 
     @Test

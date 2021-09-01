@@ -1,6 +1,7 @@
 package com.chari.ic.todoapp.fragments.add_fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.Spinner
@@ -49,12 +50,20 @@ class AddFragment: TaskEditFragment() {
         prioritySpinner.onItemSelectedListener = listener
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d("AddFragment", "onResume")
+
+        showKeyboard(titleEt)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.add_fragment_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_add) {
+//            hideKeyboard(requireView())
             insertData()
         }
 

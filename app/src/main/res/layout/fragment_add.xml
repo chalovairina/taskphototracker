@@ -19,6 +19,7 @@
             android:layout_height="60dp"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
+            android:focusable="true"
             android:ems="10"
             android:inputType="textPersonName"
             android:hint="@string/title"

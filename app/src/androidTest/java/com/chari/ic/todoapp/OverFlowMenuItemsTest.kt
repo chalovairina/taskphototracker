@@ -1,7 +1,6 @@
 package com.chari.ic.todoapp
 
 import android.content.Context
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.testing.TestNavHostController
@@ -139,9 +138,7 @@ class OverFlowMenuItemsTest {
         onView(withId(R.id.menu_add)).perform(click())
 
         assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
-        onView(withId(R.id.recyclerView)).check(matches(isDisplayed()))
-        onView(withId(R.id.no_data_textView)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.no_data_imageView)).check(matches(not(isDisplayed())))
+
         onView(withId(R.id.recyclerView)).check(matches(hasChildCount(4)))
             .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(4))
             .check(matches((hasDescendant(withChild(withText(newTitle))))))

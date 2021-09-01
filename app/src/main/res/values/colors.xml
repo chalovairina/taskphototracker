@@ -14,6 +14,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="lightGray">#E6E6E6</color>
     <color name="lightMediumGray">#80D1D1D1</color>
+    <color name="dark">#313C44</color>
     <color name="darker">#151B20</color>
     <color name="darkGray">#4B4B4B</color>
     <color name="red">#FF4646</color>
@@ -28,4 +29,6 @@
     // status bar
     <color name="statusBarColor">@color/colorPrimaryDark</color>
     <color name="actionModeStatusBarColor">@color/darker</color>
+    <color name="actionModeActionBarColor">@color/dark</color>
+    <color name="actionBarBackgroundColor">@color/colorPrimary</color>
 </resources>
