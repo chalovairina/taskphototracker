@@ -1,8 +1,8 @@
 package com.chari.ic.todoapp.fragments
 
+import MainCoroutineRule
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
@@ -12,30 +12,22 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
 import com.chari.ic.todoapp.MainActivity
-import com.chari.ic.todoapp.MainAndroidCoroutineRule
 import com.chari.ic.todoapp.R
-import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.tasks_fragment.TasksFragment
 import com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter
 import com.chari.ic.todoapp.repository.ToDoRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.MatcherAssert.assertThat
@@ -43,13 +35,7 @@ import org.hamcrest.Matchers.equalTo
 import org.junit.*
 import org.junit.runner.RunWith
 import java.io.IOException
-import com.chari.ic.todoapp.data.source.AndroidFakeToDoRepository
-import com.chari.ic.todoapp.fragments.add_fragment.AddFragment
-import com.chari.ic.todoapp.fragments.add_fragment.AddFragmentDirections
 import com.chari.ic.todoapp.fragments.tasks_fragment.TasksFragmentDirections
-import com.chari.ic.todoapp.repository.Repository
-import com.chari.ic.todoapp.utils.PriorityUtils
-import org.hamcrest.Matchers
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 
@@ -61,11 +47,11 @@ class TasksNavigationTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRule = MainAndroidCoroutineRule()
+    var mainCoroutineRule = MainCoroutineRule()
 
-    protected lateinit var context: Context
-    protected lateinit var repository: ToDoRepository
-    protected lateinit var database: ToDoDatabase
+    private lateinit var context: Context
+    private lateinit var repository: ToDoRepository
+    private lateinit var database: ToDoDatabase
     private lateinit var navController: NavController
 
     @Before

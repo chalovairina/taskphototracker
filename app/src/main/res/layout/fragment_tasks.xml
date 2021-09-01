@@ -7,9 +7,6 @@
         <variable
             name="viewmodel"
             type="com.chari.ic.todoapp.ToDoViewModel" />
-        <variable
-            name="adapter"
-            type="com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,18 +15,43 @@
         android:id="@+id/tasks_list_layout"
         tools:context=".fragments.tasks_fragment.TasksFragment">
 
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer_frame_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            setData="@{viewmodel.databaseStatus}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shimmer_repeat_mode="restart"
+            app:shimmer_direction="left_to_right">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <!--add  several shimmer placeholder layout -->
+                <include layout="@layout/placeholder_task_row_layout" />
+                <include layout="@layout/placeholder_task_row_layout" />
+                <include layout="@layout/placeholder_task_row_layout" />
+                <include layout="@layout/placeholder_task_row_layout" />
+                <include layout="@layout/placeholder_task_row_layout" />
+                <include layout="@layout/placeholder_task_row_layout" />
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            setVisibility="@{viewmodel.getAllTasks}"
-            setData = "@{adapter}"
+            setData="@{viewmodel.databaseStatus}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_button"
@@ -49,7 +71,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_no_data"
-            setVisibility="@{viewmodel.getAllTasks}"
+            setData="@{viewmodel.databaseStatus}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +86,7 @@
             android:text="@string/no_data"
             android:textSize="16sp"
             android:alpha="0.5"
-            setVisibility="@{viewmodel.getAllTasks}"
+            setData="@{viewmodel.databaseStatus}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/no_data_imageView" />

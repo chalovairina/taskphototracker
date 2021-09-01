@@ -21,11 +21,14 @@ data class ToDoTask(
         other as ToDoTask
 
         if (title != other.title) return false
+        if (priority != other.priority) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return id
+        var result = title.hashCode()
+        result = 31 * result + priority.hashCode()
+        return result
     }
 }

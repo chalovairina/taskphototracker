@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
+import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.TaskRowLayoutBinding
 import com.google.android.material.snackbar.Snackbar
@@ -66,6 +67,8 @@ class ToDoTaskAdapter(
 
         fun bind(toDoTask: ToDoTask) {
             binding.task = toDoTask
+            binding.executePendingBindings()
+
             currentTaskView = binding.root
             currentTask = toDoTask
             checkSelectionStyle(
@@ -199,11 +202,12 @@ class ToDoTaskAdapter(
             val fromPosition = viewHolder.absoluteAdapterPosition
             val toPosition = target.absoluteAdapterPosition
             val itemList = this@ToDoTaskAdapter.currentList.toMutableList()
+            var updatedTasksSubList: List<ToDoTask>
             if (fromPosition < toPosition) {
                 for (i in fromPosition until toPosition) {
                     val fromTask = itemList.get(i)
                     val toTask = itemList.get(Integer.min(i + 1, itemList.size - 1))
-                    swapTasksInDatabase(fromTask, toTask)
+                    swapTasksId(fromTask, toTask)
                     Collections.swap(
                         itemList,
                         i,
@@ -211,11 +215,12 @@ class ToDoTaskAdapter(
                     )
                     this@ToDoTaskAdapter.submitList(itemList)
                 }
+                updatedTasksSubList = itemList.subList(fromPosition, toPosition + 1)
             } else {
                 for (i in fromPosition downTo toPosition + 1) {
                     val fromTask = itemList.get(i)
                     val toTask = itemList.get(Math.max(i - 1, 0))
-                    swapTasksInDatabase(fromTask, toTask)
+                    swapTasksId(fromTask, toTask)
                     Collections.swap(
                         itemList,
                         i,
@@ -223,8 +228,11 @@ class ToDoTaskAdapter(
                     )
                     this@ToDoTaskAdapter.submitList(itemList)
                 }
+                updatedTasksSubList = itemList.subList(toPosition, fromPosition + 1)
             }
-            for (task in itemList) {
+            // update tasks with swapped ids in db based on fact that tasks are downloaded into list ordered by id
+            // as per getAllTasks repository query
+            for (task in updatedTasksSubList) {
                 toDoViewModel.updateTask(task)
             }
 
@@ -243,11 +251,11 @@ class ToDoTaskAdapter(
                 ),
                 Toast.LENGTH_SHORT
             ).show()
-            tryToRestoreDeletedTask(taskToDelete)
+            askToRestoreDeletedTask(taskToDelete)
         }
     }
 
-    private fun swapTasksInDatabase(fromTask: ToDoTask?, toTask: ToDoTask?) {
+    private fun swapTasksId(fromTask: ToDoTask?, toTask: ToDoTask?) {
         if (fromTask != null && toTask != null) {
             val fromTaskId = fromTask.id
             val toTaskId = toTask.id
@@ -256,7 +264,7 @@ class ToDoTaskAdapter(
         }
     }
 
-    private fun tryToRestoreDeletedTask(deletedTask: ToDoTask) {
+    private fun askToRestoreDeletedTask(deletedTask: ToDoTask) {
         val context = currentTaskView.context
         Snackbar.make(
             currentTaskView,
@@ -268,5 +276,4 @@ class ToDoTaskAdapter(
             }
             .show()
     }
-
 }

@@ -1,32 +1,81 @@
 package com.chari.ic.todoapp.binding
 
+import android.util.Log
 import android.view.View
-import androidx.core.view.isInvisible
+import android.view.View.INVISIBLE
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter
+import com.facebook.shimmer.ShimmerFrameLayout
 
 object TasksBinding {
-    @BindingAdapter("setVisibility", "setData", requireAll = false)
+
+//        @BindingAdapter("setVisibility")
+//        @JvmStatic
+//        fun setEmptyDataViewVisibility(
+//            view: View,
+//            databaseStatus: DatabaseResult<List<ToDoTask>>?
+//        ) {
+//            if (databaseStatus == null) {
+//                return
+//            }
+//            when(view) {
+//                is RecyclerView ->
+//                    view.isVisible = databaseStatus is DatabaseResult.Success
+//                is ImageView ->
+//                    view.isVisible = databaseStatus is DatabaseResult.Empty
+//                is TextView -> {
+//                    view.isVisible = databaseStatus is DatabaseResult.Empty
+//                    databaseStatus.message?.let {
+//                        view.text = it
+//                    }
+//                }
+//            }
+//        }
+
+    @BindingAdapter("setData")
     @JvmStatic
-    fun setViewVisibilityBasedOnDataAvailability(
+    fun setShimmeringFX(
         view: View,
-        cachedTasks: List<ToDoTask>?,
-        adapter: ToDoTaskAdapter?
+        databaseStatus: DatabaseResult<List<ToDoTask>>?
     ) {
+        Log.d("TasksBindingAdapter", "databaseStatus = $databaseStatus")
+        if (databaseStatus == null) {
+            Log.d("TasksBindingAdapter", "databaseStatus = $databaseStatus")
+            if (view is ShimmerFrameLayout) {
+                view.visibility = View.VISIBLE
+                view.startShimmer()
+            } else {
+                view.visibility = INVISIBLE
+            }
+            return
+        }
         when(view) {
-            is RecyclerView -> {
-                val isEmptyData = cachedTasks.isNullOrEmpty()
-                view.isInvisible = isEmptyData
-                if (!isEmptyData) {
-                    adapter?.submitList(cachedTasks)
+            is ShimmerFrameLayout -> {
+                when(databaseStatus) {
+                    is DatabaseResult.Loading -> {
+                        view.visibility = View.VISIBLE
+                        view.startShimmer();
+                    }
+                    else -> {
+                        view.stopShimmer();
+                        view.visibility = View.INVISIBLE
+                    }
                 }
             }
-            else -> {
-                view.isVisible = cachedTasks.isNullOrEmpty()
+            is RecyclerView ->
+                view.isVisible = databaseStatus is DatabaseResult.Success
+            is ImageView ->
+                view.isVisible = databaseStatus is DatabaseResult.Empty
+            is TextView -> {
+                view.isVisible = databaseStatus is DatabaseResult.Empty
+                databaseStatus.message?.let {
+                    view.text = it
+                }
             }
         }
     }

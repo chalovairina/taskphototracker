@@ -6,7 +6,7 @@ import com.chari.ic.todoapp.data.database.entities.ToDoTask
 
 @Dao
 interface ToDoDao {
-    @Query("SELECT * FROM todo_tasks ORDER BY id ASC")
+    @Query("SELECT * FROM todo_tasks ORDER BY id DESC")
     fun getAllTasks(): LiveData<List<ToDoTask>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -1,5 +1,6 @@
 package com.chari.ic.todoapp
 
+import MainCoroutineRule
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
@@ -12,17 +13,17 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter
 import com.chari.ic.todoapp.repository.ToDoRepository
 import com.chari.ic.todoapp.utils.PriorityUtils
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.*
@@ -33,16 +34,15 @@ import java.io.IOException
 @LargeTest
 @ExperimentalCoroutinesApi
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@RunWith(AndroidJUnit4::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 class OverFlowMenuItemsTest {
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRule = MainAndroidCoroutineRule()
+    var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var context: Context
-    private lateinit var toDoViewModel: ToDoViewModel
     private lateinit var repository: ToDoRepository
     private lateinit var database: ToDoDatabase
 
@@ -62,7 +62,6 @@ class OverFlowMenuItemsTest {
         val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
         val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3) }
-        toDoViewModel = ToDoViewModel(repository, Dispatchers.Main)
     }
 
     @After
@@ -165,9 +164,9 @@ class OverFlowMenuItemsTest {
             .perform(click())
 
         assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
-        onView(withId(R.id.recyclerView)).check(matches(withEffectiveVisibility(Visibility.INVISIBLE)))
-        onView(withId(R.id.no_data_textView)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-        onView(withId(R.id.no_data_imageView)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        onView(withId(R.id.recyclerView)).check(matches(CoreMatchers.not(isDisplayed())))
+        onView(withId(R.id.no_data_textView)).check(matches(isDisplayed()))
+        onView(withId(R.id.no_data_imageView)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }

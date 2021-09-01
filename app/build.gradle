@@ -60,6 +60,15 @@ android {
     testOptions {
         unitTests.includeAndroidResources = true
     }
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDirs += sharedTestDir
+        }
+        androidTest {
+            java.srcDirs += sharedTestDir
+        }
+    }
 
     packagingOptions {
         exclude "**/attach_hotspot_windows.dll"
@@ -104,7 +113,10 @@ dependencies {
 
     // Data binding
     kapt 'com.android.databinding:compiler:3.1.4'
-    kapt 'androidx.databinding:databinding-common:7.0.0'
+    kapt 'androidx.databinding:databinding-common:7.0.1'
+
+    // ShimmerLayout
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     // DataStore
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
@@ -160,13 +172,18 @@ dependencies {
 
     // Required -- JUnit 4 framework
     testImplementation "junit:junit:$junitVersion"
-    // Optional -- Robolectric environment
+
 //    implementation "androidx.test:core:$androidXTestCoreVersion"
     testImplementation "androidx.test:core-ktx:$androidXTestCoreVersion"
     testImplementation "androidx.test.ext:junit-ktx:$androidXTestExtKotlinRunnerVersion"
     testImplementation "androidx.test.ext:junit:$androidXTestExtKotlinRunnerVersion"
     // Robolectric
-    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+//    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+//    androidTestImplementation "org.robolectric:robolectric:$robolectricVersion"
+//    androidTestImplementation ("org.robolectric:robolectric:$robolectricVersion") {
+//        exclude group: "org.apache.maven.wagon"
+//        exclude group: "org.apache.maven"
+//    }
     // Optional -- Mockito framework
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
 

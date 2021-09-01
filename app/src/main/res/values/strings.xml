@@ -24,7 +24,7 @@
     <string name="no">NO</string>
     <string name="delete_tasks">Delete all tasks</string>
     <string name="sure_to_delete_all_tasks">Are you sure you want to delete all tasks?</string>
-    <string name="no_data">No Data</string>
+    <string name="no_data">No Tasks Saved</string>
     <string name="my_title">My Title</string>
     <string name="some_random_description">Some random description</string>
     <string name="successfully_deleted_task">Successfully removed task: %s</string>

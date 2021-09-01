@@ -1,21 +1,22 @@
 package com.chari.ic.todoapp
 
+import MainCoroutineRule
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.repository.ToDoRepository
+import com.google.common.truth.Truth.assertThat
+import getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
-import org.hamcrest.Matchers
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
@@ -29,7 +30,7 @@ class ToDoViewModelAndroidTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRule = MainAndroidCoroutineRule()
+    var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var context: Context
     private lateinit var toDoViewModel: ToDoViewModel
@@ -77,14 +78,13 @@ class ToDoViewModelAndroidTest {
         mainCoroutineRule.runBlockingTest {
             toDoViewModel.insertTask(newTask)
         }
-        val taskFromDb = toDoViewModel.getAllTasks.getOrAwait().last()
-        MatcherAssert.assertThat(taskFromDb, (Matchers.not(Matchers.nullValue())))
-        MatcherAssert.assertThat(taskFromDb.title, Matchers.equalTo("Homework"))
+        val tasksFromDb = toDoViewModel.getAllTasks.getOrAwaitValue()
+        assertThat(tasksFromDb).contains(newTask)
     }
 
     @Test
     fun test2_updateTask_ok() {
-        val firstTask = toDoViewModel.getAllTasks.getOrAwait().first()
+        val firstTask = toDoViewModel.getAllTasks.getOrAwaitValue().first()
         val newTitle = "Updated title"
         val newDescription = "Updated description"
         val newPriority = Priority.HIGH
@@ -96,16 +96,29 @@ class ToDoViewModelAndroidTest {
             toDoViewModel.updateTask(firstTask)
         }
 
-        val updatedTaskFromDb = toDoViewModel.getAllTasks.getOrAwait().first()
+        val updatedTaskFromDb = toDoViewModel.getAllTasks.getOrAwaitValue().first()
         MatcherAssert.assertThat(updatedTaskFromDb.title, CoreMatchers.`is`(newTitle))
         MatcherAssert.assertThat(updatedTaskFromDb.description, CoreMatchers.`is`(newDescription))
         MatcherAssert.assertThat(updatedTaskFromDb.priority, CoreMatchers.`is`(newPriority))
     }
 
     @Test
+    fun test3_deleteAll_ok() {
+        val tasks = toDoViewModel.getAllTasks.getOrAwaitValue()
+        MatcherAssert.assertThat(tasks.size, CoreMatchers.`is`(3))
+
+        mainCoroutineRule.runBlockingTest {
+            toDoViewModel.deleteAll()
+        }
+
+        val deletedTasks = toDoViewModel.getAllTasks.getOrAwaitValue()
+        MatcherAssert.assertThat(deletedTasks.size, CoreMatchers.`is`(0))
+    }
+
+    @Test
     @Throws(Exception::class)
-    fun test3_deleteTask_ok() {
-        val taskToDelete = ToDoTask(
+    fun test4_deleteTask_ok() {
+        var taskToDelete = ToDoTask(
             0,
             "Homework for delete",
             Priority.LOW,
@@ -113,34 +126,14 @@ class ToDoViewModelAndroidTest {
         )
 
         mainCoroutineRule.runBlockingTest {
-            toDoViewModel.insertTask(taskToDelete)
-        }
-
-
-        val lastTask = toDoViewModel.getAllTasks.getOrAwait().last()
-        MatcherAssert.assertThat(lastTask, CoreMatchers.notNullValue())
-        MatcherAssert.assertThat(lastTask.title, CoreMatchers.`is`("Homework for delete"))
-
-        mainCoroutineRule.runBlockingTest {
-            toDoViewModel.deleteTask(lastTask)
-        }
-        val tasksFromDb = toDoViewModel.getAllTasks.getOrAwait()
-
-        val taskNotDeleted = tasksFromDb.contains(lastTask)
-        MatcherAssert.assertThat(taskNotDeleted, CoreMatchers.`is`(false))
-    }
-
-    @Test
-    fun test4_deleteAll_ok() {
-        val tasks = toDoViewModel.getAllTasks.getOrAwait()
-        MatcherAssert.assertThat(tasks.size, CoreMatchers.`is`(3))
-
-        mainCoroutineRule.runBlockingTest {
             toDoViewModel.deleteAll()
+            toDoViewModel.insertTask(taskToDelete)
+            taskToDelete = toDoViewModel.getAllTasks.getOrAwaitValue().first()
+            toDoViewModel.deleteTask(taskToDelete)
         }
 
-        val deletedTasks = toDoViewModel.getAllTasks.getOrAwait()
-        MatcherAssert.assertThat(deletedTasks.size, CoreMatchers.`is`(0))
+        val tasksFromDb = toDoViewModel.getAllTasks.getOrAwaitValue()
+        assertThat(tasksFromDb).doesNotContain(taskToDelete)
     }
 
 }

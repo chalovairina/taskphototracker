@@ -1,5 +1,3 @@
-package com.chari.ic.todoapp
-
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -8,7 +6,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-fun <T> LiveData<T>.getOrAwait(
+fun <T> LiveData<T>.getOrAwaitValue(
     time: Long = 2,
     timeUnit: TimeUnit = TimeUnit.SECONDS,
     afterObserve: () -> Unit = {}
@@ -19,7 +17,7 @@ fun <T> LiveData<T>.getOrAwait(
         override fun onChanged(o: T?) {
             data = o
             latch.countDown()
-            this@getOrAwait.removeObserver(this)
+            this@getOrAwaitValue.removeObserver(this)
         }
     }
     this.observeForever(observer)

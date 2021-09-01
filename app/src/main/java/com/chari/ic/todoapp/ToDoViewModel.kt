@@ -1,10 +1,8 @@
 package com.chari.ic.todoapp
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.repository.Repository
 import com.chari.ic.todoapp.repository.ToDoRepository
@@ -16,7 +14,18 @@ class ToDoViewModel(
     private val repository: Repository,
     private val dispatchers: CoroutineDispatcher = Dispatchers.IO
 ): ViewModel() {
-    val getAllTasks: LiveData<List<ToDoTask>> = repository.cachedTasks
+     val getAllTasks: LiveData<List<ToDoTask>> = repository.cachedTasks
+
+    val databaseStatus: LiveData<DatabaseResult<List<ToDoTask>>> = Transformations.map(getAllTasks) {
+        cachedTasks ->
+            if (cachedTasks == null) {
+                DatabaseResult.Loading()
+            } else if (cachedTasks.isEmpty()) {
+                DatabaseResult.Empty()
+            } else {
+                DatabaseResult.Success(cachedTasks)
+            }
+    }
 
     fun insertTask(toDoTask: ToDoTask) {
         viewModelScope.launch(dispatchers) {

@@ -1,10 +1,12 @@
 package com.chari.ic.todoapp
 
+import MainCoroutineRule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import com.chari.ic.todoapp.data.source.FakeToDoRepository
+import data.source.FakeToDoRepository
 import com.chari.ic.todoapp.repository.Repository
+import getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest

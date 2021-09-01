@@ -1,36 +1,37 @@
 package com.chari.ic.todoapp.fragments.tasks_fragment
 
+import MainCoroutineRule
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.*
-import androidx.test.espresso.action.ViewActions.longClick
-import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.chari.ic.todoapp.*
+import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
+import com.chari.ic.todoapp.repository.Repository
 import com.chari.ic.todoapp.repository.ToDoRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.not
-import org.hamcrest.core.AllOf.allOf
+import org.hamcrest.Matchers
+import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -46,13 +47,12 @@ class TasksFragmentTest {
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRule = MainAndroidCoroutineRule()
+    var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var context: Context
-    private lateinit var repository: ToDoRepository
+    private lateinit var repository: Repository
     private lateinit var database: ToDoDatabase
-    private lateinit var fragmentScenario: FragmentScenario<TasksFragment>
-
+//    private lateinit var fragmentScenario: FragmentScenario<TasksFragment>
 
     @Before
     fun setUp() {
@@ -65,14 +65,15 @@ class TasksFragmentTest {
             .build()
         ToDoRepository.initialize(database.getToDoDao())
         repository = ToDoRepository.getRepository()
-
-        fragmentScenario = launchFragmentInContainer(Bundle(), R.style.Theme_TODOApp)
+        // doesn't work when setup in Before method - why?
+//        fragmentScenario = launchFragmentInContainer(Bundle(), R.style.Theme_TODOApp)
+//        fragmentScenario.moveToState(Lifecycle.State.RESUMED)
     }
 
     @After
     @Throws(IOException::class)
     fun tearDown() {
-        fragmentScenario.moveToState(Lifecycle.State.DESTROYED)
+//        fragmentScenario.moveToState(Lifecycle.State.DESTROYED)
         mainCoroutineRule.runBlockingTest {
             repository.resetRepository()
         }
@@ -81,38 +82,61 @@ class TasksFragmentTest {
 
     @Test
     fun dataAvailable_recyclerViewDisplayed_noDataViewsNotDisplayed() {
+        Log.d("TasksFragmentTest", "repository = $repository")
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
+
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1) }
+        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
 
-        onView(withId(R.id.recyclerView)).check(matches(isDisplayed()))
-        onView(withId(R.id.no_data_textView)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.no_data_imageView)).check(matches(not(isDisplayed())))
+        Espresso.onView(ViewMatchers.withId(R.id.recyclerView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.no_data_textView))
+            .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
+        Espresso.onView(ViewMatchers.withId(R.id.no_data_imageView))
+            .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
 
+        scenario.moveToState(Lifecycle.State.DESTROYED)
     }
 
     @Test
     fun noDataAvailable_recyclerViewNotDisplayed_noDataViewsDisplayed() {
-        onView(withId(R.id.recyclerView)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.no_data_textView)).check(matches(isDisplayed()))
-        onView(withId(R.id.no_data_imageView)).check(matches(isDisplayed()))
+        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
 
+        Espresso.onView(ViewMatchers.withId(R.id.recyclerView))
+            .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
+        Espresso.onView(ViewMatchers.withId(R.id.no_data_textView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.no_data_imageView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        scenario.moveToState(Lifecycle.State.DESTROYED)
     }
 
+    // DRAG AND SWIPE TO DELETE TESTS
     @Test
     fun swipeToDelete_recyclerViewNotDisplayed_noDataViewsDisplayed() {
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1) }
 
-        onView(withId(R.id.recyclerView)).perform(
-            actionOnItemAtPosition<ToDoTaskAdapter.ToDoViewHolder>(0, GeneralSwipeAction(
+        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
+
+        Espresso.onView(ViewMatchers.withId(R.id.recyclerView)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<ToDoTaskAdapter.ToDoViewHolder>(
+                0, GeneralSwipeAction(
                     Swipe.SLOW, GeneralLocation.CENTER_LEFT, GeneralLocation.CENTER_RIGHT,
-                Press.FINGER)
+                    Press.FINGER
+                )
             )
         )
 
-        onView(withId(R.id.recyclerView)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.no_data_textView)).check(matches(isDisplayed()))
-        onView(withId(R.id.no_data_imageView)).check(matches(isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.recyclerView))
+            .check(ViewAssertions.matches(Matchers.not(ViewMatchers.isDisplayed())))
+        Espresso.onView(ViewMatchers.withId(R.id.no_data_textView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withId(R.id.no_data_imageView))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        scenario.moveToState(Lifecycle.State.DESTROYED)
     }
 
     @Test
@@ -122,22 +146,45 @@ class TasksFragmentTest {
         val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3) }
 
-        onView(withId(R.id.recyclerView)).perform(
+        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
+
+        Espresso.onView(ViewMatchers.withId(R.id.recyclerView)).perform(
             DragAndDropAction(0, 2)
         )
 
-        onView(withId(R.id.recyclerView))
+        Espresso.onView(ViewMatchers.withId(R.id.recyclerView))
             .perform(RecyclerViewActions.scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(0))
-            .check(matches((hasDescendant(withChild(withText("Homework2"))))))
+            .check(
+                ViewAssertions.matches(
+                    (ViewMatchers.hasDescendant(
+                        ViewMatchers.withChild(
+                            ViewMatchers.withText("Homework2")
+                        )
+                    ))
+                )
+            )
             .perform(RecyclerViewActions.scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(2))
-            .check(matches((hasDescendant(withChild(withText("Homework1"))))))
+            .check(
+                ViewAssertions.matches(
+                    (ViewMatchers.hasDescendant(
+                        ViewMatchers.withChild(
+                            ViewMatchers.withText("Homework1")
+                        )
+                    ))
+                )
+            )
+
+        scenario.moveToState(Lifecycle.State.DESTROYED)
     }
 
     class DragAndDropAction(private val sourceViewPosition: Int,
                             private val targetViewPosition: Int) : ViewAction {
 
         override fun getConstraints(): Matcher<View> {
-            return allOf(isDisplayed(), isAssignableFrom(RecyclerView::class.java))
+            return AllOf.allOf(
+                ViewMatchers.isDisplayed(),
+                ViewMatchers.isAssignableFrom(RecyclerView::class.java)
+            )
         }
 
         override fun getDescription(): String {
@@ -195,7 +242,7 @@ class TasksFragmentTest {
 
             for (i in 1..SWIPE_EVENT_COUNT) {
                 // get coordinates for each step (step = distance (end - start) / multiplier)
-                    // for x value
+                // for x value
                 coord[i - 1][0] = start[0] + (end[0] - start[0]) * i / SWIPE_EVENT_COUNT
                 // for y value
                 coord[i - 1][1] = start[1] + (end[1] - start[1]) * i / SWIPE_EVENT_COUNT

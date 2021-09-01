@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
+import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.FragmentTasksBinding
 import com.chari.ic.todoapp.repository.ToDoRepository
@@ -32,7 +33,6 @@ class TasksFragment : Fragment() {
 
     private var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
-
 
     private object TODO_TASKS_DIFF_UTIL: DiffUtil.ItemCallback<ToDoTask>() {
         override fun areItemsTheSame(oldItem: ToDoTask, newItem: ToDoTask): Boolean {
@@ -67,7 +67,6 @@ class TasksFragment : Fragment() {
         _binding =  FragmentTasksBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = toDoViewModel
-        binding.adapter = adapter
 
         return binding.root
     }
@@ -80,8 +79,6 @@ class TasksFragment : Fragment() {
         binding.addButton.setOnClickListener {
             findNavController().navigate(R.id.action_tasksFragment_to_addFragment)
         }
-
-
     }
 
     private fun setupAdapter() {
@@ -89,6 +86,21 @@ class TasksFragment : Fragment() {
         binding.recyclerView.adapter = adapter
 
         addDragAndSwipeToDeleteFunction()
+
+        toDoViewModel.databaseStatus.observe(viewLifecycleOwner) {
+                status ->
+            if (status is DatabaseResult.Success) {
+                adapter.submitList(status.data)
+            }
+//            when(status) {
+//                is DatabaseResult.Loading -> showShimmerFX()
+//                is DatabaseResult.Success -> {
+//                    adapter.submitList(status.data)
+//                    stopShimmerFX()
+//                }
+//                is DatabaseResult.Empty -> stopShimmerFX()
+//            }
+        }
     }
 
     private fun addDragAndSwipeToDeleteFunction() {
@@ -120,10 +132,6 @@ class TasksFragment : Fragment() {
             .setMessage(getString(R.string.sure_to_delete_all_tasks))
             .create()
             .show()
-    }
-
-    private fun makeToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

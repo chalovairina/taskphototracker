@@ -1,11 +1,11 @@
-package com.chari.ic.todoapp.data.source
+package data.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.repository.Repository
 
-class AndroidFakeToDoRepository: Repository {
+class FakeToDoRepository: Repository {
 
     companion object {
         private var counter = 0
