@@ -2,13 +2,18 @@ package com.chari.ic.todoapp
 
 import MainCoroutineRule
 import android.content.Context
+import android.content.res.Resources
+import android.os.Bundle
+import android.view.KeyEvent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.testing.TestNavHostController
 import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
@@ -18,8 +23,10 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
+import com.chari.ic.todoapp.fragments.tasks_fragment.TasksFragment
 import com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter
 import com.chari.ic.todoapp.repository.ToDoRepository
+import com.chari.ic.todoapp.utils.EspressoIdlingResource
 import com.chari.ic.todoapp.utils.PriorityUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -61,7 +68,8 @@ class OverFlowMenuItemsTest {
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
         val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
         val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
-        mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3) }
+        val task4 = ToDoTask(0, "Special", Priority.HIGH, "My homework4")
+        mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3, task4) }
     }
 
     @After
@@ -138,8 +146,8 @@ class OverFlowMenuItemsTest {
 
         assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
 
-        onView(withId(R.id.recyclerView)).check(matches(hasChildCount(4)))
-            .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(4))
+        onView(withId(R.id.recyclerView)).check(matches(hasChildCount(5)))
+            .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(5))
             .check(matches((hasDescendant(withChild(withText(newTitle))))))
             .check(matches((hasDescendant(withChild(withText(newDescription))))))
 
@@ -169,5 +177,40 @@ class OverFlowMenuItemsTest {
         onView(withId(R.id.no_data_imageView)).check(matches(isDisplayed()))
 
         activityScenario.close()
+    }
+
+    @Test
+    fun test4_tasksFragment_clickOnSearchMenuItem_searchTaskByTitle_checkDisplayedOnlySelectedTasks() {
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdleResource)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+
+        var searchQuery = "homework"
+        onView(withId(R.id.menu_search))
+            .check(matches(hasDescendant(withClassName(containsString("androidx.appcompat.widget.SearchView")))))
+            .perform(click())
+
+        onView(withId(R.id.search_src_text))
+            .perform(clearText(), typeText(searchQuery))
+            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
+
+//        onView(allOf(
+//            withClassName(containsString("androidx.appcompat.widget.SearchView")),
+//            isDescendantOfA(withId(R.id.menu_search)))
+//        )
+//            .perform(clearText(), typeText(searchQuery))
+//            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
+
+        onView(withId(R.id.recyclerView)).check(matches(hasChildCount(3)))
+
+        searchQuery = "homework1"
+        onView(withId(R.id.search_src_text))
+            .perform(clearText(), typeText(searchQuery))
+            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
+
+        Thread.sleep(500)
+        onView(withId(R.id.recyclerView)).check(matches(hasChildCount(1)))
+
+        activityScenario.close()
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdleResource)
     }
 }

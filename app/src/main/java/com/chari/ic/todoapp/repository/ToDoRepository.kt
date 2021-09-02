@@ -35,6 +35,8 @@ class ToDoRepository private constructor(
         toDoDao.deleteAll()
     }
 
+    override fun searchDatabase(searchQuery: String) = toDoDao.searchDatabase(searchQuery)
+
     companion object {
         @Volatile
         private var INSTANCE: ToDoRepository? = null

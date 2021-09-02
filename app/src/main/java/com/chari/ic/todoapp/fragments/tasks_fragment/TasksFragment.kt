@@ -1,18 +1,16 @@
 package com.chari.ic.todoapp.fragments.tasks_fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.ToDoViewModelFactory
@@ -20,11 +18,10 @@ import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.FragmentTasksBinding
 import com.chari.ic.todoapp.repository.ToDoRepository
-import java.lang.Integer.min
-import java.lang.Math.max
+import com.chari.ic.todoapp.utils.EspressoIdlingResource
 import java.util.*
 
-class TasksFragment : Fragment() {
+class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
     private val toDoViewModel by viewModels<ToDoViewModel> {
         ToDoViewModelFactory(
             ToDoRepository.getRepository()
@@ -110,6 +107,14 @@ class TasksFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tasks_fragment_menu, menu)
+
+        val search = menu.findItem(R.id.menu_search)
+        val searchView = search.actionView as? SearchView
+        searchView?.apply {
+            isSubmitButtonEnabled = true
+            setOnQueryTextListener(this@TasksFragment)
+            queryHint = context.getString(R.string.search_task)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -139,5 +144,36 @@ class TasksFragment : Fragment() {
 
         _binding = null
         adapter.clearContextualActionMode()
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (!query.isNullOrBlank()) {
+            searchDatabase(query)
+        }
+
+        return true
+    }
+
+    override fun onQueryTextChange(query: String?): Boolean {
+        if (query.isNullOrBlank()) {
+            adapter.submitList(toDoViewModel.getAllTasks.value)
+        } else {
+            searchDatabase(query)
+        }
+
+        return true
+    }
+
+    private fun searchDatabase(query: String) {
+        val searchQuery = "%$query%"
+        EspressoIdlingResource.increment()
+        toDoViewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner) {
+            resultList ->
+                EspressoIdlingResource.increment()
+            // second increment allows recyclerView to be redrawn
+                adapter.submitList(resultList) { EspressoIdlingResource.decrement() }
+            EspressoIdlingResource.decrement()
+
+        }
     }
 }

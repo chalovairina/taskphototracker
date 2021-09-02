@@ -23,8 +23,10 @@ class FakeToDoRepository: Repository {
 
     private val tasksData = hashMapOf<Int, ToDoTask>()
     private val _cachedTasks = MutableLiveData<List<ToDoTask>>()
-
     override val cachedTasks: LiveData<List<ToDoTask>> = _cachedTasks
+
+    private val _searchTasks = MutableLiveData<List<ToDoTask>>()
+    val searchTasks: LiveData<List<ToDoTask>> = _searchTasks
 
     private suspend fun refreshTasks() {
         _cachedTasks.value = tasksData.values.toList()
@@ -52,6 +54,18 @@ class FakeToDoRepository: Repository {
         counter = 0
         tasksData.clear()
         refreshTasks()
+    }
+
+    override fun searchDatabase(searchQuery: String): LiveData<List<ToDoTask>> {
+        val resultList = arrayListOf<ToDoTask>()
+        for (task in tasksData.values) {
+            if (task.title.contains(searchQuery, true)) {
+                resultList.add(task)
+            }
+        }
+        _searchTasks.value = resultList
+
+        return searchTasks
     }
 
     override suspend fun resetRepository() {

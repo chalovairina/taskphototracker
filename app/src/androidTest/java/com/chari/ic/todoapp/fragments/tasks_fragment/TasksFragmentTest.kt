@@ -13,12 +13,18 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.data.database.ToDoDatabase
@@ -80,6 +86,8 @@ class TasksFragmentTest {
         database.close()
     }
 
+    // View Visibility Tests
+
     @Test
     fun dataAvailable_recyclerViewDisplayed_noDataViewsNotDisplayed() {
         Log.d("TasksFragmentTest", "repository = $repository")
@@ -88,11 +96,11 @@ class TasksFragmentTest {
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1) }
         val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
 
-        Espresso.onView(ViewMatchers.withId(R.id.recyclerView))
+        onView(withId(R.id.recyclerView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.no_data_textView))
+        onView(withId(R.id.no_data_textView))
             .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
-        Espresso.onView(ViewMatchers.withId(R.id.no_data_imageView))
+        onView(withId(R.id.no_data_imageView))
             .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
 
         scenario.moveToState(Lifecycle.State.DESTROYED)
@@ -102,11 +110,11 @@ class TasksFragmentTest {
     fun noDataAvailable_recyclerViewNotDisplayed_noDataViewsDisplayed() {
         val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
 
-        Espresso.onView(ViewMatchers.withId(R.id.recyclerView))
+        onView(withId(R.id.recyclerView))
             .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
-        Espresso.onView(ViewMatchers.withId(R.id.no_data_textView))
+        onView(withId(R.id.no_data_textView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.no_data_imageView))
+        onView(withId(R.id.no_data_imageView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         scenario.moveToState(Lifecycle.State.DESTROYED)
@@ -120,7 +128,7 @@ class TasksFragmentTest {
 
         val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
 
-        Espresso.onView(ViewMatchers.withId(R.id.recyclerView)).perform(
+        onView(withId(R.id.recyclerView)).perform(
             RecyclerViewActions.actionOnItemAtPosition<ToDoTaskAdapter.ToDoViewHolder>(
                 0, GeneralSwipeAction(
                     Swipe.SLOW, GeneralLocation.CENTER_LEFT, GeneralLocation.CENTER_RIGHT,
@@ -129,11 +137,11 @@ class TasksFragmentTest {
             )
         )
 
-        Espresso.onView(ViewMatchers.withId(R.id.recyclerView))
+        onView(withId(R.id.recyclerView))
             .check(ViewAssertions.matches(Matchers.not(ViewMatchers.isDisplayed())))
-        Espresso.onView(ViewMatchers.withId(R.id.no_data_textView))
+        onView(withId(R.id.no_data_textView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.no_data_imageView))
+        onView(withId(R.id.no_data_imageView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         scenario.moveToState(Lifecycle.State.DESTROYED)
@@ -148,11 +156,11 @@ class TasksFragmentTest {
 
         val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
 
-        Espresso.onView(ViewMatchers.withId(R.id.recyclerView)).perform(
+        onView(withId(R.id.recyclerView)).perform(
             DragAndDropAction(0, 2)
         )
 
-        Espresso.onView(ViewMatchers.withId(R.id.recyclerView))
+        onView(withId(R.id.recyclerView))
             .perform(RecyclerViewActions.scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(0))
             .check(
                 ViewAssertions.matches(

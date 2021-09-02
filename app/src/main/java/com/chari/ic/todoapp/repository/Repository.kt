@@ -16,6 +16,8 @@ interface Repository {
 
     suspend fun deleteAll()
 
+    fun searchDatabase(searchQuery: String): LiveData<List<ToDoTask>>
+
     @VisibleForTesting
     suspend fun fillTasksRepo(vararg tasks: ToDoTask)
 

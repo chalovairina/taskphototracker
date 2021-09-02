@@ -50,4 +50,6 @@ class ToDoViewModel(
             repository.deleteAll()
         }
     }
+
+    fun searchDatabase(searchQuery: String) = repository.searchDatabase(searchQuery)
 }

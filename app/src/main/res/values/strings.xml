@@ -30,6 +30,7 @@
     <string name="successfully_deleted_task">Successfully removed task: %s</string>
     <string name="deleted_task">Deleted: %s</string>
     <string name="undo">UNDO</string>
+    <string name="search_task">Search for task</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>
