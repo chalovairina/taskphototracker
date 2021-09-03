@@ -18,10 +18,13 @@ import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.FragmentTasksBinding
 import com.chari.ic.todoapp.repository.ToDoRepository
-import com.chari.ic.todoapp.utils.EspressoIdlingResource
+import com.chari.ic.todoapp.utils.PriorityUtils
+import com.chari.ic.todoapp.utils.idling_resource.EspressoIdlingResource
 import java.util.*
 
-class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
+class TasksFragment : Fragment(), SearchView.OnQueryTextListener
+    , ViewTreeObserver.OnGlobalLayoutListener
+{
     private val toDoViewModel by viewModels<ToDoViewModel> {
         ToDoViewModelFactory(
             ToDoRepository.getRepository()
@@ -31,7 +34,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
     private var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
 
-    private object TODO_TASKS_DIFF_UTIL: DiffUtil.ItemCallback<ToDoTask>() {
+    private object TODO_TASKS_DIFF_UTIL : DiffUtil.ItemCallback<ToDoTask>() {
         override fun areItemsTheSame(oldItem: ToDoTask, newItem: ToDoTask): Boolean {
             return oldItem.id == newItem.id
         }
@@ -51,6 +54,9 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
         )
     }
 
+    private var searchMenu: MenuItem? = null
+    private var recyclerViewLayoutChanged = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -61,7 +67,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding =  FragmentTasksBinding.inflate(inflater, container, false)
+        _binding = FragmentTasksBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewmodel = toDoViewModel
 
@@ -84,20 +90,13 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
 
         addDragAndSwipeToDeleteFunction()
 
-        toDoViewModel.databaseStatus.observe(viewLifecycleOwner) {
-                status ->
+        toDoViewModel.databaseStatus.observe(viewLifecycleOwner) { status ->
             if (status is DatabaseResult.Success) {
                 adapter.submitList(status.data)
             }
-//            when(status) {
-//                is DatabaseResult.Loading -> showShimmerFX()
-//                is DatabaseResult.Success -> {
-//                    adapter.submitList(status.data)
-//                    stopShimmerFX()
-//                }
-//                is DatabaseResult.Empty -> stopShimmerFX()
-//            }
         }
+        recyclerViewLayoutChanged = true
+        binding.recyclerView.viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
     private fun addDragAndSwipeToDeleteFunction() {
@@ -108,8 +107,9 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.tasks_fragment_menu, menu)
 
-        val search = menu.findItem(R.id.menu_search)
-        val searchView = search.actionView as? SearchView
+        searchMenu = menu.findItem(R.id.menu_search)
+            .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM or MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW)
+        val searchView = searchMenu?.actionView as? SearchView
         searchView?.apply {
             isSubmitButtonEnabled = true
             setOnQueryTextListener(this@TasksFragment)
@@ -118,8 +118,11 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_delete_all) {
-            confirmRemoveAll()
+        when (item.itemId) {
+            R.id.menu_delete_all -> confirmRemoveAll()
+            R.id.menu_priority_high -> sortTasksByHighPriority()
+            R.id.menu_priority_low -> sortTasksByLowPriority()
+            R.id.reset_sort -> resetTasksList()
         }
 
         return super.onOptionsItemSelected(item)
@@ -130,7 +133,11 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
         AlertDialog.Builder(requireContext())
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 toDoViewModel.deleteAll()
-                Toast.makeText(requireContext(), getString(R.string.all_tasks_deleted), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.all_tasks_deleted),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             .setNegativeButton(getString(R.string.no)) { _, _ -> }
             .setTitle(String.format(getString(R.string.delete_tasks), adapter.itemCount))
@@ -150,13 +157,14 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
         if (!query.isNullOrBlank()) {
             searchDatabase(query)
         }
+        collapseSearchView()
 
         return true
     }
 
     override fun onQueryTextChange(query: String?): Boolean {
         if (query.isNullOrBlank()) {
-            adapter.submitList(toDoViewModel.getAllTasks.value)
+            resetTasksList()
         } else {
             searchDatabase(query)
         }
@@ -164,16 +172,66 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
         return true
     }
 
+    private fun resetTasksList() {
+        adapter.submitList(toDoViewModel.getAllTasks.value)
+    }
+
     private fun searchDatabase(query: String) {
         val searchQuery = "%$query%"
-        EspressoIdlingResource.increment()
-        toDoViewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner) {
-            resultList ->
-                EspressoIdlingResource.increment()
-            // second increment allows recyclerView to be redrawn
-                adapter.submitList(resultList) { EspressoIdlingResource.decrement() }
-            EspressoIdlingResource.decrement()
+        if (!toDoViewModel.searchDatabase(searchQuery).hasObservers()) {
+            toDoViewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner) {
+                    resultList ->
+                if (adapter.currentList.toList() != resultList) {
+                    recyclerViewLayoutChanged = true
+                    EspressoIdlingResource.setIdleState(false)
+                    adapter.submitList(resultList)
+//                    { EspressoIdlingResource.setIdleState(true) }
+                } else {
+                    recyclerViewLayoutChanged = false
+                }
+                binding.recyclerView.smoothScrollToPosition(0)
+            }
+        }
+    }
 
+    private fun collapseSearchView() {
+        searchMenu?.collapseActionView()
+    }
+
+    /**
+     * Takes adapter current list and perform sorting from high to low priority compared by priority position
+     * in the spinner (zero - for high, 2 - for low)
+     */
+    private fun sortTasksByHighPriority() {
+        val sortedList = adapter.currentList.toList()
+            .sortedWith { first, second ->
+            PriorityUtils.getPositionByPriority(first.priority) -
+                    PriorityUtils.getPositionByPriority(second.priority)
+            }
+        adapter.submitList(sortedList)
+        binding.recyclerView.smoothScrollToPosition(0)
+    }
+
+
+    /**
+     * Takes adapter current list and perform sorting from low to high priority compared by priority position
+     * in the spinner (zero - for high, 2 - for low).
+     * Negated so that position of high priority compared to
+     * lower priorities would return greater number and thus lower position in the list
+     */
+    private fun sortTasksByLowPriority() {
+        val sortedList = adapter.currentList.toList()
+            .sortedWith { first, second ->
+                (PriorityUtils.getPositionByPriority(first.priority) -
+                        PriorityUtils.getPositionByPriority(second.priority)).unaryMinus()
+            }
+        adapter.submitList(sortedList)
+        binding.recyclerView.smoothScrollToPosition(0)
+    }
+
+    override fun onGlobalLayout() {
+        if (recyclerViewLayoutChanged) {
+            EspressoIdlingResource.setIdleState(true)
         }
     }
 }

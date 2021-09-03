@@ -14,6 +14,8 @@
                     android:title="@string/priority_high"/>
                 <item android:id="@+id/menu_priority_low"
                     android:title="@string/priority_low"/>
+                <item android:id="@+id/reset_sort"
+                    android:title="@string/reset"/>
             </menu>
         </item>
     </group>

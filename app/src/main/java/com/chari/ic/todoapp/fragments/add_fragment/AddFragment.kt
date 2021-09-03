@@ -63,7 +63,6 @@ class AddFragment: TaskEditFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_add) {
-//            hideKeyboard(requireView())
             insertData()
         }
 

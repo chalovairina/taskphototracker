@@ -2,41 +2,48 @@ package com.chari.ic.todoapp
 
 import MainCoroutineRule
 import android.content.Context
-import android.content.res.Resources
-import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
+import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.testing.TestNavHostController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
+import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.platform.app.InstrumentationRegistry
 import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import com.chari.ic.todoapp.fragments.tasks_fragment.TasksFragment
 import com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter
 import com.chari.ic.todoapp.repository.ToDoRepository
-import com.chari.ic.todoapp.utils.EspressoIdlingResource
 import com.chari.ic.todoapp.utils.PriorityUtils
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.chari.ic.todoapp.utils.idling_resource.EspressoIdlingResource
+import com.chari.ic.todoapp.utils.idling_resource.awaitUntilIdle
+import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.IOException
+
 
 @LargeTest
 @ExperimentalCoroutinesApi
@@ -68,7 +75,7 @@ class OverFlowMenuItemsTest {
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
         val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
         val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
-        val task4 = ToDoTask(0, "Special", Priority.HIGH, "My homework4")
+        val task4 = ToDoTask(0, "Special", Priority.MEDIUM, "My homework4")
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3, task4) }
     }
 
@@ -78,8 +85,63 @@ class OverFlowMenuItemsTest {
         mainCoroutineRule.runBlockingTest {
             repository.resetRepository()
         }
-        database.clearAllTables()
         database.close()
+    }
+
+    @Test
+    fun test0_tasksFragment_clickOnSearchMenuItem_searchTaskByTitle_checkDisplayedOnlySelectedTasks() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+
+        var searchQuery = "homework"
+        onView(withId(R.id.menu_search))
+            .perform(click())
+        Log.d("Failing test", "menu item clicked, idlingRes is idle: ${EspressoIdlingResource.isIdleNow}")
+        IdlingRegistry.getInstance().register(EspressoIdlingResource)
+
+        onView(withId(R.id.search_src_text))
+            .perform(clearText(), typeText(searchQuery))
+
+        // fails on low resources either with commented code below or not - flaky test
+//        runBlockingTest {
+//                Log.d("FailingTest", "waiting to be idle.....")
+//                EspressoIdlingResource.awaitUntilIdle()
+//                Log.d("FailingTest", "idle status received")
+//        }
+//        Log.d("FailingTest", "after waiting to be idle")
+
+        retryFlakyCode {
+            onView(withId(R.id.recyclerView)).check(matches(hasChildCount(3)))
+        }
+
+
+        onView(withId(R.id.search_src_text))
+            .perform(clearText())
+
+        // fails on low resources either with commented code below or not - flaky test
+//        runBlockingTest {
+//            EspressoIdlingResource.awaitUntilIdle()
+//        }
+
+        retryFlakyCode {
+            onView(withId(R.id.recyclerView)).check(matches(hasChildCount(4)))
+        }
+
+        searchQuery = "homework1"
+
+        onView(withId(R.id.search_src_text))
+            .perform(typeText(searchQuery))
+
+        // fails on low resources either with commented code below or not - flaky test
+//        runBlockingTest {
+//            EspressoIdlingResource.awaitUntilIdle()
+//        }
+
+        retryFlakyCode {
+            onView(withId(R.id.recyclerView)).check(matches(hasChildCount(1)))
+        }
+
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource)
+        activityScenario.close()
     }
 
     @Test
@@ -114,8 +176,8 @@ class OverFlowMenuItemsTest {
         assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
         onView(withId(R.id.recyclerView))
             .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(0))
-            .check(matches((hasDescendant(withChild(withText(newTitle))))))
-            .check(matches((hasDescendant(withChild(withText(newDescription))))))
+            .check(matches(hasDescendant(withChild(withText(newTitle)))))
+            .check(matches(hasDescendant(withChild(withText(newDescription)))))
 
         activityScenario.moveToState(Lifecycle.State.DESTROYED)
         // so that ui is not updated due to tearDown() method call
@@ -180,37 +242,98 @@ class OverFlowMenuItemsTest {
     }
 
     @Test
-    fun test4_tasksFragment_clickOnSearchMenuItem_searchTaskByTitle_checkDisplayedOnlySelectedTasks() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdleResource)
+    fun test4_tasksFragment_sortByHighPriority_checkSortOrder() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
-        var searchQuery = "homework"
-        onView(withId(R.id.menu_search))
-            .check(matches(hasDescendant(withClassName(containsString("androidx.appcompat.widget.SearchView")))))
+        openActionBarOverflowOrOptionsMenu(context)
+
+        onView(withText("Sort By"))
+            .perform(click())
+        onView(withText("High Priority"))
             .perform(click())
 
-        onView(withId(R.id.search_src_text))
-            .perform(clearText(), typeText(searchQuery))
-            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
-
-//        onView(allOf(
-//            withClassName(containsString("androidx.appcompat.widget.SearchView")),
-//            isDescendantOfA(withId(R.id.menu_search)))
-//        )
-//            .perform(clearText(), typeText(searchQuery))
-//            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
-
-        onView(withId(R.id.recyclerView)).check(matches(hasChildCount(3)))
-
-        searchQuery = "homework1"
-        onView(withId(R.id.search_src_text))
-            .perform(clearText(), typeText(searchQuery))
-            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
-
-        Thread.sleep(500)
-        onView(withId(R.id.recyclerView)).check(matches(hasChildCount(1)))
+        onView(withId(R.id.recyclerView))
+            .check(matches(atPosition(0, hasDescendant(withText("Homework3")))))
+            .check(matches(atPosition(3, hasDescendant(withText("Homework1")))))
 
         activityScenario.close()
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdleResource)
+    }
+
+    @Test
+    fun test5_tasksFragment_sortByLowPriority_checkSortOrder() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+
+        openActionBarOverflowOrOptionsMenu(context)
+
+        onView(withText("Sort By"))
+            .perform(click())
+        onView(withText("Low Priority"))
+            .perform(click())
+
+        onView(withId(R.id.recyclerView))
+            .check(matches(atPosition(3, hasDescendant(withText("Homework3")))))
+            .check(matches(atPosition(0, hasDescendant(withText("Homework1")))))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun test6_tasksFragment_sortByHighPriorityAndReset_checkOriginalSortOrder() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+
+        openActionBarOverflowOrOptionsMenu(context)
+        onView(withText("Sort By"))
+            .perform(click())
+        onView(withText("Low Priority"))
+            .perform(click())
+
+        openActionBarOverflowOrOptionsMenu(context)
+        onView(withText("Sort By"))
+            .perform(click())
+        onView(withText("Reset"))
+            .perform(click())
+
+        onView(withId(R.id.recyclerView))
+            .check(matches(atPosition(0, hasDescendant(withText("Special")))))
+            .check(matches(atPosition(1, hasDescendant(withText("Homework3")))))
+            .check(matches(atPosition(2, hasDescendant(withText("Homework2")))))
+            .check(matches(atPosition(3, hasDescendant(withText("Homework1")))))
+
+        activityScenario.close()
+    }
+
+    private fun atPosition(position: Int, itemMatcher: Matcher<View?>): Matcher<View?> {
+        return object : BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
+            override fun describeTo(description: Description) {
+                description.appendText("has item at position $position: ")
+                itemMatcher.describeTo(description)
+            }
+
+            override fun matchesSafely(view: RecyclerView): Boolean {
+                val viewHolder = view.findViewHolderForAdapterPosition(position)
+                    ?: // has no item on such position
+                    return false
+                return itemMatcher.matches(viewHolder.itemView)
+            }
+        }
+    }
+
+    val timeoutMs = 500
+    val intervalMs = 100
+
+    private fun retryFlakyCode(action: () -> ViewInteraction): ViewInteraction {
+        var cachedException: Throwable
+        val startTime = System.currentTimeMillis()
+
+        do {
+            try {
+                return action.invoke()
+            } catch (e: Throwable) {
+                Thread.sleep(intervalMs.toLong())
+                cachedException = e
+            }
+        } while(System.currentTimeMillis() - startTime <= timeoutMs)
+
+        throw cachedException
     }
 }

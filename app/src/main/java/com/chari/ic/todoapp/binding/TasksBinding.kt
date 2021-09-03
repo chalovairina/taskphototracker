@@ -14,29 +14,6 @@ import com.facebook.shimmer.ShimmerFrameLayout
 
 object TasksBinding {
 
-//        @BindingAdapter("setVisibility")
-//        @JvmStatic
-//        fun setEmptyDataViewVisibility(
-//            view: View,
-//            databaseStatus: DatabaseResult<List<ToDoTask>>?
-//        ) {
-//            if (databaseStatus == null) {
-//                return
-//            }
-//            when(view) {
-//                is RecyclerView ->
-//                    view.isVisible = databaseStatus is DatabaseResult.Success
-//                is ImageView ->
-//                    view.isVisible = databaseStatus is DatabaseResult.Empty
-//                is TextView -> {
-//                    view.isVisible = databaseStatus is DatabaseResult.Empty
-//                    databaseStatus.message?.let {
-//                        view.text = it
-//                    }
-//                }
-//            }
-//        }
-
     @BindingAdapter("setData")
     @JvmStatic
     fun setShimmeringFX(

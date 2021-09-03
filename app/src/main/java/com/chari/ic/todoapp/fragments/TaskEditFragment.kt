@@ -1,6 +1,7 @@
 package com.chari.ic.todoapp.fragments
 
 import android.app.Activity
+import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
@@ -38,13 +39,13 @@ open class TaskEditFragment: Fragment() {
     }
 
     protected fun hideKeyboard(view: View) {
-        (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+        (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
             .hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     protected fun showKeyboard(view: View) {
         view.requestFocus()
-        (requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+        (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
             .showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
     }
 
