@@ -22,10 +22,20 @@
     <color name="yellow">#FFC114</color>
     <color name="green">#00C980</color>
 
+    // splash screen
+    <color name="splashScreenTitle">#402D29</color>
+
+    // auth screen
+    <color name="signInBtnGradientStartColor">#0BCCEB</color>
+    <color name="signInBtnGradientEndColor">#0A80F5</color>
+    <color name="signUpStrokeColor">#0C90F1</color>
+
     // Task item cardView
     <color name="strokeColor">@color/lightMediumGray</color>
     <color name="cardBackgroundColor">@color/white</color>
     <color name="cardBackgroundLightColor">#106200EA</color>
+    <color name="titleColor">@color/darker</color>
+    <color name="descriptionColor">@color/darkGray</color>
 
     // status bar
     <color name="statusBarColor">@color/colorPrimaryDark</color>

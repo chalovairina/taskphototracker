@@ -32,6 +32,15 @@
     <string name="undo">UNDO</string>
     <string name="search_task">Search for task</string>
     <string name="reset">Reset</string>
+    <string name="todo_for_today">What\'s your\nTODO\nfor today?</string>
+    <string name="dont_forget_today">Don\'t forget\ntoday</string>
+    <string name="todo">TODO</string>
+    <string name="sign_in_or_sign_up">Sign in or sign up</string>
+    <string name="let_s_get_started">Let\'s Get Started</string>
+    <string name="sign_in_description">Sign In or Sign Up for your daily tasks</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="your_today_planner">Your today planner</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>
