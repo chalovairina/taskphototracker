@@ -7,29 +7,26 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
-import com.chari.ic.todoapp.ToDoViewModelFactory
 import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.FragmentTasksBinding
-import com.chari.ic.todoapp.repository.ToDoRepository
 import com.chari.ic.todoapp.utils.PriorityUtils
 import com.chari.ic.todoapp.utils.idling_resource.EspressoIdlingResource
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class TasksFragment : Fragment(), SearchView.OnQueryTextListener
     , ViewTreeObserver.OnGlobalLayoutListener
 {
-    private val toDoViewModel by viewModels<ToDoViewModel> {
-        ToDoViewModelFactory(
-            ToDoRepository.getRepository()
-        )
-    }
+    private val toDoViewModel: ToDoViewModel by viewModels()
 
     private var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
@@ -76,6 +73,13 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+//        toDoViewModel.userLoggedIn.asLiveData().observe(viewLifecycleOwner) {
+//                userLoggedIn ->
+//            if (!userLoggedIn) {
+//                findNavController().navigate(R.id.loginFragment)
+//            }
+//        }
 
         setupAdapter()
 

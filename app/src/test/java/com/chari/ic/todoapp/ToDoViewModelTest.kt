@@ -1,12 +1,12 @@
 package com.chari.ic.todoapp
 
-import MainCoroutineRule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import data.source.FakeToDoRepository
+import com.chari.ic.todoapp.data.source.StubDataStoreRepository
+import com.chari.ic.todoapp.data.source.FakeToDoRepository
+import com.chari.ic.todoapp.repository.IDataStoreRepository
 import com.chari.ic.todoapp.repository.Repository
-import getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -28,26 +28,28 @@ class ToDoViewModelTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var toDoViewModel: ToDoViewModel
-    private lateinit var repository: Repository
+    private lateinit var fakeRepository: Repository
+    private lateinit var stubDataStoreRepository: IDataStoreRepository
 
     @Before
     fun setUp() {
-        repository = FakeToDoRepository()
+        stubDataStoreRepository = StubDataStoreRepository()
+        fakeRepository = FakeToDoRepository()
 
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
         val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
         val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
         runBlockingTest {
-            (repository as FakeToDoRepository).fillTasksRepo(task1, task2, task3)
+            (fakeRepository as FakeToDoRepository).fillTasksRepo(task1, task2, task3)
         }
-        toDoViewModel = ToDoViewModel(repository, Dispatchers.Main)
+        toDoViewModel = ToDoViewModel(fakeRepository, stubDataStoreRepository, Dispatchers.Main)
     }
 
     @After
     @Throws(IOException::class)
     fun tearDown() {
         mainCoroutineRule.runBlockingTest {
-            repository.resetRepository()
+            fakeRepository.resetRepository()
         }
     }
 

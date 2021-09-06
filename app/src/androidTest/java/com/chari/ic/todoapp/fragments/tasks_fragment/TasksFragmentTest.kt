@@ -1,37 +1,34 @@
 package com.chari.ic.todoapp.fragments.tasks_fragment
 
-import MainCoroutineRule
-import android.content.Context
-import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.*
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.hasChildCount
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.chari.ic.todoapp.R
-import com.chari.ic.todoapp.data.database.ToDoDatabase
+import com.chari.ic.todoapp.*
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import com.chari.ic.todoapp.data.source.FakeToDoRepository
+import com.chari.ic.todoapp.data.source.StubDataStoreRepository
+import com.chari.ic.todoapp.di.RepositoryModule
+import com.chari.ic.todoapp.repository.IDataStoreRepository
 import com.chari.ic.todoapp.repository.Repository
-import com.chari.ic.todoapp.repository.ToDoRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.testing.UninstallModules
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
@@ -44,57 +41,48 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-@ExperimentalCoroutinesApi
+@HiltAndroidTest
+@UninstallModules(RepositoryModule::class)
 @RunWith(AndroidJUnit4::class)
+@ExperimentalCoroutinesApi
 class TasksFragmentTest {
+    @get: Rule(order = 0)
+    var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
+    @get:Rule(order = 1)
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
+    @get:Rule(order = 2)
     var mainCoroutineRule = MainCoroutineRule()
 
-    private lateinit var context: Context
-    private lateinit var repository: Repository
-    private lateinit var database: ToDoDatabase
-//    private lateinit var fragmentScenario: FragmentScenario<TasksFragment>
+    @Inject
+    lateinit var fakeRepository: FakeToDoRepository
 
     @Before
     fun setUp() {
-        context = ApplicationProvider.getApplicationContext()
-        database = Room.inMemoryDatabaseBuilder(
-            context,
-            ToDoDatabase::class.java
-        )
-            .allowMainThreadQueries()
-            .build()
-        ToDoRepository.initialize(database.getToDoDao())
-        repository = ToDoRepository.getRepository()
-        // doesn't work when setup in Before method - why?
-//        fragmentScenario = launchFragmentInContainer(Bundle(), R.style.Theme_TODOApp)
-//        fragmentScenario.moveToState(Lifecycle.State.RESUMED)
+        hiltRule.inject()
     }
 
     @After
     @Throws(IOException::class)
     fun tearDown() {
-//        fragmentScenario.moveToState(Lifecycle.State.DESTROYED)
         mainCoroutineRule.runBlockingTest {
-            repository.resetRepository()
+            fakeRepository.resetRepository()
         }
-        database.close()
     }
 
     // View Visibility Tests
 
     @Test
     fun dataAvailable_recyclerViewDisplayed_noDataViewsNotDisplayed() {
-        Log.d("TasksFragmentTest", "repository = $repository")
+        Log.d("TasksFragmentTest", "repository = $fakeRepository")
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
 
-        mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1) }
-        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
+        mainCoroutineRule.runBlockingTest { fakeRepository.fillTasksRepo(task1) }
+        val scenario = launchFragmentInHiltContainer<TasksFragment>()
 
         onView(withId(R.id.recyclerView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
@@ -103,12 +91,12 @@ class TasksFragmentTest {
         onView(withId(R.id.no_data_imageView))
             .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
 
-        scenario.moveToState(Lifecycle.State.DESTROYED)
+        scenario.close()
     }
 
     @Test
     fun noDataAvailable_recyclerViewNotDisplayed_noDataViewsDisplayed() {
-        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
+        val scenario = launchFragmentInHiltContainer<TasksFragment>()
 
         onView(withId(R.id.recyclerView))
             .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
@@ -117,16 +105,16 @@ class TasksFragmentTest {
         onView(withId(R.id.no_data_imageView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        scenario.moveToState(Lifecycle.State.DESTROYED)
+        scenario.close()
     }
 
     // DRAG AND SWIPE TO DELETE TESTS
     @Test
     fun swipeToDelete_recyclerViewNotDisplayed_noDataViewsDisplayed() {
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
-        mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1) }
+        mainCoroutineRule.runBlockingTest { fakeRepository.fillTasksRepo(task1) }
 
-        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
+        val scenario = launchFragmentInHiltContainer<TasksFragment>()
 
         onView(withId(R.id.recyclerView)).perform(
             RecyclerViewActions.actionOnItemAtPosition<ToDoTaskAdapter.ToDoViewHolder>(
@@ -144,7 +132,7 @@ class TasksFragmentTest {
         onView(withId(R.id.no_data_imageView))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        scenario.moveToState(Lifecycle.State.DESTROYED)
+        scenario.close()
     }
 
     @Test
@@ -152,9 +140,9 @@ class TasksFragmentTest {
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
         val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
         val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
-        mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3) }
+        mainCoroutineRule.runBlockingTest { fakeRepository.fillTasksRepo(task1, task2, task3) }
 
-        val scenario = launchFragmentInContainer<TasksFragment>(Bundle(), R.style.Theme_TODOApp)
+        val scenario = launchFragmentInHiltContainer<TasksFragment>()
 
         onView(withId(R.id.recyclerView)).perform(
             DragAndDropAction(0, 2)
@@ -182,7 +170,7 @@ class TasksFragmentTest {
                 )
             )
 
-        scenario.moveToState(Lifecycle.State.DESTROYED)
+        scenario.close()
     }
 
     class DragAndDropAction(private val sourceViewPosition: Int,
@@ -258,5 +246,17 @@ class TasksFragmentTest {
 
             return coord
         }
+    }
+    //@TestInstallIn(components = [SingletonComponent::class], replaces = [RepositoryModule::class])
+    @Module
+    @InstallIn(SingletonComponent::class)
+    abstract class RepositoryTestModule {
+        @Singleton
+        @Binds
+        abstract fun bindToDoRepository(repository: FakeToDoRepository): Repository
+
+        @Singleton
+        @Binds
+        abstract fun bindDataStoreRepository(dataStoreRepository: StubDataStoreRepository): IDataStoreRepository
     }
 }

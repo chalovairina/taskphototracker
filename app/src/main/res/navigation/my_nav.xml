@@ -54,4 +54,8 @@
             android:name="currentTask"
             app:argType="com.chari.ic.todoapp.data.database.entities.ToDoTask" />
     </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.chari.ic.todoapp.fragments.login_fragment.IntroFragment"
+        android:label="LoginFragment" />
 </navigation>

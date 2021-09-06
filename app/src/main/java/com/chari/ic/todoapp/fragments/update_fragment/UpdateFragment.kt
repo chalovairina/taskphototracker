@@ -1,22 +1,20 @@
 package com.chari.ic.todoapp.fragments.update_fragment
 
-import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
-import com.chari.ic.todoapp.ToDoViewModelFactory
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.FragmentUpdateBinding
 import com.chari.ic.todoapp.fragments.TaskEditFragment
-import com.chari.ic.todoapp.repository.ToDoRepository
 import com.chari.ic.todoapp.utils.PriorityUtils
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class UpdateFragment : TaskEditFragment() {
     private val args by navArgs<UpdateFragmentArgs>()
 
@@ -25,11 +23,7 @@ class UpdateFragment : TaskEditFragment() {
 
     private lateinit var currentTask: ToDoTask
 
-    private val toDoViewModel by viewModels<ToDoViewModel> {
-            ToDoViewModelFactory(
-                ToDoRepository.getRepository()
-            )
-    }
+    private val toDoViewModel: ToDoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

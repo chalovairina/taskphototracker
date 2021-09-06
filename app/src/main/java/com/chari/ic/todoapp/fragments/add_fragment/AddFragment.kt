@@ -9,22 +9,18 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
-import com.chari.ic.todoapp.ToDoViewModelFactory
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.TaskEditFragment
-import com.chari.ic.todoapp.repository.ToDoRepository
 import com.chari.ic.todoapp.utils.PriorityUtils.getPriorityByName
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddFragment: TaskEditFragment() {
     private lateinit var titleEt: EditText
     private lateinit var descriptionEt: EditText
     private lateinit var prioritySpinner: Spinner
 
-    private val toDoViewModel by viewModels<ToDoViewModel> {
-        ToDoViewModelFactory(
-            ToDoRepository.getRepository()
-        )
-    }
+    private val toDoViewModel: ToDoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

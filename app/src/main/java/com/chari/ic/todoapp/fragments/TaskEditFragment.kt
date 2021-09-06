@@ -12,7 +12,9 @@ import androidx.fragment.app.Fragment
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.utils.PriorityUtils
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 open class TaskEditFragment: Fragment() {
 
     val listener: AdapterView.OnItemSelectedListener = object: AdapterView.OnItemSelectedListener {

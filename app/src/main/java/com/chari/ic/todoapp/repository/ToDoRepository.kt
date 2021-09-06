@@ -1,21 +1,17 @@
 package com.chari.ic.todoapp.repository
 
-import android.content.Context
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
-import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.dao.ToDoDao
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import java.lang.IllegalArgumentException
-import java.lang.UnsupportedOperationException
+import dagger.hilt.android.scopes.ActivityRetainedScoped
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ToDoRepository private constructor(
+@Singleton
+class ToDoRepository @Inject constructor(
     private val toDoDao: ToDoDao
 ) : Repository {
-    @VisibleForTesting
-    val mutex = Mutex()
 
     override val cachedTasks: LiveData<List<ToDoTask>> = toDoDao.getAllTasks()
 
@@ -37,23 +33,6 @@ class ToDoRepository private constructor(
 
     override fun searchDatabase(searchQuery: String) = toDoDao.searchDatabase(searchQuery)
 
-    companion object {
-        @Volatile
-        private var INSTANCE: ToDoRepository? = null
-
-        fun initialize(toDoDao: ToDoDao) {
-            synchronized(this) {
-                val instance = ToDoRepository(toDoDao)
-                INSTANCE = instance
-            }
-        }
-
-        fun getRepository(): ToDoRepository {
-            return INSTANCE ?:
-            throw UnsupportedOperationException("Repository must be initialized first")
-        }
-    }
-
     @VisibleForTesting
     override suspend fun fillTasksRepo(vararg tasks: ToDoTask) {
         for (task in tasks) {
@@ -64,16 +43,6 @@ class ToDoRepository private constructor(
 
     @VisibleForTesting
     override suspend fun resetRepository() =
-        mutex.withLock  {
             // Clear all data to avoid test pollution.
-//            deleteAll()
-            INSTANCE = null
-        }
-//        synchronized(this) {
-//            runBlocking {
-//                deleteAll()
-//                INSTANCE = null
-//            }
-//
-//        }
+            deleteAll()
 }

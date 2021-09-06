@@ -12,10 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TODOApp">
 
-        <activity android:name=".AuthActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/NoActionBarStyle">
-        </activity>
         <activity android:name=".MainActivity"
             android:theme="@style/SplashScreenStyle">
             <intent-filter>

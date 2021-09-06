@@ -1,17 +1,18 @@
 package com.chari.ic.todoapp
 
-import MainCoroutineRule
-import android.content.Context
+import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
+import com.chari.ic.todoapp.data.source.StubDataStoreRepository
+import com.chari.ic.todoapp.repository.IDataStoreRepository
+import com.chari.ic.todoapp.repository.Repository
 import com.chari.ic.todoapp.repository.ToDoRepository
 import com.google.common.truth.Truth.assertThat
-import getOrAwaitValue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -21,39 +22,44 @@ import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Named
 
-@ExperimentalCoroutinesApi
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
+@ExperimentalCoroutinesApi
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ToDoViewModelAndroidTest {
-    @get:Rule
+
+    @get:Rule(order = 0)
+    var hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
+    @get:Rule(order = 2)
     var mainCoroutineRule = MainCoroutineRule()
 
-    private lateinit var context: Context
+    @Inject
+    @Named("test_db")
+    lateinit var database: ToDoDatabase
+    private lateinit var stubDataStoreRepository: IDataStoreRepository
+    private lateinit var repository: Repository
     private lateinit var toDoViewModel: ToDoViewModel
-    private lateinit var repository: ToDoRepository
-    private lateinit var database: ToDoDatabase
-
 
     @Before
     fun setUp() {
-        context = ApplicationProvider.getApplicationContext()
-        database = Room.inMemoryDatabaseBuilder(
-            context,
-            ToDoDatabase::class.java
-        )
-            .allowMainThreadQueries()
-            .build()
-        ToDoRepository.initialize(database.getToDoDao())
-        repository = ToDoRepository.getRepository()
+        hiltRule.inject()
+        stubDataStoreRepository = StubDataStoreRepository()
+        repository = ToDoRepository(database.getToDoDao())
+        Log.d("ViewModelTest", "in Before fixture")
+
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
         val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
         val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3) }
-        toDoViewModel = ToDoViewModel(repository, Dispatchers.Main)
+
+        toDoViewModel = ToDoViewModel(repository, stubDataStoreRepository, Dispatchers.Main)
     }
 
     @After

@@ -1,32 +1,30 @@
-package data.source
+package com.chari.ic.todoapp.data.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.repository.Repository
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class FakeToDoRepository: Repository {
+@Singleton
+class FakeToDoRepository @Inject constructor(): Repository {
 
     companion object {
         private var counter = 0
     }
 
-    override suspend fun fillTasksRepo(vararg tasks: ToDoTask) {
-        for (task in tasks) {
-            task.id = ++counter
-            tasksData[counter] = task
-        }
-
-        refreshTasks()
-
-    }
-
     private val tasksData = hashMapOf<Int, ToDoTask>()
-    private val _cachedTasks = MutableLiveData<List<ToDoTask>>()
+    private val _cachedTasks = MutableLiveData<List<ToDoTask>>(emptyList())
     override val cachedTasks: LiveData<List<ToDoTask>> = _cachedTasks
 
-    private val _searchTasks = MutableLiveData<List<ToDoTask>>()
+    private val _searchTasks = MutableLiveData<List<ToDoTask>>(emptyList())
     val searchTasks: LiveData<List<ToDoTask>> = _searchTasks
+
+    init {
+        runBlocking { refreshTasks() }
+    }
 
     private suspend fun refreshTasks() {
         _cachedTasks.value = tasksData.values.toList()
@@ -66,6 +64,14 @@ class FakeToDoRepository: Repository {
         _searchTasks.value = resultList
 
         return searchTasks
+    }
+
+    override suspend fun fillTasksRepo(vararg tasks: ToDoTask) {
+        for (task in tasks) {
+            task.id = ++counter
+            tasksData[counter] = task
+        }
+        refreshTasks()
     }
 
     override suspend fun resetRepository() {

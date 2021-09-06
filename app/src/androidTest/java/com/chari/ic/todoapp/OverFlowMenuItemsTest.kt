@@ -1,82 +1,73 @@
 package com.chari.ic.todoapp
 
-import MainCoroutineRule
 import android.content.Context
-import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.testing.TestNavHostController
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.platform.app.InstrumentationRegistry
-import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter
 import com.chari.ic.todoapp.repository.ToDoRepository
 import com.chari.ic.todoapp.utils.PriorityUtils
 import com.chari.ic.todoapp.utils.idling_resource.EspressoIdlingResource
-import com.chari.ic.todoapp.utils.idling_resource.awaitUntilIdle
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.IOException
+import javax.inject.Inject
 
-
+@HiltAndroidTest
 @LargeTest
 @ExperimentalCoroutinesApi
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@RunWith(AndroidJUnit4ClassRunner::class)
+@RunWith(AndroidJUnit4::class)
 class OverFlowMenuItemsTest {
+    @get: Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
-    private lateinit var context: Context
-    private lateinit var repository: ToDoRepository
-    private lateinit var database: ToDoDatabase
+    @Inject
+    lateinit var repository: ToDoRepository
+    @ApplicationContext private lateinit var context: Context
 
 
     @Before
     fun setUp() {
+        hiltRule.inject()
         context = ApplicationProvider.getApplicationContext()
-        database = Room.inMemoryDatabaseBuilder(
-            context,
-            ToDoDatabase::class.java
-        )
-            .allowMainThreadQueries()
-            .build()
-        ToDoRepository.initialize(database.getToDoDao())
-        repository = ToDoRepository.getRepository()
+
         val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
         val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
         val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
         val task4 = ToDoTask(0, "Special", Priority.MEDIUM, "My homework4")
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3, task4) }
+//        toDoViewModel = ToDoViewModel(repository, dataStoreRepository, Dispatchers.Main)
     }
 
     @After
@@ -85,7 +76,6 @@ class OverFlowMenuItemsTest {
         mainCoroutineRule.runBlockingTest {
             repository.resetRepository()
         }
-        database.close()
     }
 
     @Test
@@ -95,7 +85,7 @@ class OverFlowMenuItemsTest {
         var searchQuery = "homework"
         onView(withId(R.id.menu_search))
             .perform(click())
-        Log.d("Failing test", "menu item clicked, idlingRes is idle: ${EspressoIdlingResource.isIdleNow}")
+
         IdlingRegistry.getInstance().register(EspressoIdlingResource)
 
         onView(withId(R.id.search_src_text))
@@ -146,12 +136,11 @@ class OverFlowMenuItemsTest {
 
     @Test
     fun test1_updateFragment_clickOnSaveMenuItem_taskUpdatedAtTasksFragment_checkIfDisplayed() {
-        val navController = TestNavHostController(context)
+//        val navController = TestNavHostController(context)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         activityScenario.moveToState(Lifecycle.State.RESUMED)
         activityScenario.onActivity {
-                activity ->
-            navController.setGraph(R.navigation.my_nav)
+//            navController.setGraph(R.navigation.my_nav)
         }
 
         onView(withId(R.id.recyclerView))
@@ -173,7 +162,7 @@ class OverFlowMenuItemsTest {
 
         onView(withId(R.id.menu_save)).perform(click())
 
-        assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
+//        assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
         onView(withId(R.id.recyclerView))
             .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(0))
             .check(matches(hasDescendant(withChild(withText(newTitle)))))
@@ -186,11 +175,10 @@ class OverFlowMenuItemsTest {
 
     @Test
     fun test2_addFragment_clickOnAddMenuItem_taskAddedToTasksFragment_checkIfDisplayed() {
-        val navController = TestNavHostController(context)
+//        val navController = TestNavHostController(context)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         activityScenario.onActivity {
-                activity ->
-            navController.setGraph(R.navigation.my_nav)
+//            navController.setGraph(R.navigation.my_nav)
         }
 
         onView(withId(R.id.add_button)).perform(click())
@@ -206,7 +194,7 @@ class OverFlowMenuItemsTest {
 
         onView(withId(R.id.menu_add)).perform(click())
 
-        assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
+//        assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
 
         onView(withId(R.id.recyclerView)).check(matches(hasChildCount(5)))
             .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(5))
@@ -219,11 +207,10 @@ class OverFlowMenuItemsTest {
 
     @Test
     fun test3_tasksFragment_clickOnDeleteAllMenuItem_taskDeletedFromTasksFragment_checkIfDisplayed() {
-        val navController = TestNavHostController(context)
+//        val navController = TestNavHostController(context)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         activityScenario.onActivity {
-                activity ->
-            navController.setGraph(R.navigation.my_nav)
+//            navController.setGraph(R.navigation.my_nav)
         }
 
         openActionBarOverflowOrOptionsMenu(context)
@@ -233,7 +220,7 @@ class OverFlowMenuItemsTest {
             .check(matches(isDisplayed()))
             .perform(click())
 
-        assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
+//        assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
         onView(withId(R.id.recyclerView)).check(matches(CoreMatchers.not(isDisplayed())))
         onView(withId(R.id.no_data_textView)).check(matches(isDisplayed()))
         onView(withId(R.id.no_data_imageView)).check(matches(isDisplayed()))
@@ -282,6 +269,7 @@ class OverFlowMenuItemsTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
 
         openActionBarOverflowOrOptionsMenu(context)
+
         onView(withText("Sort By"))
             .perform(click())
         onView(withText("Low Priority"))
@@ -316,24 +304,5 @@ class OverFlowMenuItemsTest {
                 return itemMatcher.matches(viewHolder.itemView)
             }
         }
-    }
-
-    val timeoutMs = 500
-    val intervalMs = 100
-
-    private fun retryFlakyCode(action: () -> ViewInteraction): ViewInteraction {
-        var cachedException: Throwable
-        val startTime = System.currentTimeMillis()
-
-        do {
-            try {
-                return action.invoke()
-            } catch (e: Throwable) {
-                Thread.sleep(intervalMs.toLong())
-                cachedException = e
-            }
-        } while(System.currentTimeMillis() - startTime <= timeoutMs)
-
-        throw cachedException
     }
 }

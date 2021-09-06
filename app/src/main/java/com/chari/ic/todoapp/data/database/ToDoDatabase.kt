@@ -18,27 +18,4 @@ import com.chari.ic.todoapp.utils.Constants.DATABASE_NAME
 )
 abstract class ToDoDatabase: RoomDatabase() {
     abstract fun getToDoDao(): ToDoDao
-
-    companion object {
-
-        private var INSTANCE: ToDoDatabase?  = null
-
-        fun getDatabase(context: Context): ToDoDatabase {
-            return INSTANCE ?: createDatabase(context)
-//            synchronized(this) {
-
-//            }
-        }
-
-        private fun createDatabase(context: Context): ToDoDatabase {
-            val instance = Room.databaseBuilder(
-                context.applicationContext,
-                ToDoDatabase::class.java,
-                DATABASE_NAME
-            ).build()
-            INSTANCE = instance
-
-             return instance
-        }
-    }
 }

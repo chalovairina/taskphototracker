@@ -4,6 +4,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.room.OnConflictStrategy
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 
 interface Repository {
     val cachedTasks: LiveData<List<ToDoTask>>
