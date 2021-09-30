@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="24dp"
+        android:background="@color/backgroundColor"
         tools:context=".fragments.add_fragment.AddFragment">
 
         <EditText

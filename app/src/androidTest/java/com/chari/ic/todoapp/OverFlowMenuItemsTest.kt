@@ -99,7 +99,7 @@ class OverFlowMenuItemsTest {
 //        }
 //        Log.d("FailingTest", "after waiting to be idle")
 
-        retryFlakyCode {
+        retryFlakyCodeForViewInteraction {
             onView(withId(R.id.recyclerView)).check(matches(hasChildCount(3)))
         }
 
@@ -112,7 +112,7 @@ class OverFlowMenuItemsTest {
 //            EspressoIdlingResource.awaitUntilIdle()
 //        }
 
-        retryFlakyCode {
+        retryFlakyCodeForViewInteraction {
             onView(withId(R.id.recyclerView)).check(matches(hasChildCount(4)))
         }
 
@@ -126,7 +126,7 @@ class OverFlowMenuItemsTest {
 //            EspressoIdlingResource.awaitUntilIdle()
 //        }
 
-        retryFlakyCode {
+        retryFlakyCodeForViewInteraction {
             onView(withId(R.id.recyclerView)).check(matches(hasChildCount(1)))
         }
 

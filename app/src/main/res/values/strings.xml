@@ -41,6 +41,22 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
     <string name="your_today_planner">Your today planner</string>
+    <string name="no_data_available">No data available</string>
+    <string name="add_new_task">Add new task</string>
+    <string name="intro">Intro</string>
+    <string name="sign_up_description_text">Enter your name, email id and password to register with us</string>
+    <string name="user_name">User Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in_description_text">Enter your email id and password to login</string>
+    <string name="press_again_to_exit">Press again to exit</string>
+    <string name="fill_in_username">Please fill in username</string>
+    <string name="fill_in_email">Please fill in email</string>
+    <string name="fill_in_password">Please fill in password</string>
+    <string name="successfully_registered">Successfully registered</string>
+    <string name="ok">OK</string>
+    <string name="todo_tasks">TODO tasks</string>
+    <string name="enter_account">Enter account</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>

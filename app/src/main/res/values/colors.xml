@@ -25,10 +25,11 @@
     // splash screen
     <color name="splashScreenTitle">#402D29</color>
 
-    // auth screen
+    // intro screen
     <color name="signInBtnGradientStartColor">#0BCCEB</color>
     <color name="signInBtnGradientEndColor">#0A80F5</color>
     <color name="signUpStrokeColor">#0C90F1</color>
+    <color name="snackBarErrorColor">#F72400</color>
 
     // Task item cardView
     <color name="strokeColor">@color/lightMediumGray</color>
@@ -45,4 +46,6 @@
 
     <color name="backgroundColor">@color/lightGray</color>
     <color name="placeholderColor">@color/mediumGray</color>
+    <color name="primary_text_color">#363A43</color>
+    <color name="secondary_text_color">#7A8089</color>
 </resources>

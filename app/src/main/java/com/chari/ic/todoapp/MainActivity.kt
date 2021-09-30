@@ -1,18 +1,27 @@
 package com.chari.ic.todoapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity: AppCompatActivity() {
+    private lateinit var toolbar: Toolbar
+
+    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
+    private lateinit var mStorageRef: StorageReference
 
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -22,23 +31,32 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_TODOApp)
         setContentView(R.layout.activity_main)
 
-        actionBar?.setDisplayHomeAsUpEnabled(false)
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        mStorageRef = FirebaseStorage.getInstance().reference
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
         navController = navHostFragment.navController
 
+                // tell the activity that these fragments can be 'start' destination meaning to exit on up button pressed
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.tasksFragment, R.id.addFragment, R.id.updateFragment)
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
+            setOf(
+            R.id.tasksFragment,
+            R.id.introFragment,
+        ))
+
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+
+//        setupActionBarWithNavController(navController, appBarConfiguration)
 
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-//        if (navController.previousBackStackEntry == null) {
-//            Log.d("In activity", "when in activity previousBackStackEntry = ${navController.previousBackStackEntry}")
-//            actionBar?.setHomeButtonEnabled(false)
-//        }
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
+//    override fun onSupportNavigateUp(): Boolean {
+//        val navController = findNavController(R.id.nav_host_fragment_container)
+//
+//        return navController.navigateUp(appBarConfiguration)
+//                || super.onSupportNavigateUp()
+//    }
 }

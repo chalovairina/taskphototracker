@@ -166,7 +166,7 @@ class ToDoTaskAdapter(
 
     private fun showSnackBar(message: String) {
         Snackbar.make(currentTaskView, message, Snackbar.LENGTH_SHORT)
-            .setAction("OK"){}
+            .setAction(activity.getString(R.string.ok)){}
             .show()
     }
 

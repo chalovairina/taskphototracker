@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/tasks_list_layout"
+        android:background="@color/backgroundColor"
         tools:context=".fragments.tasks_fragment.TasksFragment">
 
         <com.facebook.shimmer.ShimmerFrameLayout
@@ -65,7 +66,8 @@
             android:tint="@color/white"
             android:src="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:contentDescription="@string/add_new_task"/>
 
         <ImageView
             android:id="@+id/no_data_imageView"
@@ -77,7 +79,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.35" />
+            app:layout_constraintVertical_bias="0.35"
+            android:contentDescription="@string/no_data_available"/>
 
         <TextView
             android:id="@+id/no_data_textView"

@@ -1,7 +1,7 @@
 <vector android:alpha="0.84" android:height="563dp"
     android:viewportHeight="563" android:viewportWidth="396.5"
     android:width="396.5dp" xmlns:aapt="http://schemas.android.com/aapt" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillType="evenOdd" android:pathData="M395.1,1.4v560.2H1.4V1.4H395.1z">
+    <path android:pathData="M395.1,1.4v560.2H1.4V1.4H395.1z">
         <aapt:attr name="android:fillColor">
             <gradient android:endX="198.24088" android:endY="467.87854"
                 android:startX="198.24088" android:startY="59.84178" android:type="linear">

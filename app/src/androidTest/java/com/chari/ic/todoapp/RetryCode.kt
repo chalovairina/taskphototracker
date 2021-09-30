@@ -5,7 +5,7 @@ import androidx.test.espresso.ViewInteraction
 private val timeoutMs = 3000
 private val intervalMs = 100
 
-fun retryFlakyCode(action: () -> ViewInteraction): ViewInteraction {
+fun retryFlakyCodeForViewInteraction(action: () -> ViewInteraction): ViewInteraction {
     var cachedException: Throwable
     val startTime = System.currentTimeMillis()
 
