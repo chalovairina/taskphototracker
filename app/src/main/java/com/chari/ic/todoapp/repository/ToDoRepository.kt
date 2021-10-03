@@ -40,7 +40,6 @@ class ToDoRepository @Inject constructor(
         }
     }
 
-
     @VisibleForTesting
     override suspend fun resetRepository() =
             // Clear all data to avoid test pollution.

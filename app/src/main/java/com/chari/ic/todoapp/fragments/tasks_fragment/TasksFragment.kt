@@ -1,6 +1,7 @@
 package com.chari.ic.todoapp.fragments.tasks_fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -8,6 +9,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -73,13 +75,18 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        toDoViewModel.writeUserLoggedIn(false)
 
-//        toDoViewModel.userLoggedIn.asLiveData().observe(viewLifecycleOwner) {
-//                userLoggedIn ->
-//            if (!userLoggedIn) {
-//                findNavController().navigate(R.id.loginFragment)
-//            }
-//        }
+        toDoViewModel.userLoggedIn.asLiveData().observe(viewLifecycleOwner) {
+                userLoggedIn ->
+            if (!userLoggedIn) {
+                val navOptions = NavOptions.Builder()
+                    .setPopUpTo(R.id.tasksFragment, true)
+                    .build()
+
+                findNavController().navigate(R.id.introFragment, null, navOptions)
+            }
+        }
 
         setupAdapter()
 

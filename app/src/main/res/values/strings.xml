@@ -53,10 +53,15 @@
     <string name="fill_in_username">Please fill in username</string>
     <string name="fill_in_email">Please fill in email</string>
     <string name="fill_in_password">Please fill in password</string>
-    <string name="successfully_registered">Successfully registered</string>
+    <string name="successfully_registered">%s successfully registered</string>
     <string name="ok">OK</string>
     <string name="todo_tasks">TODO tasks</string>
     <string name="enter_account">Enter account</string>
+    <string name="email_from_incorrect">Email form incorrect</string>
+    <string name="please_wait">Please wait</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="registration_failed">Registration failed</string>
+    <string name="successfully_logged_in">You successfully logged in!</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>

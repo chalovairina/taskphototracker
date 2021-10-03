@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ma_nav"
+    android:id="@+id/my_nav"
     app:startDestination="@id/tasksFragment">
 
     <fragment
@@ -55,7 +55,24 @@
             app:argType="com.chari.ic.todoapp.data.database.entities.ToDoTask" />
     </fragment>
     <fragment
-        android:id="@+id/loginFragment"
+        android:id="@+id/introFragment"
         android:name="com.chari.ic.todoapp.fragments.login_fragment.IntroFragment"
-        android:label="LoginFragment" />
+        android:label="@string/intro" >
+        <action
+            android:id="@+id/action_introFragment_to_loginFragment"
+            app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_introFragment_to_registerFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.chari.ic.todoapp.fragments.login_fragment.RegisterFragment"
+        android:label="@string/sign_up"
+        tools:layout="@layout/fragment_sign_up" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.chari.ic.todoapp.fragments.login_fragment.LoginFragment"
+        android:label="@string/sign_in"
+        tools:layout="@layout/fragment_sign_in" />
 </navigation>

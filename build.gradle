@@ -3,15 +3,16 @@ buildscript {
     ext.kotlin_version = "1.5.30"
     ext.navigationVersion = '2.4.0-alpha02'
     ext.dagger_hilt_version = "2.38.1"
+    ext.gms_google_services_version = "4.3.10"
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha10'
+        classpath 'com.android.tools.build:gradle:7.0.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         // for firebase
-        classpath 'com.google.gms:google-services:4.3.10'
+        classpath "com.google.gms:google-services:$gms_google_services_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$dagger_hilt_version"
 

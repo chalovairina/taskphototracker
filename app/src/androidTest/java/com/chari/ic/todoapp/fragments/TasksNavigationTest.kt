@@ -103,7 +103,7 @@ class TasksNavigationTest {
         onView(withId(R.id.recyclerView))
                 .perform(actionOnItemAtPosition<ToDoTaskAdapter.ToDoViewHolder>(0, click()))
 
-        // fails - shows previous destination (tasksFragment) id -?
+        // fails - shows previous destination (tasksFragment) id but checks views from the correct destination -?
 //        assertThat(navController.currentDestination?.id, equalTo(R.id.updateFragment))
 
         onView(withId(R.id.current_title_editText)).check(

@@ -1,6 +1,5 @@
 package com.chari.ic.todoapp
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
