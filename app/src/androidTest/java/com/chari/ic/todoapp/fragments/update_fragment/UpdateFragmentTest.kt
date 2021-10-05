@@ -13,7 +13,7 @@ import com.chari.ic.todoapp.data.source.FakeToDoRepository
 import com.chari.ic.todoapp.data.source.StubDataStoreRepository
 import com.chari.ic.todoapp.di.RepositoryModule
 import com.chari.ic.todoapp.launchFragmentInHiltContainer
-import com.chari.ic.todoapp.repository.IDataStoreRepository
+import com.chari.ic.todoapp.repository.datastore.IDataStoreRepository
 import com.chari.ic.todoapp.repository.Repository
 import dagger.Binds
 import dagger.Module

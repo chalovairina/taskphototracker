@@ -1,6 +1,6 @@
 package com.chari.ic.todoapp.data.source
 
-import com.chari.ic.todoapp.repository.IDataStoreRepository
+import com.chari.ic.todoapp.repository.datastore.IDataStoreRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

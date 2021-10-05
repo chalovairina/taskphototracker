@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
@@ -60,7 +59,6 @@ class LoginFragment: AuthFragment() {
         Log.d("SignIn Fragment", "CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
 
         savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(LOGIN_SUCCESSFUL, false)
 
         loginBtn.setOnClickListener {
             loginUser()
@@ -78,10 +76,12 @@ class LoginFragment: AuthFragment() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     hideLoadingDialog()
-                    usersFirestore.loginUser()
+                    usersFirestore.loadUser()
                         .addOnSuccessListener {
                             val loggedInUser = it.toObject(User::class.java)
                             if (loggedInUser != null) {
+                                toDoViewModel.writeCurrentUserData(loggedInUser.id, loggedInUser.name, loggedInUser.mobile,
+                                    loggedInUser.image, loggedInUser.email, loggedInUser.fcmToken)
                                 finishSuccessfulLogin()
                             } else {
                                 finishFailedLogin()
@@ -93,26 +93,22 @@ class LoginFragment: AuthFragment() {
                 }
                 .addOnFailureListener {
                     hideLoadingDialog()
-                    finishFailedLogin()
+                    showToastLong(it.message.toString())
                 }
         }
     }
 
     private fun finishSuccessfulLogin() {
+        savedStateHandle.set(CURRENT_USER_ID, usersFirestore.getCurrentUserId())
         toDoViewModel.writeUserLoggedIn(true)
 
-        Toast.makeText(requireContext(),
-            getString(R.string.successfully_logged_in),
-            Toast.LENGTH_LONG).show()
+        showToastLong(getString(R.string.successfully_logged_in))
 
-        savedStateHandle.set(CURRENT_USER_ID, usersFirestore.getCurrentUserId())
         findNavController().popBackStack(R.id.introFragment, false)
     }
 
     private fun finishFailedLogin() {
-        Toast.makeText(requireContext(),
-            getString(R.string.authentication_failed),
-            Toast.LENGTH_SHORT).show()
+        showToastShort(getString(R.string.authentication_failed))
 
         findNavController().popBackStack(R.id.introFragment, false)
     }

@@ -3,7 +3,7 @@ package com.chari.ic.todoapp
 import androidx.lifecycle.*
 import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import com.chari.ic.todoapp.repository.IDataStoreRepository
+import com.chari.ic.todoapp.repository.datastore.IDataStoreRepository
 import com.chari.ic.todoapp.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,6 +17,39 @@ class ToDoViewModel @Inject constructor(
     private val dataStoreRepository: IDataStoreRepository,
     @Named("IoDispatcher") private val dispatchers: CoroutineDispatcher
 ): ViewModel() {
+//    var currentUser: User? = null
+    //
+//    val currentUser: MutableLiveData<User?> = MutableLiveData()
+    val currentUser = dataStoreRepository.readCurrentUserData()
+    fun writeCurrentUserData(userId: String, userName: String, userMobile: Long,
+                             userImageUrl: String, userEmail: String, fcmToken: String) {
+        viewModelScope.launch(dispatchers) {
+            dataStoreRepository.writeCurrentUserData(userId, userName, userMobile,
+                userImageUrl, userEmail, fcmToken)
+        }
+    }
+    fun writeCurrentUserName(userName: String) {
+        viewModelScope.launch(dispatchers) {
+            dataStoreRepository.writeCurrentUserName( userName)
+        }
+    }
+    fun writeCurrentUserMobile(userMobile: Long) {
+        viewModelScope.launch(dispatchers) {
+            dataStoreRepository.writeCurrentUserMobile( userMobile)
+        }
+    }
+    fun writeCurrentUserImageUrl(userImageUrl: String) {
+        viewModelScope.launch(dispatchers) {
+            dataStoreRepository.writeCurrentUserImageUrl( userImageUrl)
+        }
+    }
+    fun writeCurrentUserFcmToken(fcmToken: String) {
+        viewModelScope.launch(dispatchers) {
+            dataStoreRepository.writeCurrentUserFcmToken( fcmToken)
+        }
+    }
+
+    // loggedIn parameter to check if authentication required
     val userLoggedIn = dataStoreRepository.readUserLoggedIn()
 
     fun writeUserLoggedIn(userLoggedIn: Boolean) {

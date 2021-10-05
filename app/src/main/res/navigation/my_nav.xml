@@ -75,4 +75,10 @@
         android:name="com.chari.ic.todoapp.fragments.login_fragment.LoginFragment"
         android:label="@string/sign_in"
         tools:layout="@layout/fragment_sign_in" />
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.chari.ic.todoapp.fragments.user_profile.UserProfileFragment"
+        android:label="UserProfileFragment" />
+    <action android:id="@+id/action_global_userProfileFragment"
+        app:destination="@id/userProfileFragment"/>
 </navigation>

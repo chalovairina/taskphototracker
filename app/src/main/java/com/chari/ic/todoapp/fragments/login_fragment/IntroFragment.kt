@@ -13,17 +13,11 @@ import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-const val LOGIN_SUCCESSFUL: String = "LOGIN_SUCCESSFUL"
-const val REGISTER_SUCCESSFUL: String = "REGISTER_SUCCESSFUL"
 const val CURRENT_USER_ID: String = "CURRENT_USER_ID"
 @AndroidEntryPoint
 class IntroFragment: Fragment() {
-    private var currentUserId = ""
     private lateinit var signUpBtn: Button
     private lateinit var signInBtn: Button
-    private var backPressedOnce = false
-
-    private val toDoViewModel: ToDoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +58,8 @@ class IntroFragment: Fragment() {
                 if (userId.isNotEmpty()) {
                     Log.d("Intro Fragment", "login success: PreviousBackStackEntry = ${findNavController().previousBackStackEntry}")
                     Log.d("Intro Fragment", "login success: CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
+
+
                     val startDestination = navController.graph.startDestinationId
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(R.id.introFragment, true)

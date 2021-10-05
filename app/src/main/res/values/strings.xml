@@ -62,6 +62,18 @@
     <string name="authentication_failed">Authentication failed</string>
     <string name="registration_failed">Registration failed</string>
     <string name="successfully_logged_in">You successfully logged in!</string>
+    <string name="your_profile_photo">Your profile photo</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="my_profile">My Profile</string>
+    <string name="password_restrictions">Passwords must be at least 8 characters long. The password must contain at least one uppercase character, one digit and one special character (like ~!@)</string>
+    <string name="password_not_strong_enough">Password not strong enough</string>
+    <string name="mobile">Mobile</string>
+    <string name="register_or_login">Please first register or log in</string>
+    <string name="my_account">My Account</string>
+    <string name="read_storage_permission_required">Storage permission required to choose profile image</string>
+    <string name="profile_updated">Profile successfully updated!</string>
+    <string name="failed_update_profile">Failed to update profile</string>
+    <string name="failed_image_upload">Failed to upload new profile image</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>

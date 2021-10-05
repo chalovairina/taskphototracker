@@ -21,10 +21,16 @@ class MyFireStore @Inject constructor()
             .set(userInfo, SetOptions.merge())
     }
 
-    fun loginUser(): Task<DocumentSnapshot> {
+    fun loadUser(): Task<DocumentSnapshot> {
         return fireStore.collection(USERS)
             .document(getCurrentUserId())
             .get()
+    }
+
+    fun updateUserProfileData(userDataMap: HashMap<String, Any>): Task<Void> {
+        return fireStore.collection(USERS)
+            .document(getCurrentUserId())
+            .update(userDataMap)
     }
 
     internal fun getCurrentUserId(): String {

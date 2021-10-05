@@ -75,7 +75,8 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        toDoViewModel.writeUserLoggedIn(false)
+        Log.d("Tasks Fragment", "PreviousBackStackEntry = ${findNavController().previousBackStackEntry}")
+        Log.d("Tasks Fragment", "CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
 
         toDoViewModel.userLoggedIn.asLiveData().observe(viewLifecycleOwner) {
                 userLoggedIn ->

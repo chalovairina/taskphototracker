@@ -23,7 +23,7 @@ import com.chari.ic.todoapp.data.source.StubDataStoreRepository
 import com.chari.ic.todoapp.di.RepositoryModule
 import com.chari.ic.todoapp.fragments.tasks_fragment.TasksFragment
 import com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter
-import com.chari.ic.todoapp.repository.IDataStoreRepository
+import com.chari.ic.todoapp.repository.datastore.IDataStoreRepository
 import com.chari.ic.todoapp.repository.Repository
 import dagger.Binds
 import dagger.Module

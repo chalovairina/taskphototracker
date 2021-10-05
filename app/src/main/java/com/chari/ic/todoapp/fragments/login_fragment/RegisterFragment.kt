@@ -5,7 +5,6 @@ import android.text.TextUtils
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
@@ -18,10 +17,18 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegisterFragment: AuthFragment() {
+    private val EMAIL_PATTERN = ("^[_A-Za-z0-9-+]+(.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(.[A-Za-z0-9]+)*(.[A-Za-z]{2,})$")
+
+    private val pattern = Pattern.compile(EMAIL_PATTERN)
+    private lateinit var matcher: Matcher
+
     @Inject lateinit var usersFirestore: MyFireStore
     private lateinit var auth: FirebaseAuth
 
@@ -58,7 +65,6 @@ class RegisterFragment: AuthFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
-        savedStateHandle.set(REGISTER_SUCCESSFUL, false)
 
         registerBtn.setOnClickListener {
             registerUser()
@@ -86,6 +92,8 @@ class RegisterFragment: AuthFragment() {
                         val user = User(registeredUser.uid, userName, registeredEmail)
                         usersFirestore.registerUser(user)
                             .addOnSuccessListener {
+                                toDoViewModel.writeCurrentUserData(user.id, user.name, user.mobile,
+                                user.image, user.email, user.fcmToken)
                                 finishSuccessfulRegistration(registeredEmail)
                             }
                             .addOnFailureListener {
@@ -103,19 +111,17 @@ class RegisterFragment: AuthFragment() {
     }
 
     private fun finishSuccessfulRegistration(registeredEmail: String) {
-        toDoViewModel.writeUserLoggedIn(true)
-        Toast.makeText(requireContext(), String.format(
-            getString(R.string.successfully_registered), registeredEmail),
-            Toast.LENGTH_LONG).show()
-
         savedStateHandle.set(CURRENT_USER_ID, usersFirestore.getCurrentUserId())
+        toDoViewModel.writeUserLoggedIn(true)
+        showToastLong(
+            String.format(getString(R.string.successfully_registered), registeredEmail)
+        )
+
         findNavController().popBackStack(R.id.introFragment, false)
     }
 
     private fun finishFailedRegistration() {
-        Toast.makeText(requireContext(),
-                getString(R.string.registration_failed),
-                Toast.LENGTH_SHORT).show()
+        showToastShort(getString(R.string.registration_failed))
 
         findNavController().popBackStack(R.id.introFragment, false)
     }
@@ -138,7 +144,23 @@ class RegisterFragment: AuthFragment() {
                 showErrorSnackBar(getString(R.string.email_from_incorrect))
                 false
             }
+            !validatePassword(password) -> {
+                showErrorSnackBar(getString(R.string.password_not_strong_enough))
+                false
+            }
             else -> true
         }
+    }
+
+    protected fun validateEmail(email: String): Boolean {
+        matcher = pattern.matcher(email)
+
+        return matcher.matches()
+    }
+
+    private fun validatePassword(password: String): Boolean {
+        return password.length >=8 && Regex("^(?=.*[0-9])").containsMatchIn(password)
+                && Regex("^(?=.*[A-Z])").containsMatchIn(password)
+                && Regex("^(?=.*[~!@#-$%^&*_+=`|(){}\\[\\]:;\"'<>,\\.\\?/\\\\])").containsMatchIn(password)
     }
 }
