@@ -10,7 +10,7 @@ import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.data.source.FakeToDoRepository
-import com.chari.ic.todoapp.data.source.StubDataStoreRepository
+import com.chari.ic.todoapp.data.source.LoggedInStubDataStoreRepository
 import com.chari.ic.todoapp.di.RepositoryModule
 import com.chari.ic.todoapp.launchFragmentInHiltContainer
 import com.chari.ic.todoapp.repository.datastore.IDataStoreRepository
@@ -28,6 +28,8 @@ import org.junit.Rule
 
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.Instant
+import java.util.*
 import javax.inject.Singleton
 
 
@@ -45,13 +47,30 @@ class UpdateFragmentTest {
         hiltRule.inject()
     }
 
+    // replace with fake tasks repo and loggedIn dataStore repo
+    @Module
+    @InstallIn(SingletonComponent::class)
+    abstract class RepositoryTestModule {
+        @Singleton
+        @Binds
+        abstract fun bindToDoRepository(repository: FakeToDoRepository): Repository
+
+        @Singleton
+        @Binds
+        abstract fun bindDataStoreRepository(dataStoreRepository: LoggedInStubDataStoreRepository): IDataStoreRepository
+    }
+
     @Test
     fun taskPutIntoBundle_checkIfDisplayed() {
         val task = ToDoTask(
             0,
+            "1",
             "Homework",
             Priority.LOW,
-            "My homework"
+            "My homework",
+            Instant.now(),
+            Instant.now(),
+            false
         )
         val bundle = UpdateFragmentArgs(task).toBundle()
         val scenario = launchFragmentInHiltContainer<UpdateFragment>(bundle)
@@ -66,9 +85,13 @@ class UpdateFragmentTest {
     fun taskUpdate_DisplayedInUi() {
         val task = ToDoTask(
             0,
+            "1",
             "Homework",
             Priority.LOW,
-            "My homework"
+            "My homework",
+            Instant.now(),
+            Instant.now(),
+            false
         )
         val bundle = UpdateFragmentArgs(task).toBundle()
         val scenario = launchFragmentInHiltContainer<UpdateFragment>(bundle)
@@ -79,15 +102,24 @@ class UpdateFragmentTest {
         scenario.close()
     }
 
-    @Module
-    @InstallIn(SingletonComponent::class)
-    abstract class RepositoryTestModule {
-        @Singleton
-        @Binds
-        abstract fun bindToDoRepository(repository: FakeToDoRepository): Repository
+    @Test
+    fun taskUpdated_click() {
+        val task = ToDoTask(
+            0,
+            "1",
+            "Homework",
+            Priority.LOW,
+            "My homework",
+            Instant.now(),
+            Instant.now(),
+            false
+        )
+        val bundle = UpdateFragmentArgs(task).toBundle()
+        val scenario = launchFragmentInHiltContainer<UpdateFragment>(bundle)
+        val newTitle = "Updated task title"
+        onView(withId(R.id.current_title_editText)).perform(replaceText(newTitle)).check(matches(
+            withText(newTitle)))
 
-        @Singleton
-        @Binds
-        abstract fun bindDataStoreRepository(dataStoreRepository: StubDataStoreRepository): IDataStoreRepository
+        scenario.close()
     }
 }

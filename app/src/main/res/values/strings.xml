@@ -4,7 +4,7 @@
     <string name="add">Add</string>
     <string name="update">Update</string>
     <string name="title">Title</string>
-    <string name="description">Description</string>
+    <string name="add_description">Add task description</string>
     <string name="search">Search</string>
     <string name="sort_by">Sort By</string>
     <string name="priority_high">High Priority</string>
@@ -74,6 +74,12 @@
     <string name="profile_updated">Profile successfully updated!</string>
     <string name="failed_update_profile">Failed to update profile</string>
     <string name="failed_image_upload">Failed to upload new profile image</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="next_week">Next week</string>
+    <string name="today">Today</string>
+    <string name="due_date">Due date</string>
+    <string name="task_title_example">e.g. take dog for a walk</string>
+    <string name="choose_due_date">Choose due date!</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>

@@ -17,10 +17,12 @@ class ToDoViewModel @Inject constructor(
     private val dataStoreRepository: IDataStoreRepository,
     @Named("IoDispatcher") private val dispatchers: CoroutineDispatcher
 ): ViewModel() {
+    val _taskToUpdate = MutableLiveData<ToDoTask?>(null)
+    val taskToUpdate: LiveData<ToDoTask?> = _taskToUpdate
 //    var currentUser: User? = null
     //
 //    val currentUser: MutableLiveData<User?> = MutableLiveData()
-    val currentUser = dataStoreRepository.readCurrentUserData()
+    val currentUser = dataStoreRepository.readCurrentUserData().asLiveData()
     fun writeCurrentUserData(userId: String, userName: String, userMobile: Long,
                              userImageUrl: String, userEmail: String, fcmToken: String) {
         viewModelScope.launch(dispatchers) {
@@ -58,7 +60,7 @@ class ToDoViewModel @Inject constructor(
         }
     }
 
-     val getAllTasks: LiveData<List<ToDoTask>> = repository.cachedTasks
+     val getAllTasks: LiveData<List<ToDoTask>> = repository.cachedTasks()
 
     val databaseStatus: LiveData<DatabaseResult<List<ToDoTask>>> = Transformations.map(getAllTasks) {
         cachedTasks ->

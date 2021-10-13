@@ -5,15 +5,15 @@
 
     <data>
         <variable
-            name="task"
-            type="com.chari.ic.todoapp.data.database.entities.ToDoTask" />
+            name="viewmodel"
+            type="com.chari.ic.todoapp.ToDoViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="24dp"
-        android:background="@color/backgroundColor"
+        android:background="@color/white"
         tools:context=".fragments.update_fragment.UpdateFragment">
 
         <EditText
@@ -26,25 +26,38 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:hint="@string/title"
-            android:text="@{task.title}"
+            setTaskToUpdate="@{viewmodel.taskToUpdate}"
             android:background="@drawable/custom_input"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
         />
 
+        <com.google.android.material.chip.Chip
+            android:id="@+id/current_due_date_chip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/current_title_editText"
+            setTaskToUpdate="@{viewmodel.taskToUpdate}"
+            android:textSize="16sp"
+            app:chipIcon="@drawable/ic_baseline_today_24"/>
+
+
         <Spinner
             android:id="@+id/current_priority_spinner"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginTop="8dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
             android:entries="@array/priorities"
-            setPriority="@{task.priority}"
+            setTaskToUpdate="@{viewmodel.taskToUpdate}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/current_title_editText" />
+            app:layout_constraintTop_toBottomOf="@id/current_due_date_chip" />
 
         <EditText
             android:id="@+id/current_description_editText"
@@ -57,8 +70,8 @@
             android:paddingTop="16dp"
             android:gravity="start|top"
             android:inputType="textMultiLine"
-            android:hint="@string/description"
-            android:text="@{task.description}"
+            android:hint="@string/add_description"
+            setTaskToUpdate="@{viewmodel.taskToUpdate}"
             android:background="@drawable/custom_input"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

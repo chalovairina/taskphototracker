@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -14,19 +15,22 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.chari.ic.todoapp.BOTTOM_SHEET_DIALOG
+import com.chari.ic.todoapp.BottomSheetFragment
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.FragmentTasksBinding
+import com.chari.ic.todoapp.fragments.FragmentWithModalBottomSheetDialog
 import com.chari.ic.todoapp.utils.PriorityUtils
-import com.chari.ic.todoapp.utils.idling_resource.EspressoIdlingResource
+import com.chari.ic.todoapp.utils.idling_resource.idling_resource_with_callback.RegisterIdlingResource
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 @AndroidEntryPoint
-class TasksFragment : Fragment(), SearchView.OnQueryTextListener
-    , ViewTreeObserver.OnGlobalLayoutListener
+class TasksFragment : FragmentWithModalBottomSheetDialog(), SearchView.OnQueryTextListener
 {
     private val toDoViewModel: ToDoViewModel by viewModels()
 
@@ -54,7 +58,8 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener
     }
 
     private var searchMenu: MenuItem? = null
-    private var recyclerViewLayoutChanged = false
+
+    private lateinit var bottomSheetDialogFragment: BottomSheetDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,23 +83,34 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener
         Log.d("Tasks Fragment", "PreviousBackStackEntry = ${findNavController().previousBackStackEntry}")
         Log.d("Tasks Fragment", "CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
 
-        toDoViewModel.userLoggedIn.asLiveData().observe(viewLifecycleOwner) {
-                userLoggedIn ->
-            if (!userLoggedIn) {
+        toDoViewModel.currentUser.observe(viewLifecycleOwner) {
+                user ->
+            if (user.userId.isEmpty()) {
                 val navOptions = NavOptions.Builder()
                     .setPopUpTo(R.id.tasksFragment, true)
                     .build()
 
                 findNavController().navigate(R.id.introFragment, null, navOptions)
             }
+            RegisterIdlingResource.setIdleState(true)
         }
 
         setupAdapter()
 
         binding.addButton.setOnClickListener {
-            findNavController().navigate(R.id.action_tasksFragment_to_addFragment)
+//            findNavController().navigate(R.id.action_tasksFragment_to_addFragment)
+            showBottomSheetDialog(R.id.tasksFragment, toDoViewModel)
         }
     }
+
+//    private fun showBottomSheetDialog() {
+//        instantiateBottomSheetFragment()
+//        bottomSheetDialogFragment.show(this@TasksFragment.parentFragmentManager, BOTTOM_SHEET_DIALOG)
+//    }
+//
+//    private fun instantiateBottomSheetFragment() {
+//        bottomSheetDialogFragment = BottomSheetFragment()
+//    }
 
     private fun setupAdapter() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -107,8 +123,6 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener
                 adapter.submitList(status.data)
             }
         }
-        recyclerViewLayoutChanged = true
-        binding.recyclerView.viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
     private fun addDragAndSwipeToDeleteFunction() {
@@ -190,19 +204,11 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener
 
     private fun searchDatabase(query: String) {
         val searchQuery = "%$query%"
-        if (!toDoViewModel.searchDatabase(searchQuery).hasObservers()) {
-            toDoViewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner) {
-                    resultList ->
-                if (adapter.currentList.toList() != resultList) {
-                    recyclerViewLayoutChanged = true
-                    EspressoIdlingResource.setIdleState(false)
-                    adapter.submitList(resultList)
-//                    { EspressoIdlingResource.setIdleState(true) }
-                } else {
-                    recyclerViewLayoutChanged = false
-                }
-                binding.recyclerView.smoothScrollToPosition(0)
-            }
+        toDoViewModel.searchDatabase(searchQuery).observe(viewLifecycleOwner) {
+                resultList ->
+            adapter.submitList(resultList)
+
+            binding.recyclerView.smoothScrollToPosition(0)
         }
     }
 
@@ -241,9 +247,4 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener
         binding.recyclerView.smoothScrollToPosition(0)
     }
 
-    override fun onGlobalLayout() {
-        if (recyclerViewLayoutChanged) {
-            EspressoIdlingResource.setIdleState(true)
-        }
-    }
 }

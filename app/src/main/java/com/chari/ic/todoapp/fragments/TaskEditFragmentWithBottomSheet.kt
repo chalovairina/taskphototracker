@@ -1,6 +1,5 @@
 package com.chari.ic.todoapp.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -9,13 +8,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.chari.ic.todoapp.R
-import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.utils.PriorityUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-open class TaskEditFragment: Fragment() {
+open class TaskEditFragmentWithBottomSheet: FragmentWithModalBottomSheetDialog() {
 
     val listener: AdapterView.OnItemSelectedListener = object: AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

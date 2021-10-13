@@ -3,7 +3,7 @@ package com.chari.ic.todoapp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import com.chari.ic.todoapp.data.source.StubDataStoreRepository
+import com.chari.ic.todoapp.data.source.LoggedInStubDataStoreRepository
 import com.chari.ic.todoapp.data.source.FakeToDoRepository
 import com.chari.ic.todoapp.repository.datastore.IDataStoreRepository
 import com.chari.ic.todoapp.repository.Repository
@@ -17,6 +17,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
+import java.time.Instant
+import java.util.*
 
 @ExperimentalCoroutinesApi
 class ToDoViewModelTest {
@@ -33,12 +35,15 @@ class ToDoViewModelTest {
 
     @Before
     fun setUp() {
-        stubDataStoreRepository = StubDataStoreRepository()
+        stubDataStoreRepository = LoggedInStubDataStoreRepository()
         fakeRepository = FakeToDoRepository()
 
-        val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
-        val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
-        val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
+        val task1 = ToDoTask(0, "1", "Homework1", Priority.LOW, "My homework1", Instant.now(),
+            Instant.now(), false)
+        val task2 = ToDoTask(0, "1", "Homework2", Priority.MEDIUM, "My homework2", Instant.now(),
+            Instant.now(), false)
+        val task3 = ToDoTask(0, "1", "Homework3", Priority.HIGH, "My homework3", Instant.now(),
+            Instant.now(), false)
         runBlockingTest {
             (fakeRepository as FakeToDoRepository).fillTasksRepo(task1, task2, task3)
         }
@@ -58,9 +63,13 @@ class ToDoViewModelTest {
     fun insertTask_ok() {
         val newTask = ToDoTask(
             0,
+            "1",
             "Homework",
             Priority.LOW,
-            "My homework"
+            "My homework",
+            Instant.now(),
+            Instant.now(),
+            false
         )
 
         mainCoroutineRule.runBlockingTest {
@@ -100,9 +109,13 @@ class ToDoViewModelTest {
     fun deleteTask_ok() {
         val taskToDelete = ToDoTask(
             0,
+            "1",
             "Homework for delete",
             Priority.LOW,
-            "My homework"
+            "My homework",
+            Instant.now(),
+            Instant.now(),
+            false
         )
 
         mainCoroutineRule.runBlockingTest {

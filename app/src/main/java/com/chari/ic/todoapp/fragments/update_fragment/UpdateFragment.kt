@@ -10,25 +10,25 @@ import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.FragmentUpdateBinding
-import com.chari.ic.todoapp.fragments.TaskEditFragment
+import com.chari.ic.todoapp.fragments.TaskEditFragmentWithBottomSheet
 import com.chari.ic.todoapp.utils.PriorityUtils
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
 
 @AndroidEntryPoint
-class UpdateFragment : TaskEditFragment() {
+class UpdateFragment : TaskEditFragmentWithBottomSheet() {
     private val args by navArgs<UpdateFragmentArgs>()
 
     private var _binding: FragmentUpdateBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var currentTask: ToDoTask
 
     private val toDoViewModel: ToDoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        currentTask = args.currentTask
+        toDoViewModel._taskToUpdate.postValue(args.currentTask)
+
         setHasOptionsMenu(true)
     }
 
@@ -38,7 +38,7 @@ class UpdateFragment : TaskEditFragment() {
     ): View {
         _binding = FragmentUpdateBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.task = currentTask
+        binding.viewmodel = toDoViewModel
 
         return binding.root
     }
@@ -47,6 +47,9 @@ class UpdateFragment : TaskEditFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.currentPrioritySpinner.onItemSelectedListener = listener
+        binding.currentDueDateChip.setOnClickListener {
+            showBottomSheetDialog(R.id.updateFragment, toDoViewModel)
+        }
     }
 
     override fun onResume() {
@@ -71,11 +74,16 @@ class UpdateFragment : TaskEditFragment() {
     private fun updateTask() {
         val validated = verifyInputData(binding.currentTitleEditText.text.toString())
         if (validated) {
+            var currentTask = toDoViewModel.taskToUpdate.value!!
             val updatedTask = createTask(
                 currentTask.id,
+                currentTask.userId,
                 binding.currentTitleEditText.text.toString(),
                 binding.currentPrioritySpinner.selectedItem.toString(),
-                binding.currentDescriptionEditText.text.toString()
+                binding.currentDescriptionEditText.text.toString(),
+                currentTask.dueDate,
+                currentTask.createdAt,
+                currentTask.completed
             )
 
             toDoViewModel.updateTask(updatedTask)
@@ -88,16 +96,23 @@ class UpdateFragment : TaskEditFragment() {
 
     private fun createTask(
         id: Int,
+        userId: String,
         title: String,
         priority: String,
-        description: String
+        description: String,
+        dueDate: Instant,
+        createdAt: Instant,
+        completed: Boolean
     ): ToDoTask {
-        return ToDoTask(id, title, PriorityUtils.getPriorityByName(priority), description)
+        return ToDoTask(id, userId, title, PriorityUtils.getPriorityByName(priority),
+            description, dueDate, createdAt, completed)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
+        toDoViewModel._taskToUpdate.postValue(null)
         _binding = null
     }
+
 }

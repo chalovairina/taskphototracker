@@ -22,23 +22,28 @@
     <color name="yellow">#FFC114</color>
     <color name="green">#00C980</color>
 
-    // splash screen
+<!--    priorities-->
+    <color name="highPriorityColor">#C91517</color>
+    <color name="mediumPriorityColor">#FFB300</color>
+    <color name="lowPriorityColor">@color/green</color>
+
+<!--    splash screen-->
     <color name="splashScreenTitle">#402D29</color>
 
-    // intro screen
+<!--    intro screen-->
     <color name="signInBtnGradientStartColor">#0BCCEB</color>
     <color name="signInBtnGradientEndColor">#0A80F5</color>
     <color name="signUpStrokeColor">#0C90F1</color>
     <color name="snackBarErrorColor">#F72400</color>
 
-    // Task item cardView
+<!--    Task item cardView-->
     <color name="strokeColor">@color/lightMediumGray</color>
     <color name="cardBackgroundColor">@color/white</color>
     <color name="cardBackgroundLightColor">#106200EA</color>
     <color name="titleColor">@color/darker</color>
     <color name="descriptionColor">@color/darkGray</color>
 
-    // status bar
+<!--    status bar-->
     <color name="statusBarColor">@color/colorPrimaryDark</color>
     <color name="actionModeStatusBarColor">@color/darker</color>
     <color name="actionModeActionBarColor">@color/dark</color>
@@ -46,6 +51,9 @@
 
     <color name="backgroundColor">@color/lightGray</color>
     <color name="placeholderColor">@color/mediumGray</color>
-    <color name="primary_text_color">#363A43</color>
-    <color name="secondary_text_color">#7A8089</color>
+    <color name="primaryTextColor">#363A43</color>
+    <color name="secondaryTextColor">#7A8089</color>
+
+<!--     bottom sheet dialog-->
+    <color name="iconTint">#DF003D</color>
 </resources>

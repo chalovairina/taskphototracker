@@ -10,12 +10,15 @@ import androidx.navigation.fragment.findNavController
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import com.chari.ic.todoapp.fragments.TaskEditFragment
+import com.chari.ic.todoapp.fragments.TaskEditFragmentWithBottomSheet
 import com.chari.ic.todoapp.utils.PriorityUtils.getPriorityByName
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
+import java.util.*
 
 @AndroidEntryPoint
-class AddFragment: TaskEditFragment() {
+class AddFragment: TaskEditFragmentWithBottomSheet() {
     private lateinit var titleEt: EditText
     private lateinit var descriptionEt: EditText
     private lateinit var prioritySpinner: Spinner
@@ -73,9 +76,13 @@ class AddFragment: TaskEditFragment() {
         if (validated) {
             val data = ToDoTask(
                 0,
+                FirebaseAuth.getInstance().currentUser!!.uid,
                 title,
                 getPriorityByName(priority),
-                description
+                description,
+                Instant.now(),
+                Instant.now(),
+            false
             )
             toDoViewModel.insertTask(data)
             makeToast( getString(R.string.successfully_added))

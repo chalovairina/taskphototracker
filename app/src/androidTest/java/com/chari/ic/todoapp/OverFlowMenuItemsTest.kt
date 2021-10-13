@@ -36,6 +36,7 @@ import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.IOException
+import java.time.Instant
 import java.util.*
 import javax.inject.Inject
 
@@ -70,14 +71,14 @@ class OverFlowMenuItemsTest {
 
         context = ApplicationProvider.getApplicationContext()
 
-        val task1 = ToDoTask(0, "1","Homework1", Priority.LOW, "My homework1", Calendar.getInstance().time,
-            Calendar.getInstance().time, false)
-        val task2 = ToDoTask(0, "1","Homework2", Priority.MEDIUM, "My homework2", Calendar.getInstance().time,
-            Calendar.getInstance().time, false)
-        val task3 = ToDoTask(0, "1","Homework3", Priority.HIGH, "My homework3", Calendar.getInstance().time,
-            Calendar.getInstance().time, false)
-        val task4 = ToDoTask(0, "1","Special", Priority.MEDIUM, "My homework4", Calendar.getInstance().time,
-            Calendar.getInstance().time, false)
+        val task1 = ToDoTask(0, "1","Homework1", Priority.LOW, "My homework1", Instant.now(),
+            Instant.now(), false)
+        val task2 = ToDoTask(0, "1","Homework2", Priority.MEDIUM, "My homework2", Instant.now(),
+            Instant.now(), false)
+        val task3 = ToDoTask(0, "1","Homework3", Priority.HIGH, "My homework3", Instant.now(),
+            Instant.now(), false)
+        val task4 = ToDoTask(0, "1","Special", Priority.MEDIUM, "My homework4", Instant.now(),
+            Instant.now(), false)
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3, task4) }
     }
 

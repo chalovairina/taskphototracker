@@ -1,12 +1,11 @@
 package com.chari.ic.todoapp
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.chari.ic.todoapp.data.database.ToDoDatabase
 import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import com.chari.ic.todoapp.data.source.StubDataStoreRepository
+import com.chari.ic.todoapp.data.source.LoggedInStubDataStoreRepository
 import com.chari.ic.todoapp.repository.datastore.IDataStoreRepository
 import com.chari.ic.todoapp.repository.Repository
 import com.chari.ic.todoapp.repository.ToDoRepository
@@ -22,6 +21,8 @@ import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.IOException
+import java.time.Instant
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -50,13 +51,15 @@ class ToDoViewModelAndroidTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        stubDataStoreRepository = StubDataStoreRepository()
+        stubDataStoreRepository = LoggedInStubDataStoreRepository()
         repository = ToDoRepository(database.getToDoDao())
-        Log.d("ViewModelTest", "in Before fixture")
 
-        val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
-        val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
-        val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
+        val task1 = ToDoTask(0, "1", "Homework1", Priority.LOW, "My homework1", Instant.now(),
+            Instant.now(), false)
+        val task2 = ToDoTask(0, "1", "Homework2", Priority.MEDIUM, "My homework2", Instant.now(),
+            Instant.now(), false)
+        val task3 = ToDoTask(0, "1", "Homework3", Priority.HIGH, "My homework3", Instant.now(),
+            Instant.now(), false)
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3) }
 
         toDoViewModel = ToDoViewModel(repository, stubDataStoreRepository, Dispatchers.Main)
@@ -76,9 +79,13 @@ class ToDoViewModelAndroidTest {
     fun test1_insertTask() {
         val newTask = ToDoTask(
             0,
+            "1",
             "Homework",
             Priority.LOW,
-            "My homework"
+            "My homework",
+            Instant.now(),
+            Instant.now(),
+            false
         )
 
         mainCoroutineRule.runBlockingTest {
@@ -126,9 +133,13 @@ class ToDoViewModelAndroidTest {
     fun test4_deleteTask_ok() {
         var taskToDelete = ToDoTask(
             0,
+            "1",
             "Homework for delete",
             Priority.LOW,
-            "My homework"
+            "My homework",
+            Instant.now(),
+            Instant.now(),
+            false
         )
 
         mainCoroutineRule.runBlockingTest {
