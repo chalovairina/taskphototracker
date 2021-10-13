@@ -1,40 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="200dp"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:background="@drawable/nav_header_main_background"
-    android:gravity="bottom"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/user_circle_view"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:civ_border_color="@color/white"
-        app:civ_border_width="1dp"
-        android:contentDescription="@string/your_profile_photo"
-        android:src="@drawable/ic_user_placeholder"
-        android:scaleType="centerCrop"/>
-    <TextView
-        android:id="@+id/user_email_textView"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="18sp"
-        android:textColor="@color/white"
-        android:text="@string/my_account"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        tools:text="@string/email"/>
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <View
-        android:background="@color/colorAccent"
-        android:layout_height="1dp"
-        android:layout_width="match_parent"/>
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.chari.ic.todoapp.ToDoViewModel" />
+    </data>
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:background="@drawable/nav_header_main_background"
+        android:gravity="bottom"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/user_circle_view"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            setCurrentUserData="@{viewmodel.currentUser}"
+            app:civ_border_color="@color/white"
+            app:civ_border_width="1dp"
+            android:contentDescription="@string/your_profile_photo"
+            android:src="@drawable/ic_user_placeholder"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/user_email_textView"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:text="@string/my_account"
+            setCurrentUserData="@{viewmodel.currentUser}"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            tools:text="@string/email" />
+
+        <View
+            android:background="@color/colorAccent"
+            android:layout_height="1dp"
+            android:layout_width="match_parent" />
+
+    </LinearLayout>
+</layout>

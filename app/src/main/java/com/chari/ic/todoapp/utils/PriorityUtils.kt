@@ -8,9 +8,9 @@ object PriorityUtils {
     const val PRIORITY_POSITION_MEDIUM = 1
     const val PRIORITY_POSITION_LOW = 2
 
-    const val PRIORITY_COLOR_HIGH = R.color.red
-    const val PRIORITY_COLOR_MEDIUM = R.color.yellow
-    const val PRIORITY_COLOR_LOW = R.color.green
+    const val PRIORITY_COLOR_HIGH = R.color.highPriorityColor
+    const val PRIORITY_COLOR_MEDIUM = R.color.mediumPriorityColor
+    const val PRIORITY_COLOR_LOW = R.color.lowPriorityColor
 
     const val PRIORITY_NAME_HIGH = "High Priority"
     const val PRIORITY_NAME_MEDIUM = "Medium Priority"

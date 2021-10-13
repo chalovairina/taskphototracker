@@ -2,9 +2,12 @@ package com.chari.ic.todoapp.repository
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import com.chari.ic.todoapp.data.database.dao.ToDoDao
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.scopes.ActivityRetainedScoped
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,7 +16,15 @@ class ToDoRepository @Inject constructor(
     private val toDoDao: ToDoDao
 ) : Repository {
 
-    override val cachedTasks: LiveData<List<ToDoTask>> = toDoDao.getAllTasks()
+    override fun cachedTasks(): LiveData<List<ToDoTask>> {
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            return toDoDao.getAllTasksByUserId(
+                FirebaseAuth.getInstance().currentUser!!.uid
+            )
+        } else {
+            return flow<List<ToDoTask>> { emit (emptyList()) }.asLiveData()
+        }
+    }
 
     override suspend fun insertTask(toDoTask: ToDoTask) {
         toDoDao.insertTask(toDoTask)
@@ -28,10 +39,13 @@ class ToDoRepository @Inject constructor(
     }
 
     override suspend fun deleteAll() {
-        toDoDao.deleteAll()
+        toDoDao.deleteAllByUserId(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
-    override fun searchDatabase(searchQuery: String) = toDoDao.searchDatabase(searchQuery)
+    override fun searchDatabase(searchQuery: String) = toDoDao.searchDatabase(
+        searchQuery,
+        FirebaseAuth.getInstance().currentUser!!.uid
+    )
 
     @VisibleForTesting
     override suspend fun fillTasksRepo(vararg tasks: ToDoTask) {

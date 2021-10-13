@@ -3,28 +3,25 @@ package com.chari.ic.todoapp
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.asLiveData
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.bumptech.glide.Glide
+import com.chari.ic.todoapp.databinding.MainDrawerHeaderBinding
 import com.chari.ic.todoapp.firebase.users.User
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import de.hdodenhof.circleimageview.CircleImageView
 
 private const val DRAWER_GRAVITY = GravityCompat.START
 @AndroidEntryPoint
@@ -33,8 +30,6 @@ class MainActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelected
     private lateinit var drawer: DrawerLayout
     private lateinit var navView: NavigationView
     private lateinit var navViewHeader: View
-    private lateinit var userProfileImage: CircleImageView
-    private lateinit var userProfileEmail: TextView
 
     private var currentUser: User? = null
 
@@ -67,11 +62,24 @@ class MainActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelected
         navView = findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
         navViewHeader = navView.getHeaderView(0)
+        val navViewHeaderBinding = MainDrawerHeaderBinding.inflate(layoutInflater, navView, true)
+        navViewHeaderBinding.viewmodel = toDoViewModel
 
-        userProfileImage = navViewHeader.findViewById(R.id.user_circle_view)
-        userProfileEmail = navViewHeader.findViewById(R.id.user_email_textView)
+//        userProfileImage = navViewHeader.findViewById(R.id.user_circle_view)
+//        userProfileEmail = navViewHeader.findViewById(R.id.user_email_textView)
 
-        fillUserDrawerProfile()
+        toDoViewModel.currentUser.observe(this) { user ->
+            // check if after deletion of app firebase auth is empty, but dataStore contains user data
+            if (user.userId.isNotEmpty() && Firebase.auth.currentUser != null) {
+                currentUser = User(
+                    user.userId, user.userName, user.userEmail,
+                    user.userImageUrl, user.userMobile, user.fcmToken
+                )
+            } else {
+                currentUser = null
+                toDoViewModel.writeCurrentUserData("", "", 0L, "", "", "")
+            }
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -113,31 +121,6 @@ class MainActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelected
                 .build()
             navController.navigate(destinationId, null, navOptions)
         }
-    }
-
-    private fun fillUserDrawerProfile() {
-        toDoViewModel.userLoggedIn.asLiveData().observe(this) { loggedIn ->
-            if (loggedIn) {
-                toDoViewModel.currentUser.asLiveData().observe(this) { user ->
-                    currentUser = User(user.userId, user.userName, user.userEmail,
-                        user.userImageUrl, user.userMobile, user.fcmToken)
-                    Glide
-                        .with(this)
-                        .load(user.userImageUrl)
-                        .centerCrop()
-                        .placeholder(R.drawable.ic_user_placeholder)
-                        .into(userProfileImage)
-
-                    userProfileEmail.text = user.userEmail
-                }
-            } else {
-                currentUser = null
-                toDoViewModel.currentUser.asLiveData().removeObservers(this)
-                userProfileEmail.text = getString(R.string.my_account)
-                userProfileImage.setImageResource(R.drawable.ic_user_placeholder)
-            }
-        }
-
     }
 
 }

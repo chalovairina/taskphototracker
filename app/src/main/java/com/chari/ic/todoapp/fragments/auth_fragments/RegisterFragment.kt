@@ -1,7 +1,8 @@
-package com.chari.ic.todoapp.fragments.login_fragment
+package com.chari.ic.todoapp.fragments.auth_fragments
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
@@ -12,6 +13,7 @@ import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.firebase.MyFireStore
 import com.chari.ic.todoapp.firebase.users.User
+import com.chari.ic.todoapp.utils.idling_resource.idling_resource_with_callback.RegisterIdlingResource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -73,6 +75,7 @@ class RegisterFragment: AuthFragment() {
 
 
     private fun registerUser() {
+        RegisterIdlingResource.setIdleState(false)
         val userName = userNameEditText.text.toString().trim()
         val email = emailEditText.text.toString().trim()
         val password = passwordEditText.text.toString().trim()
@@ -81,7 +84,6 @@ class RegisterFragment: AuthFragment() {
 
         if (validated) {
             showLoadingDialog(getString(R.string.please_wait))
-
             auth
                 .createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
@@ -105,6 +107,8 @@ class RegisterFragment: AuthFragment() {
                 }
                 .addOnFailureListener {
                     hideLoadingDialog()
+                    Log.d("Register Fragment:", it.message.toString())
+
                     finishFailedRegistration()
                 }
         }

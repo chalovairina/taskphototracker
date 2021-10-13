@@ -7,7 +7,7 @@ import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 
 interface Repository {
-    val cachedTasks: LiveData<List<ToDoTask>>
+    fun cachedTasks(): LiveData<List<ToDoTask>>
 
     suspend fun insertTask(toDoTask: ToDoTask)
 

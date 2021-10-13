@@ -17,17 +17,17 @@ class FakeToDoRepository @Inject constructor(): Repository {
 
     private val tasksData = hashMapOf<Int, ToDoTask>()
     private val _cachedTasks = MutableLiveData<List<ToDoTask>>(emptyList())
-    override val cachedTasks: LiveData<List<ToDoTask>> = _cachedTasks
+    override fun cachedTasks(): LiveData<List<ToDoTask>> = _cachedTasks
 
     private val _searchTasks = MutableLiveData<List<ToDoTask>>(emptyList())
     val searchTasks: LiveData<List<ToDoTask>> = _searchTasks
 
-    init {
-        runBlocking { refreshTasks() }
-    }
+//    init {
+//        runBlocking { refreshTasks() }
+//    }
 
     private suspend fun refreshTasks() {
-        _cachedTasks.value = tasksData.values.toList()
+        _cachedTasks.postValue(tasksData.values.toList())
     }
 
     override suspend fun insertTask(toDoTask: ToDoTask) {
@@ -61,7 +61,7 @@ class FakeToDoRepository @Inject constructor(): Repository {
                 resultList.add(task)
             }
         }
-        _searchTasks.value = resultList
+        _searchTasks.postValue(resultList)
 
         return searchTasks
     }

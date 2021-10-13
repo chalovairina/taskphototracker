@@ -20,8 +20,9 @@ import com.chari.ic.todoapp.data.database.entities.Priority
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.fragments.tasks_fragment.ToDoTaskAdapter
 import com.chari.ic.todoapp.repository.ToDoRepository
+import com.chari.ic.todoapp.utils.DataBindingIdlingResource
 import com.chari.ic.todoapp.utils.PriorityUtils
-import com.chari.ic.todoapp.utils.idling_resource.EspressoIdlingResource
+import com.chari.ic.todoapp.utils.monitorActivity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -35,6 +36,7 @@ import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.IOException
+import java.util.*
 import javax.inject.Inject
 
 @HiltAndroidTest
@@ -56,23 +58,35 @@ class OverFlowMenuItemsTest {
     lateinit var repository: ToDoRepository
     @ApplicationContext private lateinit var context: Context
 
+    private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @Before
     fun setUp() {
+        // doesn't help with flaky test0
+//        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+
         hiltRule.inject()
+
         context = ApplicationProvider.getApplicationContext()
 
-        val task1 = ToDoTask(0, "Homework1", Priority.LOW, "My homework1")
-        val task2 = ToDoTask(0, "Homework2", Priority.MEDIUM, "My homework2")
-        val task3 = ToDoTask(0, "Homework3", Priority.HIGH, "My homework3")
-        val task4 = ToDoTask(0, "Special", Priority.MEDIUM, "My homework4")
+        val task1 = ToDoTask(0, "1","Homework1", Priority.LOW, "My homework1", Calendar.getInstance().time,
+            Calendar.getInstance().time, false)
+        val task2 = ToDoTask(0, "1","Homework2", Priority.MEDIUM, "My homework2", Calendar.getInstance().time,
+            Calendar.getInstance().time, false)
+        val task3 = ToDoTask(0, "1","Homework3", Priority.HIGH, "My homework3", Calendar.getInstance().time,
+            Calendar.getInstance().time, false)
+        val task4 = ToDoTask(0, "1","Special", Priority.MEDIUM, "My homework4", Calendar.getInstance().time,
+            Calendar.getInstance().time, false)
         mainCoroutineRule.runBlockingTest { repository.fillTasksRepo(task1, task2, task3, task4) }
-//        toDoViewModel = ToDoViewModel(repository, dataStoreRepository, Dispatchers.Main)
     }
 
     @After
     @Throws(IOException::class)
     fun tearDown() {
+//        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
+        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+
         mainCoroutineRule.runBlockingTest {
             repository.resetRepository()
         }
@@ -81,23 +95,14 @@ class OverFlowMenuItemsTest {
     @Test
     fun test0_tasksFragment_clickOnSearchMenuItem_searchTaskByTitle_checkDisplayedOnlySelectedTasks() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         var searchQuery = "homework"
         onView(withId(R.id.menu_search))
             .perform(click())
 
-        IdlingRegistry.getInstance().register(EspressoIdlingResource)
-
         onView(withId(R.id.search_src_text))
             .perform(clearText(), typeText(searchQuery))
-
-        // fails on low resources either with commented code below or not - flaky test
-//        runBlockingTest {
-//                Log.d("FailingTest", "waiting to be idle.....")
-//                EspressoIdlingResource.awaitUntilIdle()
-//                Log.d("FailingTest", "idle status received")
-//        }
-//        Log.d("FailingTest", "after waiting to be idle")
 
         retryFlakyCodeForViewInteraction {
             onView(withId(R.id.recyclerView)).check(matches(hasChildCount(3)))
@@ -106,11 +111,6 @@ class OverFlowMenuItemsTest {
 
         onView(withId(R.id.search_src_text))
             .perform(clearText())
-
-        // fails on low resources either with commented code below or not - flaky test
-//        runBlockingTest {
-//            EspressoIdlingResource.awaitUntilIdle()
-//        }
 
         retryFlakyCodeForViewInteraction {
             onView(withId(R.id.recyclerView)).check(matches(hasChildCount(4)))
@@ -121,27 +121,17 @@ class OverFlowMenuItemsTest {
         onView(withId(R.id.search_src_text))
             .perform(typeText(searchQuery))
 
-        // fails on low resources either with commented code below or not - flaky test
-//        runBlockingTest {
-//            EspressoIdlingResource.awaitUntilIdle()
-//        }
-
         retryFlakyCodeForViewInteraction {
             onView(withId(R.id.recyclerView)).check(matches(hasChildCount(1)))
         }
 
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource)
         activityScenario.close()
     }
 
     @Test
     fun test1_updateFragment_clickOnSaveMenuItem_taskUpdatedAtTasksFragment_checkIfDisplayed() {
-//        val navController = TestNavHostController(context)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        activityScenario.moveToState(Lifecycle.State.RESUMED)
-        activityScenario.onActivity {
-//            navController.setGraph(R.navigation.my_nav)
-        }
+        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         onView(withId(R.id.recyclerView))
             .perform(
@@ -162,7 +152,6 @@ class OverFlowMenuItemsTest {
 
         onView(withId(R.id.menu_save)).perform(click())
 
-//        assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
         onView(withId(R.id.recyclerView))
             .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(0))
             .check(matches(hasDescendant(withChild(withText(newTitle)))))
@@ -175,11 +164,8 @@ class OverFlowMenuItemsTest {
 
     @Test
     fun test2_addFragment_clickOnAddMenuItem_taskAddedToTasksFragment_checkIfDisplayed() {
-//        val navController = TestNavHostController(context)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        activityScenario.onActivity {
-//            navController.setGraph(R.navigation.my_nav)
-        }
+        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         onView(withId(R.id.add_button)).perform(click())
 
@@ -194,8 +180,6 @@ class OverFlowMenuItemsTest {
 
         onView(withId(R.id.menu_add)).perform(click())
 
-//        assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
-
         onView(withId(R.id.recyclerView)).check(matches(hasChildCount(5)))
             .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(5))
             .check(matches((hasDescendant(withChild(withText(newTitle))))))
@@ -207,11 +191,8 @@ class OverFlowMenuItemsTest {
 
     @Test
     fun test3_tasksFragment_clickOnDeleteAllMenuItem_taskDeletedFromTasksFragment_checkIfDisplayed() {
-//        val navController = TestNavHostController(context)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        activityScenario.onActivity {
-//            navController.setGraph(R.navigation.my_nav)
-        }
+        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         openActionBarOverflowOrOptionsMenu(context)
         onView(withText("Delete All")).perform(click())
@@ -220,7 +201,6 @@ class OverFlowMenuItemsTest {
             .check(matches(isDisplayed()))
             .perform(click())
 
-//        assertThat(navController.currentDestination?.id, equalTo(R.id.tasksFragment))
         onView(withId(R.id.recyclerView)).check(matches(CoreMatchers.not(isDisplayed())))
         onView(withId(R.id.no_data_textView)).check(matches(isDisplayed()))
         onView(withId(R.id.no_data_imageView)).check(matches(isDisplayed()))
@@ -231,6 +211,7 @@ class OverFlowMenuItemsTest {
     @Test
     fun test4_tasksFragment_sortByHighPriority_checkSortOrder() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         openActionBarOverflowOrOptionsMenu(context)
 
@@ -249,6 +230,7 @@ class OverFlowMenuItemsTest {
     @Test
     fun test5_tasksFragment_sortByLowPriority_checkSortOrder() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         openActionBarOverflowOrOptionsMenu(context)
 
@@ -267,6 +249,7 @@ class OverFlowMenuItemsTest {
     @Test
     fun test6_tasksFragment_sortByHighPriorityAndReset_checkOriginalSortOrder() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
 
         openActionBarOverflowOrOptionsMenu(context)
 

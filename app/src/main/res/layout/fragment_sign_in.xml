@@ -7,7 +7,7 @@
     android:background="@drawable/ic_background"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".fragments.login_fragment.LoginFragment">
+    tools:context=".fragments.auth_fragments.LoginFragment">
 
     <TextView
         android:id="@+id/sign_in_title_textView"
@@ -27,7 +27,7 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:text="@string/sign_in_description_text"
-            android:textColor="@color/secondary_text_color"
+            android:textColor="@color/secondaryTextColor"
             android:textSize="16sp" />
 
         <androidx.cardview.widget.CardView

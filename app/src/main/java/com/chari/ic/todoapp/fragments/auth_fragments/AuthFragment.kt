@@ -1,4 +1,4 @@
-package com.chari.ic.todoapp.fragments.login_fragment
+package com.chari.ic.todoapp.fragments.auth_fragments
 
 import androidx.core.content.ContextCompat
 import com.chari.ic.todoapp.R

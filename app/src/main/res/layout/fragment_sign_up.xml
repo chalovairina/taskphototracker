@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/ic_background"
-    tools:context=".fragments.login_fragment.RegisterFragment">
+    tools:context=".fragments.auth_fragments.RegisterFragment">
 
     <TextView
         android:id="@+id/sign_up_title_textView"
@@ -28,7 +28,7 @@
         android:layout_marginEnd="24dp"
         android:gravity="center"
         android:text="@string/sign_up_description_text"
-        android:textColor="@color/secondary_text_color"
+        android:textColor="@color/secondaryTextColor"
         android:textSize="16sp" />
 
     <androidx.cardview.widget.CardView
@@ -97,7 +97,7 @@
                     android:gravity="start"
                     android:background="@color/white"
                     android:text="@string/password_restrictions"
-                    android:textColor="@color/secondary_text_color"
+                    android:textColor="@color/secondaryTextColor"
                     android:textSize="14sp" />
 
                 <androidx.appcompat.widget.AppCompatEditText

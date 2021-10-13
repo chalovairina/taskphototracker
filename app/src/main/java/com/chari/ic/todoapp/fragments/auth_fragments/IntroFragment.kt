@@ -1,16 +1,13 @@
-package com.chari.ic.todoapp.fragments.login_fragment
+package com.chari.ic.todoapp.fragments.auth_fragments
 
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.chari.ic.todoapp.R
-import com.chari.ic.todoapp.ToDoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 const val CURRENT_USER_ID: String = "CURRENT_USER_ID"
@@ -54,11 +51,10 @@ class IntroFragment: Fragment() {
         val currentBackStackEntry = navController.currentBackStackEntry!!
         val savedStateHandle = currentBackStackEntry.savedStateHandle
         savedStateHandle.getLiveData<String>(CURRENT_USER_ID)
-            .observe(currentBackStackEntry, Observer { userId ->
+            .observe(currentBackStackEntry, { userId ->
                 if (userId.isNotEmpty()) {
                     Log.d("Intro Fragment", "login success: PreviousBackStackEntry = ${findNavController().previousBackStackEntry}")
                     Log.d("Intro Fragment", "login success: CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
-
 
                     val startDestination = navController.graph.startDestinationId
                     val navOptions = NavOptions.Builder()
@@ -67,7 +63,6 @@ class IntroFragment: Fragment() {
                     navController.navigate(startDestination, null, navOptions)
                 }
             })
-
     }
 
 }

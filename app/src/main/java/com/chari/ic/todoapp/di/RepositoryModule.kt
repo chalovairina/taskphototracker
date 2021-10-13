@@ -13,18 +13,8 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
     @Binds
-//    @MainRepository
     abstract fun bindToDoRepository(repository: ToDoRepository): Repository
 
     @Binds
-//    @MainDataStoreRepository
     abstract fun bindDataStoreRepository(dataStoreRepository: DataStoreRepository): IDataStoreRepository
 }
-
-//@Qualifier
-//@Retention(AnnotationRetention.BINARY)
-//annotation class MainRepository
-//
-//@Qualifier
-//@Retention(AnnotationRetention.BINARY)
-//annotation class MainDataStoreRepository

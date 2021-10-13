@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/introFragment"
-        android:name="com.chari.ic.todoapp.fragments.login_fragment.IntroFragment"
+        android:name="com.chari.ic.todoapp.fragments.auth_fragments.IntroFragment"
         android:label="@string/intro" >
         <action
             android:id="@+id/action_introFragment_to_loginFragment"
@@ -67,12 +67,12 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.chari.ic.todoapp.fragments.login_fragment.RegisterFragment"
+        android:name="com.chari.ic.todoapp.fragments.auth_fragments.RegisterFragment"
         android:label="@string/sign_up"
         tools:layout="@layout/fragment_sign_up" />
     <fragment
         android:id="@+id/signInFragment"
-        android:name="com.chari.ic.todoapp.fragments.login_fragment.LoginFragment"
+        android:name="com.chari.ic.todoapp.fragments.auth_fragments.LoginFragment"
         android:label="@string/sign_in"
         tools:layout="@layout/fragment_sign_in" />
     <fragment

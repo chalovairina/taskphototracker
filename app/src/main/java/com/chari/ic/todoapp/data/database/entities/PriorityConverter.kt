@@ -2,7 +2,7 @@ package com.chari.ic.todoapp.data.database.entities
 
 import androidx.room.TypeConverter
 
-class Converter {
+class PriorityConverter {
     @TypeConverter
     fun fromPriority(priority: Priority): String = priority.name
 

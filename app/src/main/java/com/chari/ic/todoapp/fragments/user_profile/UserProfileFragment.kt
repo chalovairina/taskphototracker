@@ -27,7 +27,7 @@ import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.firebase.MyFireStore
 import com.chari.ic.todoapp.firebase.users.User
-import com.chari.ic.todoapp.fragments.login_fragment.ProgressWaitingFragment
+import com.chari.ic.todoapp.fragments.auth_fragments.ProgressWaitingFragment
 import com.chari.ic.todoapp.utils.Constants.USER_IMAGE
 import com.chari.ic.todoapp.utils.Constants.USER_MOBILE
 import com.chari.ic.todoapp.utils.Constants.USER_NAME
@@ -125,7 +125,7 @@ class UserProfileFragment: ProgressWaitingFragment() {
     }
 
     private fun fillUserProfile() {
-        toDoViewModel.currentUser.asLiveData().observe(viewLifecycleOwner) { user ->
+        toDoViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             userDetails = User(user.userId, user.userName, user.userEmail,
                 user.userImageUrl, user.userMobile, user.fcmToken)
 
@@ -135,7 +135,7 @@ class UserProfileFragment: ProgressWaitingFragment() {
             if (user.userMobile != 0L) {
                 userProfileMobile.setText(user.userMobile.toString())
             }
-            toDoViewModel.currentUser.asLiveData().removeObservers(viewLifecycleOwner)
+            toDoViewModel.currentUser.removeObservers(viewLifecycleOwner)
         }
     }
 

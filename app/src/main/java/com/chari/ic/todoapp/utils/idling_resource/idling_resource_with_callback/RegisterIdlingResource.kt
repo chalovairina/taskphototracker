@@ -1,45 +1,38 @@
-package com.chari.ic.todoapp.utils.idling_resource
+package com.chari.ic.todoapp.utils.idling_resource.idling_resource_with_callback
 
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.IdlingResource.ResourceCallback
+import com.chari.ic.todoapp.R
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicBoolean
 
 
-object EspressoIdlingResource: IdlingResource {
+object RegisterIdlingResource: IdlingResource {
     private const val RESOURCE = "GLOBAL"
 
     @Volatile
     private var resourceCallback: ResourceCallback? = null
 
-    private var mIsIdleNow = AtomicBoolean(false)
+    private var isIdle = AtomicBoolean(true)
 
-//    @JvmField
-//    val countingIdleResource = CountingIdlingResource(RESOURCE)
-//
-//    fun increment() {
-//        countingIdleResource.increment()
+    override fun getName(): String = RegisterIdlingResource::class.java.name
+
+    override fun isIdleNow(): Boolean {
+        return isIdle.get()
+    }
+
+//    fun getCurrentActivity(): Activity? {
+//        return InstrumentationRegistry.getInstrumentation().context.applicationContext as Activity
 //    }
-//
-//    fun decrement() {
-//        if (!countingIdleResource.isIdleNow) {
-//            countingIdleResource.decrement()
-//        }
-//    }
-
-
-    override fun getName() = "EspressoIdlingResource"
-
-    override fun isIdleNow(): Boolean = mIsIdleNow.get()
 
     /**
      * Sets the new idle state, if isIdleNow is true, it pings the [ResourceCallback].
      * @param isIdleNow false if there are pending operations, true if idle.
      */
     fun setIdleState(isIdleNow: Boolean) {
-        if (mIsIdleNow.get() != isIdleNow) { mIsIdleNow.set(isIdleNow) }
+        if (isIdle.get() != isIdleNow) { isIdle.set(isIdleNow) }
         if (isIdleNow && resourceCallback != null) {
             resourceCallback!!.onTransitionToIdle()
         }
@@ -47,7 +40,7 @@ object EspressoIdlingResource: IdlingResource {
 
     override fun registerIdleTransitionCallback(callback: ResourceCallback?) {
         if (callback != null) {
-            this.resourceCallback = callback
+            resourceCallback = callback
         }
     }
 }
@@ -56,7 +49,7 @@ object EspressoIdlingResource: IdlingResource {
 suspend fun IdlingResource.awaitUntilIdle() {
     // using loop because some times, registerIdleTransitionCallback wasn't called
     while (true) {
-        Log.d("EspressoIdlingResource","Idling resource is idle = ${EspressoIdlingResource.isIdleNow}")
+        Log.d("EspressoIdlingResource","Idling resource is idle = ${RegisterIdlingResource.isIdleNow}")
         if (isIdleNow) return
         delay(100)
     }

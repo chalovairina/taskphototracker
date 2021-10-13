@@ -1,4 +1,4 @@
-package com.chari.ic.todoapp.fragments.login_fragment
+package com.chari.ic.todoapp.fragments.auth_fragments
 
 import android.os.Bundle
 import android.text.TextUtils
@@ -13,6 +13,7 @@ import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.firebase.MyFireStore
 import com.chari.ic.todoapp.firebase.users.User
+import com.chari.ic.todoapp.utils.idling_resource.idling_resource_with_callback.RegisterIdlingResource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -76,6 +77,7 @@ class LoginFragment: AuthFragment() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     hideLoadingDialog()
+                    RegisterIdlingResource.setIdleState(true)
                     usersFirestore.loadUser()
                         .addOnSuccessListener {
                             val loggedInUser = it.toObject(User::class.java)

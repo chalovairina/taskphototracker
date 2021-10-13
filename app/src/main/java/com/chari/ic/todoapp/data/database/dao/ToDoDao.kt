@@ -6,8 +6,8 @@ import com.chari.ic.todoapp.data.database.entities.ToDoTask
 
 @Dao
 interface ToDoDao {
-    @Query("SELECT * FROM todo_tasks ORDER BY id DESC")
-    fun getAllTasks(): LiveData<List<ToDoTask>>
+    @Query("SELECT * FROM todo_tasks WHERE userId = :userId ORDER BY id DESC")
+    fun getAllTasksByUserId(userId: String): LiveData<List<ToDoTask>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(toDoTask: ToDoTask)
@@ -18,9 +18,9 @@ interface ToDoDao {
     @Delete
     suspend fun deleteTask(toDoTask: ToDoTask)
 
-    @Query("DELETE FROM todo_tasks")
-    suspend fun deleteAll()
+    @Query("DELETE FROM todo_tasks WHERE userId = :userId")
+    suspend fun deleteAllByUserId(userId: String)
 
-    @Query("SELECT * FROM todo_tasks WHERE title LIKE :searchQuery ORDER BY id DESC")
-    fun searchDatabase(searchQuery: String): LiveData<List<ToDoTask>>
+    @Query("SELECT * FROM todo_tasks WHERE userId = :userId AND title LIKE :searchQuery ORDER BY id DESC")
+    fun searchDatabase(searchQuery: String, userId: String): LiveData<List<ToDoTask>>
 }

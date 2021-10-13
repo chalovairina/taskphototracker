@@ -111,9 +111,9 @@ class DataStoreRepository @Inject constructor(
 
 data class CurrentUserPreferences(
     val userId: String,
-    val userName: String,
-    val userMobile: Long,
-    val userImageUrl: String,
+    var userName: String,
+    var userMobile: Long,
+    var userImageUrl: String,
     val userEmail: String,
-    val fcmToken: String
+    var fcmToken: String
 )

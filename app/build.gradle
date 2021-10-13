@@ -53,12 +53,16 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
+
+        coreLibraryDesugaringEnabled true
     }
     kotlinOptions {
         jvmTarget = '11'
     }
-    testOptions {
-        unitTests.includeAndroidResources = true
+    testOptions.unitTests {
+        includeAndroidResources = true
+        // for using idling resource in tests
+        returnDefaultValues = true
     }
     sourceSets {
         String sharedTestDir = 'src/sharedTest/java'
@@ -195,6 +199,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
 
     androidTestImplementation "org.mockito:mockito-core:$mockito_version"
+    // to mock NavController
+    androidTestImplementation "org.mockito:mockito-android:$mockito_version"
 
     // for InstantTaskExecutorRule
     androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
@@ -218,7 +224,10 @@ dependencies {
     // Espresso dependencies
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
     // for recyclerViewActions
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+//    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:$espresso_version"){
+            exclude module: "protobuf-lite"
+}
 //    androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoVersion"
 //    androidTestImplementation "androidx.test.espresso:espresso-accessibility:$espressoVersion"
 //    androidTestImplementation "androidx.test.espresso:espresso-web:$espressoVersion"
@@ -250,4 +259,7 @@ dependencies {
     // Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
 //    kapt "com.github.bumptech.glide:compiler:$glide_version"
+
+//    for java time lib
+    implementation coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }
