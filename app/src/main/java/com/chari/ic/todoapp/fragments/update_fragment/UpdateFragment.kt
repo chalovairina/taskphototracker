@@ -24,10 +24,19 @@ class UpdateFragment : TaskEditFragmentWithBottomSheet() {
 
     private val toDoViewModel: ToDoViewModel by viewModels()
 
+    private var currentTask: ToDoTask? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        toDoViewModel._taskToUpdate.postValue(args.currentTask)
+        currentTask = args.currentTask
+        // use copy of the task from recyclerView adapter's list which you want to update
+        // so that you are not updating the object using for adapter list viewing
+        // and in case if user decided to not apply update and pressed back or up button
+        // and returned to recycler view list
+        if (currentTask != null) {
+            toDoViewModel._taskToUpdate.postValue(currentTask!!.copy())
+        }
 
         setHasOptionsMenu(true)
     }
@@ -74,7 +83,7 @@ class UpdateFragment : TaskEditFragmentWithBottomSheet() {
     private fun updateTask() {
         val validated = verifyInputData(binding.currentTitleEditText.text.toString())
         if (validated) {
-            var currentTask = toDoViewModel.taskToUpdate.value!!
+            val currentTask = toDoViewModel.taskToUpdate.value!!
             val updatedTask = createTask(
                 currentTask.id,
                 currentTask.userId,

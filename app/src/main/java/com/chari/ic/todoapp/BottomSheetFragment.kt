@@ -24,8 +24,6 @@ private const val KEY_CONTEXT_FRAGMENT_ID = "FragmentId"
 class BottomSheetFragment: BottomSheetDialogFragment(), OnClickListener {
     private lateinit var toDoViewModel: ToDoViewModel
 
-    private var selectedPriorityButtonId: Int = -1
-
     private var _binding: BottomSheetFragmentBinding? = null
     private val binding get() = _binding!!
 
@@ -92,7 +90,10 @@ class BottomSheetFragment: BottomSheetDialogFragment(), OnClickListener {
         }
 
         binding.calendarView.setOnDateChangeListener { view, year, month, dayOfMonth ->
-            dueDate = LocalDate.of(year, month, dayOfMonth)
+            // increase month by 1 as calendarView has months order started with 0 (for January)
+            // and so forth. So that tasks's dueDate presented as Instant object is saved
+            // and further retrieved from database and shown correctly as to month order
+            dueDate = LocalDate.of(year, month + 1, dayOfMonth)
                 .atStartOfDay()
                 .toInstant(
                     ZoneOffset.systemDefault()

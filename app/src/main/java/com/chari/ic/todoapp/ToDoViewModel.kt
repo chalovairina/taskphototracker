@@ -19,9 +19,7 @@ class ToDoViewModel @Inject constructor(
 ): ViewModel() {
     val _taskToUpdate = MutableLiveData<ToDoTask?>(null)
     val taskToUpdate: LiveData<ToDoTask?> = _taskToUpdate
-//    var currentUser: User? = null
-    //
-//    val currentUser: MutableLiveData<User?> = MutableLiveData()
+
     val currentUser = dataStoreRepository.readCurrentUserData().asLiveData()
     fun writeCurrentUserData(userId: String, userName: String, userMobile: Long,
                              userImageUrl: String, userEmail: String, fcmToken: String) {
