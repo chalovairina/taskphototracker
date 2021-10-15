@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.IdlingResource.ResourceCallback
-import com.chari.ic.todoapp.R
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicBoolean
 

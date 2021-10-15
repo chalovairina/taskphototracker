@@ -1,5 +1,6 @@
 package com.chari.ic.todoapp
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
@@ -17,9 +18,11 @@ class ToDoViewModel @Inject constructor(
     private val dataStoreRepository: IDataStoreRepository,
     @Named("IoDispatcher") private val dispatchers: CoroutineDispatcher
 ): ViewModel() {
+    // to keep data about currently updated task
     val _taskToUpdate = MutableLiveData<ToDoTask?>(null)
     val taskToUpdate: LiveData<ToDoTask?> = _taskToUpdate
 
+    // write / read for current user in DataStore
     val currentUser = dataStoreRepository.readCurrentUserData().asLiveData()
     fun writeCurrentUserData(userId: String, userName: String, userMobile: Long,
                              userImageUrl: String, userEmail: String, fcmToken: String) {
@@ -30,37 +33,48 @@ class ToDoViewModel @Inject constructor(
     }
     fun writeCurrentUserName(userName: String) {
         viewModelScope.launch(dispatchers) {
-            dataStoreRepository.writeCurrentUserName( userName)
+            dataStoreRepository.writeCurrentUserName(userName)
         }
     }
     fun writeCurrentUserMobile(userMobile: Long) {
         viewModelScope.launch(dispatchers) {
-            dataStoreRepository.writeCurrentUserMobile( userMobile)
+            dataStoreRepository.writeCurrentUserMobile(userMobile)
         }
     }
     fun writeCurrentUserImageUrl(userImageUrl: String) {
         viewModelScope.launch(dispatchers) {
-            dataStoreRepository.writeCurrentUserImageUrl( userImageUrl)
+            dataStoreRepository.writeCurrentUserImageUrl(userImageUrl)
         }
     }
     fun writeCurrentUserFcmToken(fcmToken: String) {
         viewModelScope.launch(dispatchers) {
-            dataStoreRepository.writeCurrentUserFcmToken( fcmToken)
+            dataStoreRepository.writeCurrentUserFcmToken(fcmToken)
         }
     }
 
-    // loggedIn parameter to check if authentication required
-    val userLoggedIn = dataStoreRepository.readUserLoggedIn()
+    // user tasks from local database
+//     val cachedTasks = getAllTasks()
+//     private fun getAllTasks(): LiveData<List<ToDoTask>> {
+//        var currentUserId = ""
+//        viewModelScope.launch(dispatchers) {
+//            currentUserId = dataStoreRepository.readCurrentUserData().first().userId
+//        }
+//
+//        return repository.cachedTasks(
+//            currentUserId
+//        ).asLiveData()
+//    }
 
-    fun writeUserLoggedIn(userLoggedIn: Boolean) {
-        viewModelScope.launch(dispatchers) {
-            dataStoreRepository.writeUserLoggedIn(userLoggedIn)
-        }
+    val cachedTasks: LiveData<List<ToDoTask>> = Transformations.switchMap(currentUser) { user ->
+        val currentUserId = user.userId
+
+        repository.cachedTasks(
+            currentUserId
+        ).asLiveData()
     }
 
-     val getAllTasks: LiveData<List<ToDoTask>> = repository.cachedTasks()
-
-    val databaseStatus: LiveData<DatabaseResult<List<ToDoTask>>> = Transformations.map(getAllTasks) {
+    // database request status to reflect in UI
+    val databaseStatus: LiveData<DatabaseResult<List<ToDoTask>>> = Transformations.map(cachedTasks) {
         cachedTasks ->
             if (cachedTasks == null) {
                 DatabaseResult.Loading()
@@ -91,9 +105,15 @@ class ToDoViewModel @Inject constructor(
 
     fun deleteAll() {
         viewModelScope.launch(dispatchers) {
-            repository.deleteAll()
+            repository.deleteAll(
+                currentUser.value?.userId ?: ""
+            )
         }
     }
 
-    fun searchDatabase(searchQuery: String) = repository.searchDatabase(searchQuery)
+    fun searchDatabase(searchQuery: String) =
+            repository.searchDatabaseByUserId(searchQuery,
+                currentUser.value?.userId ?: ""
+            ).asLiveData()
+
 }

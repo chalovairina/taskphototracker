@@ -9,13 +9,6 @@ import javax.inject.Singleton
 
 @Singleton
 class LoggedInStubDataStoreRepository @Inject constructor(): IDataStoreRepository {
-    override fun readUserLoggedIn(): Flow<Boolean> {
-        return flow { emit(true) }
-    }
-
-    override suspend fun writeUserLoggedIn(userLoggedIn: Boolean) {
-
-    }
 
     override fun readCurrentUserData(): Flow<CurrentUserPreferences> {
         return flow {

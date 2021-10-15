@@ -1,33 +1,32 @@
 package com.chari.ic.todoapp.fragments.tasks_fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chari.ic.todoapp.BOTTOM_SHEET_DIALOG
-import com.chari.ic.todoapp.BottomSheetFragment
+import androidx.work.*
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
 import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.FragmentTasksBinding
 import com.chari.ic.todoapp.fragments.FragmentWithModalBottomSheetDialog
+import com.chari.ic.todoapp.reminder_work.ReminderWorker
+import com.chari.ic.todoapp.reminder_work.ReminderWorker.Companion.NOTIFICATION_ID
+import com.chari.ic.todoapp.reminder_work.ReminderWorker.Companion.NOTIFICATION_WORK
 import com.chari.ic.todoapp.utils.PriorityUtils
 import com.chari.ic.todoapp.utils.idling_resource.idling_resource_with_callback.RegisterIdlingResource
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class TasksFragment : FragmentWithModalBottomSheetDialog(), SearchView.OnQueryTextListener
@@ -80,8 +79,6 @@ class TasksFragment : FragmentWithModalBottomSheetDialog(), SearchView.OnQueryTe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("Tasks Fragment", "PreviousBackStackEntry = ${findNavController().previousBackStackEntry}")
-        Log.d("Tasks Fragment", "CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
 
         toDoViewModel.currentUser.observe(viewLifecycleOwner) {
                 user ->
@@ -91,26 +88,24 @@ class TasksFragment : FragmentWithModalBottomSheetDialog(), SearchView.OnQueryTe
                     .build()
 
                 findNavController().navigate(R.id.introFragment, null, navOptions)
+            } else {
+                setupAdapter()
+
+                val periodicWork = getPeriodicWork()
+                WorkManager.getInstance(requireContext().applicationContext)
+                    .enqueueUniquePeriodicWork(
+                        NOTIFICATION_WORK,
+                        ExistingPeriodicWorkPolicy.KEEP,
+                        periodicWork)
             }
             RegisterIdlingResource.setIdleState(true)
         }
 
-        setupAdapter()
-
         binding.addButton.setOnClickListener {
-//            findNavController().navigate(R.id.action_tasksFragment_to_addFragment)
             showBottomSheetDialog(R.id.tasksFragment, toDoViewModel)
         }
-    }
 
-//    private fun showBottomSheetDialog() {
-//        instantiateBottomSheetFragment()
-//        bottomSheetDialogFragment.show(this@TasksFragment.parentFragmentManager, BOTTOM_SHEET_DIALOG)
-//    }
-//
-//    private fun instantiateBottomSheetFragment() {
-//        bottomSheetDialogFragment = BottomSheetFragment()
-//    }
+    }
 
     private fun setupAdapter() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -199,7 +194,7 @@ class TasksFragment : FragmentWithModalBottomSheetDialog(), SearchView.OnQueryTe
     }
 
     private fun resetTasksList() {
-        adapter.submitList(toDoViewModel.getAllTasks.value)
+        adapter.submitList(toDoViewModel.cachedTasks.value)
     }
 
     private fun searchDatabase(query: String) {
@@ -245,6 +240,23 @@ class TasksFragment : FragmentWithModalBottomSheetDialog(), SearchView.OnQueryTe
             }
         adapter.submitList(sortedList)
         binding.recyclerView.smoothScrollToPosition(0)
+    }
+
+    private fun getPeriodicWork(): PeriodicWorkRequest {
+        val constraints = Constraints.Builder()
+            .setRequiresBatteryNotLow(true)
+            .build()
+        return PeriodicWorkRequest
+            .Builder(
+                ReminderWorker::class.java,
+               4, TimeUnit.HOURS,
+                15, TimeUnit.MINUTES
+            )
+
+            .setInputData(Data.Builder().putInt(NOTIFICATION_ID, 0).build())
+            .setConstraints(constraints)
+            .addTag(NOTIFICATION_WORK)
+            .build()
     }
 
 }

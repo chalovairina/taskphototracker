@@ -2,7 +2,6 @@ package com.chari.ic.todoapp.repository.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
-import com.chari.ic.todoapp.utils.Constants
 import com.chari.ic.todoapp.utils.Constants.USER_EMAIL
 import com.chari.ic.todoapp.utils.Constants.USER_ID
 import com.chari.ic.todoapp.utils.Constants.USER_IMAGE
@@ -21,7 +20,6 @@ class DataStoreRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : IDataStoreRepository {
     private object PreferencesKeys {
-        val userLoggedIn = booleanPreferencesKey(Constants.DATA_STORE_KEY_USER_LOGGED_IN)
         val userId = stringPreferencesKey(USER_ID)
         val userName = stringPreferencesKey(USER_NAME)
         val userMobile = longPreferencesKey(USER_MOBILE)
@@ -29,25 +27,6 @@ class DataStoreRepository @Inject constructor(
         val userEmail = stringPreferencesKey(USER_EMAIL)
         val fcmToken = stringPreferencesKey(USER_MOBILE_FCM_TOKEN)
     }
-
-    override suspend fun writeUserLoggedIn(userLoggedIn: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[PreferencesKeys.userLoggedIn] = userLoggedIn
-        }
-    }
-
-    override fun readUserLoggedIn(): Flow<Boolean> = dataStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
-            }
-        }
-        .map {
-                preferences ->
-            preferences[PreferencesKeys.userLoggedIn] ?: false
-        }
 
     override suspend fun writeCurrentUserData(userId: String, userName: String, userMobile: Long,
                                              userImageUrl: String, userEmail: String, fcmToken: String) {
@@ -104,9 +83,7 @@ class DataStoreRepository @Inject constructor(
                 val fcmToken = preferences[PreferencesKeys.fcmToken] ?: ""
                 CurrentUserPreferences(userId, userName, userMobile, userImageUrl, userEmail, fcmToken)
             }
-
         }
-
 }
 
 data class CurrentUserPreferences(

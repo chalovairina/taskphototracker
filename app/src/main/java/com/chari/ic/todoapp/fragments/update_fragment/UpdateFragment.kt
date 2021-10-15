@@ -1,7 +1,6 @@
 package com.chari.ic.todoapp.fragments.update_fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -63,7 +62,6 @@ class UpdateFragment : TaskEditFragmentWithBottomSheet() {
 
     override fun onResume() {
         super.onResume()
-        Log.d("UpdateFragment", "onResume")
 
         showKeyboard(binding.currentTitleEditText)
     }

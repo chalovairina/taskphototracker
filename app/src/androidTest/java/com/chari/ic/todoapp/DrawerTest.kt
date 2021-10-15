@@ -71,8 +71,20 @@ class DrawerTest {
     @Throws(IOException::class)
     fun tearDown() {
         mainCoroutineRule.runBlockingTest {
-            fakeRepository.resetRepository()
+            fakeRepository.resetRepository("1")
         }
+    }
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    abstract class RepositoryTestModule {
+        @Singleton
+        @Binds
+        abstract fun bindToDoRepository(repository: FakeToDoRepository): Repository
+
+        @Singleton
+        @Binds
+        abstract fun bindDataStoreRepository(dataStoreRepository: LoggedInStubDataStoreRepository): IDataStoreRepository
     }
 
     @Test
@@ -101,17 +113,5 @@ class DrawerTest {
 
         activityScenario.moveToState(Lifecycle.State.DESTROYED)
         activityScenario.close()
-    }
-
-    @Module
-    @InstallIn(SingletonComponent::class)
-    abstract class RepositoryTestModule {
-        @Singleton
-        @Binds
-        abstract fun bindToDoRepository(repository: FakeToDoRepository): Repository
-
-        @Singleton
-        @Binds
-        abstract fun bindDataStoreRepository(dataStoreRepository: LoggedInStubDataStoreRepository): IDataStoreRepository
     }
 }

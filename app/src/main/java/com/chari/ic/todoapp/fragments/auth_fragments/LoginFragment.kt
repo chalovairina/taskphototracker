@@ -2,7 +2,6 @@ package com.chari.ic.todoapp.fragments.auth_fragments
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import android.widget.EditText
@@ -56,8 +55,6 @@ class LoginFragment: AuthFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("SignIn Fragment", "PreviousBackStackEntry = ${findNavController().previousBackStackEntry}")
-        Log.d("SignIn Fragment", "CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
 
         savedStateHandle = findNavController().previousBackStackEntry!!.savedStateHandle
 
@@ -102,7 +99,6 @@ class LoginFragment: AuthFragment() {
 
     private fun finishSuccessfulLogin() {
         savedStateHandle.set(CURRENT_USER_ID, usersFirestore.getCurrentUserId())
-        toDoViewModel.writeUserLoggedIn(true)
 
         showToastLong(getString(R.string.successfully_logged_in))
 

@@ -80,6 +80,9 @@
     <string name="due_date">Due date</string>
     <string name="task_title_example">e.g. take dog for a walk</string>
     <string name="choose_due_date">Choose due date!</string>
+    <string name="check_on_todo_list">Check on your to-do list</string>
+    <string name="no_tasks_for_today">No active tasks for today! Come in to add one!</string>
+    <string name="have_tasks_for_today">You have %d tasks for today. Come in and check!</string>
 
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>

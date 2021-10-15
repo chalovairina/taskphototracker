@@ -37,7 +37,6 @@ import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.IOException
 import java.time.Instant
-import java.util.*
 import javax.inject.Inject
 
 @HiltAndroidTest
@@ -89,7 +88,7 @@ class OverFlowMenuItemsTest {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
 
         mainCoroutineRule.runBlockingTest {
-            repository.resetRepository()
+            repository.resetRepository("1")
         }
     }
 
@@ -159,33 +158,6 @@ class OverFlowMenuItemsTest {
             .check(matches(hasDescendant(withChild(withText(newDescription)))))
 
         activityScenario.moveToState(Lifecycle.State.DESTROYED)
-        // so that ui is not updated due to tearDown() method call
-        activityScenario.close()
-    }
-
-    @Test
-    fun test2_addFragment_clickOnAddMenuItem_taskAddedToTasksFragment_checkIfDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        onView(withId(R.id.add_button)).perform(click())
-
-        val newTitle = "New task title"
-        val newDescription = "New task description"
-
-        onView(withId(R.id.title_editText)).perform(typeText(newTitle))
-        onView(withId(R.id.description_editText)).perform(typeText(newDescription))
-        onView(withId(R.id.priority_spinner)).perform(click())
-        onData(`is`(instanceOf(String::class.java))).atPosition(PriorityUtils.PRIORITY_POSITION_HIGH)
-            .perform(click())
-
-        onView(withId(R.id.menu_add)).perform(click())
-
-        onView(withId(R.id.recyclerView)).check(matches(hasChildCount(5)))
-            .perform(scrollToPosition<ToDoTaskAdapter.ToDoViewHolder>(5))
-            .check(matches((hasDescendant(withChild(withText(newTitle))))))
-            .check(matches((hasDescendant(withChild(withText(newDescription))))))
-
         // so that ui is not updated due to tearDown() method call
         activityScenario.close()
     }

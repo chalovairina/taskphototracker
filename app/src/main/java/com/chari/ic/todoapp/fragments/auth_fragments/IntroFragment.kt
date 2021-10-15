@@ -1,7 +1,6 @@
 package com.chari.ic.todoapp.fragments.auth_fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
@@ -34,8 +33,6 @@ class IntroFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("Intro Fragment", "PreviousBackStackEntry = ${findNavController().previousBackStackEntry}")
-        Log.d("Intro Fragment", "CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
 
         signUpBtn.setOnClickListener {
             findNavController().navigate(R.id.action_introFragment_to_registerFragment)
@@ -44,8 +41,6 @@ class IntroFragment: Fragment() {
             findNavController().navigate(R.id.action_introFragment_to_loginFragment)
         }
 
-        Log.d("Intro Frag", "intermediate log for check")
-
         val navController = findNavController()
 
         val currentBackStackEntry = navController.currentBackStackEntry!!
@@ -53,9 +48,6 @@ class IntroFragment: Fragment() {
         savedStateHandle.getLiveData<String>(CURRENT_USER_ID)
             .observe(currentBackStackEntry, { userId ->
                 if (userId.isNotEmpty()) {
-                    Log.d("Intro Fragment", "login success: PreviousBackStackEntry = ${findNavController().previousBackStackEntry}")
-                    Log.d("Intro Fragment", "login success: CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
-
                     val startDestination = navController.graph.startDestinationId
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(R.id.introFragment, true)

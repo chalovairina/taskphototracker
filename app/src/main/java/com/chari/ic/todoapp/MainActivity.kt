@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
@@ -63,13 +62,10 @@ class MainActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelected
         navView.setNavigationItemSelectedListener(this)
         navViewHeader = navView.getHeaderView(0)
         val navViewHeaderBinding = MainDrawerHeaderBinding.inflate(layoutInflater, navView, true)
+        navViewHeaderBinding.lifecycleOwner = this
         navViewHeaderBinding.viewmodel = toDoViewModel
 
-//        userProfileImage = navViewHeader.findViewById(R.id.user_circle_view)
-//        userProfileEmail = navViewHeader.findViewById(R.id.user_email_textView)
-
         toDoViewModel.currentUser.observe(this) { user ->
-            // check if after deletion of app firebase auth is empty, but dataStore contains user data
             if (user.userId.isNotEmpty() && Firebase.auth.currentUser != null) {
                 currentUser = User(
                     user.userId, user.userName, user.userEmail,
@@ -106,7 +102,6 @@ class MainActivity: AppCompatActivity(), NavigationView.OnNavigationItemSelected
 
     private fun signOut() {
         FirebaseAuth.getInstance().signOut()
-        toDoViewModel.writeUserLoggedIn(false)
         toDoViewModel.writeCurrentUserData("", "", 0L, "", "", "")
 
         clearBackStackAndNavigateTo(R.id.introFragment)

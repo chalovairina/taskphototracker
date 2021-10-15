@@ -9,14 +9,6 @@ import javax.inject.Singleton
 
 @Singleton
 class FakeDataStoreRepository @Inject constructor():IDataStoreRepository {
-    private var loggedIn = false
-    override fun readUserLoggedIn(): Flow<Boolean> {
-        return flow { emit(loggedIn) }
-    }
-
-    override suspend fun writeUserLoggedIn(userLoggedIn: Boolean) {
-        loggedIn = userLoggedIn
-    }
 
     private var currentUser = CurrentUserPreferences("", "", 0L,
         "", "", "")

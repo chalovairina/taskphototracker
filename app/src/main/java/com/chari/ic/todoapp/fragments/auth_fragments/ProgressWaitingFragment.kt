@@ -1,8 +1,10 @@
 package com.chari.ic.todoapp.fragments.auth_fragments
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -39,5 +41,16 @@ open class ProgressWaitingFragment: Fragment() {
     protected fun showToastShort(message: String) {
         Toast.makeText(requireContext(), message,
             Toast.LENGTH_SHORT).show()
+    }
+
+    protected fun hideKeyboard(view: View) {
+        (requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+            .hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        view?.let { hideKeyboard(it) }
     }
 }

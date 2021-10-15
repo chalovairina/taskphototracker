@@ -1,13 +1,9 @@
 package com.chari.ic.todoapp.repository
 
 import androidx.annotation.VisibleForTesting
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import com.chari.ic.todoapp.data.database.dao.ToDoDao
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import com.google.firebase.auth.FirebaseAuth
-import dagger.hilt.android.scopes.ActivityRetainedScoped
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,14 +12,8 @@ class ToDoRepository @Inject constructor(
     private val toDoDao: ToDoDao
 ) : Repository {
 
-    override fun cachedTasks(): LiveData<List<ToDoTask>> {
-        if (FirebaseAuth.getInstance().currentUser != null) {
-            return toDoDao.getAllTasksByUserId(
-                FirebaseAuth.getInstance().currentUser!!.uid
-            )
-        } else {
-            return flow<List<ToDoTask>> { emit (emptyList()) }.asLiveData()
-        }
+    override fun cachedTasks(userId: String): Flow<List<ToDoTask>> {
+            return toDoDao.getAllTasksByUserId(userId)
     }
 
     override suspend fun insertTask(toDoTask: ToDoTask) {
@@ -38,13 +28,13 @@ class ToDoRepository @Inject constructor(
         toDoDao.deleteTask(toDoTask)
     }
 
-    override suspend fun deleteAll() {
-        toDoDao.deleteAllByUserId(FirebaseAuth.getInstance().currentUser!!.uid)
+    override suspend fun deleteAll(userId: String) {
+        toDoDao.deleteAllByUserId(userId)
     }
 
-    override fun searchDatabase(searchQuery: String) = toDoDao.searchDatabase(
+    override fun searchDatabaseByUserId(searchQuery: String, userId: String) = toDoDao.searchDatabase(
         searchQuery,
-        FirebaseAuth.getInstance().currentUser!!.uid
+        userId
     )
 
     @VisibleForTesting
@@ -55,7 +45,8 @@ class ToDoRepository @Inject constructor(
     }
 
     @VisibleForTesting
-    override suspend fun resetRepository() =
-            // Clear all data to avoid test pollution.
-            deleteAll()
+    override suspend fun resetRepository(userId: String) {
+        // Clear all data to avoid test pollution.
+            deleteAll(userId)
+    }
 }

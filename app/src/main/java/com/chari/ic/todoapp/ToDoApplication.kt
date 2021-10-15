@@ -1,11 +1,18 @@
 package com.chari.ic.todoapp
 
 import android.app.Application
-import com.chari.ic.todoapp.data.database.ToDoDatabase
-import com.chari.ic.todoapp.repository.ToDoRepository
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
-class ToDoApplication: Application() {
+class ToDoApplication: Application(), Configuration.Provider {
+    @Inject lateinit var workerFactory: HiltWorkerFactory
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
 }

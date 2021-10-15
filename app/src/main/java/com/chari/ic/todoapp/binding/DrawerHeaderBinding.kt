@@ -1,18 +1,12 @@
 package com.chari.ic.todoapp.binding
 
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.chari.ic.todoapp.R
-import com.chari.ic.todoapp.data.database.entities.Priority
-import com.chari.ic.todoapp.firebase.users.User
 import com.chari.ic.todoapp.repository.datastore.CurrentUserPreferences
-import com.chari.ic.todoapp.utils.PriorityUtils
 import de.hdodenhof.circleimageview.CircleImageView
-import java.util.concurrent.Flow
 
 object DrawerHeaderBinding {
     @BindingAdapter("setCurrentUserData")

@@ -7,7 +7,6 @@ import android.widget.AdapterView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import com.chari.ic.todoapp.utils.PriorityUtils
 import dagger.hilt.android.AndroidEntryPoint
 

@@ -8,7 +8,6 @@ import com.chari.ic.todoapp.utils.PriorityUtils
 import com.chari.ic.todoapp.utils.formatDate
 import com.google.android.material.chip.Chip
 import java.time.Instant
-import java.util.*
 
 object TaskRowBinding {
     @BindingAdapter("setPriorityIndicator")

@@ -1,13 +1,11 @@
 package com.chari.ic.todoapp.repository
 
 import androidx.annotation.VisibleForTesting
-import androidx.lifecycle.LiveData
-import androidx.room.OnConflictStrategy
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
-import dagger.hilt.android.scopes.ActivityRetainedScoped
+import kotlinx.coroutines.flow.Flow
 
 interface Repository {
-    fun cachedTasks(): LiveData<List<ToDoTask>>
+    fun cachedTasks(userId: String): Flow<List<ToDoTask>>
 
     suspend fun insertTask(toDoTask: ToDoTask)
 
@@ -15,13 +13,13 @@ interface Repository {
 
     suspend fun deleteTask(toDoTask: ToDoTask)
 
-    suspend fun deleteAll()
+    suspend fun deleteAll(userId: String)
 
-    fun searchDatabase(searchQuery: String): LiveData<List<ToDoTask>>
+    fun searchDatabaseByUserId(searchQuery: String, userId: String): Flow<List<ToDoTask>>
 
     @VisibleForTesting
     suspend fun fillTasksRepo(vararg tasks: ToDoTask)
 
     @VisibleForTesting
-    suspend fun resetRepository()
+    suspend fun resetRepository(userId: String)
 }

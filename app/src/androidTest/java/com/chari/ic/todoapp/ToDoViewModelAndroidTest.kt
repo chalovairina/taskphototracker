@@ -18,11 +18,11 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.*
+import org.junit.Assert.assertEquals
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.io.IOException
 import java.time.Instant
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -69,9 +69,16 @@ class ToDoViewModelAndroidTest {
     @Throws(IOException::class)
     fun tearDown() {
         mainCoroutineRule.runBlockingTest {
-            repository.resetRepository()
+            repository.resetRepository("1")
         }
         database.close()
+    }
+
+    @Test
+    fun test0_getCachedTasksFromDatabase() {
+        val tasksFromDb = toDoViewModel.cachedTasks.getOrAwaitValue()
+
+        assertEquals(3, tasksFromDb.size)
     }
 
     @Test
@@ -91,13 +98,13 @@ class ToDoViewModelAndroidTest {
         mainCoroutineRule.runBlockingTest {
             toDoViewModel.insertTask(newTask)
         }
-        val tasksFromDb = toDoViewModel.getAllTasks.getOrAwaitValue()
+        val tasksFromDb = toDoViewModel.cachedTasks.getOrAwaitValue()
         assertThat(tasksFromDb).contains(newTask)
     }
 
     @Test
     fun test2_updateTask_ok() {
-        val firstTask = toDoViewModel.getAllTasks.getOrAwaitValue().first()
+        val firstTask = toDoViewModel.cachedTasks.getOrAwaitValue().first()
         val newTitle = "Updated title"
         val newDescription = "Updated description"
         val newPriority = Priority.HIGH
@@ -109,7 +116,7 @@ class ToDoViewModelAndroidTest {
             toDoViewModel.updateTask(firstTask)
         }
 
-        val updatedTaskFromDb = toDoViewModel.getAllTasks.getOrAwaitValue().first()
+        val updatedTaskFromDb = toDoViewModel.cachedTasks.getOrAwaitValue().first()
         MatcherAssert.assertThat(updatedTaskFromDb.title, CoreMatchers.`is`(newTitle))
         MatcherAssert.assertThat(updatedTaskFromDb.description, CoreMatchers.`is`(newDescription))
         MatcherAssert.assertThat(updatedTaskFromDb.priority, CoreMatchers.`is`(newPriority))
@@ -117,14 +124,14 @@ class ToDoViewModelAndroidTest {
 
     @Test
     fun test3_deleteAll_ok() {
-        val tasks = toDoViewModel.getAllTasks.getOrAwaitValue()
+        val tasks = toDoViewModel.cachedTasks.getOrAwaitValue()
         MatcherAssert.assertThat(tasks.size, CoreMatchers.`is`(3))
 
         mainCoroutineRule.runBlockingTest {
             toDoViewModel.deleteAll()
         }
 
-        val deletedTasks = toDoViewModel.getAllTasks.getOrAwaitValue()
+        val deletedTasks = toDoViewModel.cachedTasks.getOrAwaitValue()
         MatcherAssert.assertThat(deletedTasks.size, CoreMatchers.`is`(0))
     }
 
@@ -145,11 +152,11 @@ class ToDoViewModelAndroidTest {
         mainCoroutineRule.runBlockingTest {
             toDoViewModel.deleteAll()
             toDoViewModel.insertTask(taskToDelete)
-            taskToDelete = toDoViewModel.getAllTasks.getOrAwaitValue().first()
+            taskToDelete = toDoViewModel.cachedTasks.getOrAwaitValue().first()
             toDoViewModel.deleteTask(taskToDelete)
         }
 
-        val tasksFromDb = toDoViewModel.getAllTasks.getOrAwaitValue()
+        val tasksFromDb = toDoViewModel.cachedTasks.getOrAwaitValue()
         assertThat(tasksFromDb).doesNotContain(taskToDelete)
     }
 

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.chari.ic.todoapp">
+
+<!--    Custom permission of app broadcast receiver -->
+<!--    <permission android:name="com.chari.ic.todoapp.PRIVATE"-->
+<!--        android:protectionLevel="signature"/>-->
+<!--    <uses-permission android:name="com.chari.ic.todoapp.PRIVATE"/>-->
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,6 +30,42 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+<!--        workManager greater than 2.6.0-->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove">
+        </provider>
+
+<!--        <provider-->
+<!--            android:name="androidx.startup.InitializationProvider"-->
+<!--            android:authorities="${applicationId}.androidx-startup"-->
+<!--            android:exported="false"-->
+<!--            tools:node="merge">-->
+            <!-- If you are using androidx.startup to initialize other components -->
+<!--            <meta-data-->
+<!--                android:name="androidx.work.WorkManagerInitializer"-->
+<!--                android:value="androidx.startup"-->
+<!--                tools:node="remove" />-->
+<!--        </provider>-->
+
+<!--        workerManager older than 2.6.0-->
+<!--        <provider-->
+<!--            android:name="androidx.work.impl.WorkManagerInitializer"-->
+<!--            android:authorities="${applicationId}.workmanager-init"-->
+<!--            tools:node="remove" />-->
+
+
+<!--        <receiver android:name=".reminder_work.NotificationReceiver"-->
+<!--            android:exported="false"-->
+<!--            android:permission="com.chari.ic.todoapp.PRIVATE">-->
+<!--            Define the lowest priority for this receiver
+                so that it should receive broadcast the last in order after all other receivers -->
+<!--            <intent-filter android:priority="-999">-->
+<!--                <action android:name="com.chari.ic.todoapp.SHOW_NOTIFICATION"/>-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
 
         <meta-data
             android:name="preloaded_fonts"

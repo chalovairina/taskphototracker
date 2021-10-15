@@ -6,7 +6,10 @@ object Constants {
 
     // dataStore
     const val DATA_STORE_NAME = "todo_preferences"
-    const val DATA_STORE_KEY_USER_LOGGED_IN = "userLoggedIn"
+
+    // periodic notification work
+    const val ALARM_ON = "alarm"
+    const val NOTIF_WORKER = "notificationWorker"
 
     // firestore
     const val USERS = "users"
@@ -16,4 +19,6 @@ object Constants {
     const val USER_EMAIL = "email"
     const val USER_MOBILE = "mobile"
     const val USER_MOBILE_FCM_TOKEN = "fcmToken"
+
+
 }

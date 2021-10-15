@@ -28,13 +28,10 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -62,14 +59,6 @@ class RegisterFragmentTest {
         hiltRule.inject()
 
         context = ApplicationProvider.getApplicationContext()
-    }
-
-    @After
-    @Throws(IOException::class)
-    fun tearDown() {
-        mainCoroutineRule.runBlockingTest {
-            fakeRepository.resetRepository()
-        }
     }
 
     // replace repository with fake tasks repo and signedOut dataStore repo
@@ -107,7 +96,7 @@ class RegisterFragmentTest {
 
         onView(withId(R.id.sign_up_btn)).perform(click())
 
-        onView(ViewMatchers.withText(R.string.fill_in_email)).check(matches(isDisplayed()))
+        onView(withText(R.string.fill_in_email)).check(matches(isDisplayed()))
 
         onView(withId(R.id.sign_up_email_editText)).perform(replaceText("email"))
         onView(withId(R.id.sign_up_password_editText)).perform(replaceText(""))
@@ -115,7 +104,7 @@ class RegisterFragmentTest {
 
         onView(withId(R.id.sign_up_btn)).perform(click())
 
-        onView(ViewMatchers.withText(R.string.fill_in_password)).check(matches(isDisplayed()))
+        onView(withText(R.string.fill_in_password)).check(matches(isDisplayed()))
 
         onView(withId(R.id.sign_up_email_editText)).perform(replaceText("email"))
         onView(withId(R.id.sign_up_password_editText)).perform(replaceText("password"))

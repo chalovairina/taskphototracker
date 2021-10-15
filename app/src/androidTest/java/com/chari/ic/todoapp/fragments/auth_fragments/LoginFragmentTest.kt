@@ -19,7 +19,6 @@ import com.chari.ic.todoapp.di.RepositoryModule
 import com.chari.ic.todoapp.firebase.MyFireStore
 import com.chari.ic.todoapp.repository.Repository
 import com.chari.ic.todoapp.repository.datastore.IDataStoreRepository
-import com.chari.ic.todoapp.utils.matchesAndroidHome
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -33,8 +32,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,7 +39,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -92,14 +88,6 @@ class LoginFragmentTest {
         failure = failureTask
 
         context = ApplicationProvider.getApplicationContext()
-    }
-
-    @After
-    @Throws(IOException::class)
-    fun tearDown() {
-        mainCoroutineRule.runBlockingTest {
-            fakeRepository.resetRepository()
-        }
     }
 
     // replace repository with fake tasks repo and signedOut dataStore repo

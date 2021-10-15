@@ -22,7 +22,6 @@
             android:padding="4dp"
             android:text="@string/add_new_task"
             android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -45,17 +44,21 @@
             app:layout_constraintEnd_toEndOf="@id/add_new_task_textView"
             app:layout_constraintTop_toBottomOf="@id/add_new_task_textView" />
 
+        <LinearLayout
+            android:id="@+id/buttons_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            app:layout_constraintTop_toBottomOf="@id/bottom_title_editText"
+            >
         <ImageView
             android:id="@+id/calendar_imageView"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="24dp"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bottom_title_editText"
-            app:layout_constraintEnd_toStartOf="@id/priority_imageView"
             android:src="@drawable/ic_baseline_today_24"
              />
 
@@ -63,12 +66,8 @@
             android:id="@+id/priority_imageView"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginBottom="8dp"
             android:background="@android:color/transparent"
-            app:layout_constraintStart_toEndOf="@id/calendar_imageView"
-            app:layout_constraintEnd_toStartOf="@id/save_imageView"
-            app:layout_constraintTop_toTopOf="@id/calendar_imageView"
-            app:layout_constraintBottom_toBottomOf="@id/calendar_imageView"
+            android:layout_weight="1"
             android:src="@drawable/ic_baseline_outlined_flag_24"
              />
 
@@ -76,64 +75,55 @@
             android:id="@+id/save_imageView"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintStart_toEndOf="@id/priority_imageView"
-            app:layout_constraintTop_toTopOf="@id/priority_imageView"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_weight="1"
             android:src="@drawable/ic_check"
             app:tint="@color/iconTint"
              />
 
         <ImageView
             android:id="@+id/dialog_close_imageView"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginBottom="8dp"
-            android:visibility="gone"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:background="@android:color/transparent"
-            app:layout_constraintStart_toEndOf="@id/priority_imageView"
-            app:layout_constraintTop_toTopOf="@id/priority_imageView"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:rotationX="180"
             android:src="@drawable/ic_baseline_arrow_circle_up_24"
-            />
+            android:visibility="gone"
+            android:layout_weight="1"
+            tools:visibility="visible" />
+        </LinearLayout>
 
         <RadioGroup
             android:id="@+id/priority_radioGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:orientation="horizontal"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/priority_imageView">
+            app:layout_constraintTop_toBottomOf="@id/buttons_group"
+            tools:visibility="gone">
 
             <RadioButton
                 android:id="@+id/radioButton_high"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="4dp"
                 android:background="@color/highPriorityColor"
                 android:text="@string/priority_high" />
 
             <RadioButton
                 android:id="@+id/radioButton_med"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="4dp"
                 android:background="@color/mediumPriorityColor"
                 android:text="@string/priority_medium" />
 
             <RadioButton
                 android:id="@+id/radioButton_low"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="4dp"
                 android:background="@color/lowPriorityColor"
                 android:text="@string/priority_low" />
         </RadioGroup>
@@ -142,8 +132,9 @@
             android:id="@+id/due_date_textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="4dp"
+
             android:layout_marginTop="8dp"
+            app:layout_goneMarginTop="0dp"
             android:layout_marginStart="48dp"
             android:layout_marginEnd="48dp"
             android:gravity="center_horizontal"
@@ -159,8 +150,6 @@
             android:id="@+id/today_chip"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:layout_marginTop="2dp"
             android:text="@string/today"
             app:chipIcon="@drawable/ic_baseline_today_24"
             app:layout_constraintEnd_toEndOf="@id/due_date_textView"
@@ -171,8 +160,6 @@
             android:id="@+id/tomorrow_chip"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:layout_marginTop="2dp"
             android:background="@android:color/transparent"
             android:text="@string/tomorrow"
             app:chipIcon="@drawable/ic_baseline_wb_sunny_24"
@@ -184,8 +171,6 @@
             android:id="@+id/next_week_chip"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:layout_marginTop="2dp"
             android:background="@android:color/transparent"
             android:text="@string/next_week"
             app:chipIcon="@drawable/ic_baseline_next_week_24"

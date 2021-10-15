@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.chari.ic.todoapp.R
@@ -106,8 +104,6 @@ class UserProfileFragment: ProgressWaitingFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("UserProfile Fragment", "PreviousBackStackEntry = ${findNavController().previousBackStackEntry}")
-        Log.d("UserProfile Fragment", "CurrentBackStackEntry = ${findNavController().currentBackStackEntry}")
 
         fillUserProfile()
 

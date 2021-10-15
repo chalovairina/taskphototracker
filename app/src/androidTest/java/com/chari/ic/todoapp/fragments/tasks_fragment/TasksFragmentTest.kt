@@ -35,7 +35,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 import java.time.Instant
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -65,7 +64,7 @@ class TasksFragmentTest {
     @Throws(IOException::class)
     fun tearDown() {
         mainCoroutineRule.runBlockingTest {
-            fakeRepository.resetRepository()
+            fakeRepository.resetRepository("1")
         }
     }
 

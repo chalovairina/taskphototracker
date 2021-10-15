@@ -3,9 +3,6 @@ package com.chari.ic.todoapp.repository.datastore
 import kotlinx.coroutines.flow.Flow
 
 interface IDataStoreRepository {
-    fun readUserLoggedIn(): Flow<Boolean>
-
-    suspend fun writeUserLoggedIn(userLoggedIn: Boolean)
 
     fun readCurrentUserData(): Flow<CurrentUserPreferences>
 

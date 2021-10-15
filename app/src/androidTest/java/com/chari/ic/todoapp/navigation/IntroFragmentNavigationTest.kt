@@ -42,7 +42,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import java.io.IOException
 import java.time.Instant
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -79,7 +78,7 @@ class IntroFragmentNavigationTest {
     @Throws(IOException::class)
     fun tearDown() {
         mainCoroutineRule.runBlockingTest {
-            fakeRepository.resetRepository()
+            fakeRepository.resetRepository("1")
         }
     }
 

@@ -13,12 +13,12 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 import java.time.Instant
-import java.util.*
 
 @ExperimentalCoroutinesApi
 class ToDoViewModelTest {
@@ -35,6 +35,7 @@ class ToDoViewModelTest {
 
     @Before
     fun setUp() {
+
         stubDataStoreRepository = LoggedInStubDataStoreRepository()
         fakeRepository = FakeToDoRepository()
 
@@ -54,8 +55,15 @@ class ToDoViewModelTest {
     @Throws(IOException::class)
     fun tearDown() {
         mainCoroutineRule.runBlockingTest {
-            fakeRepository.resetRepository()
+            fakeRepository.resetRepository("1")
         }
+    }
+
+    @Test
+    fun getCachedTasksFromDatabase() {
+        val tasksFromDb = toDoViewModel.cachedTasks.getOrAwaitValue()
+
+        assertEquals(3, tasksFromDb.size)
     }
 
     @Test
@@ -76,7 +84,7 @@ class ToDoViewModelTest {
             toDoViewModel.insertTask(newTask)
         }
 
-        val lastTask = toDoViewModel.getAllTasks.getOrAwaitValue().last()
+        val lastTask = toDoViewModel.cachedTasks.getOrAwaitValue().last()
 
         assertThat(lastTask, notNullValue())
         assertThat(lastTask.title, `is`(newTask.title))
@@ -86,7 +94,7 @@ class ToDoViewModelTest {
 
     @Test
     fun updateTask_ok() {
-        val firstTask = toDoViewModel.getAllTasks.getOrAwaitValue().first()
+        val firstTask = toDoViewModel.cachedTasks.getOrAwaitValue().first()
         val newTitle = "Updated title"
         val newDescription = "Updated description"
         val newPriority = Priority.HIGH
@@ -98,7 +106,7 @@ class ToDoViewModelTest {
             toDoViewModel.updateTask(firstTask)
         }
 
-        val updatedTaskFromDb = toDoViewModel.getAllTasks.getOrAwaitValue().first()
+        val updatedTaskFromDb = toDoViewModel.cachedTasks.getOrAwaitValue().first()
         assertThat(updatedTaskFromDb.title, `is`(newTitle))
         assertThat(updatedTaskFromDb.description, `is`(newDescription))
         assertThat(updatedTaskFromDb.priority, `is`(newPriority))
@@ -123,14 +131,14 @@ class ToDoViewModelTest {
         }
 
 
-        val lastTask = toDoViewModel.getAllTasks.getOrAwaitValue().last()
+        val lastTask = toDoViewModel.cachedTasks.getOrAwaitValue().last()
         assertThat(lastTask, notNullValue())
         assertThat(lastTask.title, `is`("Homework for delete"))
 
         mainCoroutineRule.runBlockingTest {
             toDoViewModel.deleteTask(lastTask)
         }
-        val tasksFromDb = toDoViewModel.getAllTasks.getOrAwaitValue()
+        val tasksFromDb = toDoViewModel.cachedTasks.getOrAwaitValue()
 
         val taskNotDeleted = tasksFromDb.contains(lastTask)
         assertThat(taskNotDeleted, `is`(false))
@@ -138,14 +146,14 @@ class ToDoViewModelTest {
 
     @Test
     fun deleteAll_ok() {
-        val tasks = toDoViewModel.getAllTasks.getOrAwaitValue()
+        val tasks = toDoViewModel.cachedTasks.getOrAwaitValue()
         assertThat(tasks.size, `is`(3))
 
         mainCoroutineRule.runBlockingTest {
             toDoViewModel.deleteAll()
         }
 
-        val deletedTasks = toDoViewModel.getAllTasks.getOrAwaitValue()
+        val deletedTasks = toDoViewModel.cachedTasks.getOrAwaitValue()
         assertThat(deletedTasks.size, `is`(0))
     }
 

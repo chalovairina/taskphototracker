@@ -116,7 +116,7 @@ class RegisterFragment: AuthFragment() {
 
     private fun finishSuccessfulRegistration(registeredEmail: String) {
         savedStateHandle.set(CURRENT_USER_ID, usersFirestore.getCurrentUserId())
-        toDoViewModel.writeUserLoggedIn(true)
+
         showToastLong(
             String.format(getString(R.string.successfully_registered), registeredEmail)
         )

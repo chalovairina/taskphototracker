@@ -1,8 +1,6 @@
 package com.chari.ic.todoapp
 
 import android.content.Context
-import android.util.Log
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -13,8 +11,6 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread
-import com.chari.ic.todoapp.data.database.entities.Priority
-import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.data.source.FakeToDoRepository
 import com.chari.ic.todoapp.di.RepositoryModule
 import com.chari.ic.todoapp.repository.Repository
@@ -34,7 +30,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -48,7 +43,7 @@ import javax.inject.Singleton
 @UninstallModules(RepositoryModule::class)
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
-class AuthFragmentsTest {
+class RegisterFragmentTest {
     @get: Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
@@ -74,9 +69,9 @@ class AuthFragmentsTest {
     @After
     @Throws(IOException::class)
     fun tearDown() {
-        runBlockingTest {
-            fakeRepository.resetRepository()
-        }
+//        runBlockingTest {
+//            fakeRepository.resetRepository()
+//        }
 
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }

@@ -8,7 +8,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.*
 import com.chari.ic.todoapp.R
 import com.chari.ic.todoapp.ToDoViewModel
-import com.chari.ic.todoapp.data.database.DatabaseResult
 import com.chari.ic.todoapp.data.database.entities.ToDoTask
 import com.chari.ic.todoapp.databinding.TaskRowLayoutBinding
 import com.google.android.material.snackbar.Snackbar

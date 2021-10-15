@@ -41,7 +41,6 @@ import javax.inject.Singleton
 
 import com.chari.ic.todoapp.utils.matchesAndroidHome
 import java.time.Instant
-import java.util.*
 
 
 @MediumTest
@@ -76,7 +75,7 @@ class TasksFragmentNavigationTest {
     @Throws(IOException::class)
     fun tearDown() {
         mainCoroutineRule.runBlockingTest {
-            fakeRepository.resetRepository()
+            fakeRepository.resetRepository("1")
         }
     }
 
@@ -91,52 +90,6 @@ class TasksFragmentNavigationTest {
         @Singleton
         @Binds
         abstract fun bindDataStoreRepository(dataStoreRepository: LoggedInStubDataStoreRepository): IDataStoreRepository
-    }
-
-    // Navigation to AddFragment
-    @Test
-    fun clickAddFAB_navigateToAddFragment() {
-        val navController = mock(NavController::class.java)
-        val scenario = launchFragmentInHiltContainer<TasksFragment>(navController = navController)
-
-        onView(withId(R.id.add_button)).perform(click())
-
-        verify(navController).navigate(R.id.action_tasksFragment_to_addFragment)
-
-        scenario.close()
-    }
-    // up navigation
-    @Test
-    fun navigateToAddFragment_pressUpButtonReturnsToTasksFragment() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-
-        onView(withId(R.id.add_button)).perform(click())
-
-        onView(withId(R.id.title_editText)).check(matches(isDisplayed()))
-
-        onView(matchesAndroidHome()).perform(click())
-
-        onView(withId(R.id.recyclerView)).check(matches(isDisplayed()))
-
-        activityScenario.close()
-    }
-    // back pressed
-    @Test
-    fun navigateToAddFragment_pressBackButtonReturnsToTasksFragment() {
-
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-
-        onView(withId(R.id.add_button)).perform(click())
-
-        onView(withId(R.id.title_editText)).check(matches(isDisplayed()))
-        // to close keyboard
-        pressBack()
-        // to really go back
-        pressBack()
-
-        onView(withId(R.id.recyclerView)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     // navigation to UpdateFragment

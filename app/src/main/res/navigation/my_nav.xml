@@ -17,26 +17,6 @@
             app:exitAnim="@anim/to_right"
             app:popEnterAnim="@anim/from_right"
             app:popExitAnim="@anim/to_left" />
-        <action
-            android:id="@+id/action_tasksFragment_to_addFragment"
-            app:destination="@id/addFragment"
-            app:enterAnim="@anim/from_right"
-            app:exitAnim="@anim/to_left"
-            app:popEnterAnim="@anim/from_left"
-            app:popExitAnim="@anim/to_right" />
-    </fragment>
-    <fragment
-        android:id="@+id/addFragment"
-        android:name="com.chari.ic.todoapp.fragments.add_fragment.AddFragment"
-        android:label="@string/add"
-        tools:layout="@layout/fragment_add" >
-        <action
-            android:id="@+id/action_addFragment_to_tasksFragment"
-            app:popUpTo="@id/tasksFragment"
-            app:popUpToInclusive="true"
-            app:destination="@id/tasksFragment"
-            app:enterAnim="@anim/from_left"
-            app:exitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/updateFragment"
