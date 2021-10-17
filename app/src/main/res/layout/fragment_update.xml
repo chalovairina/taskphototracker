@@ -50,7 +50,7 @@
             android:id="@+id/current_priority_spinner"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
             android:entries="@array/priorities"

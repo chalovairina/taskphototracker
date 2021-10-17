@@ -44,11 +44,11 @@
     <string name="no_data_available">No data available</string>
     <string name="add_new_task">Add new task</string>
     <string name="intro">Intro</string>
-    <string name="sign_up_description_text">Enter your name, email id and password to register with us</string>
+    <string name="sign_up_description_text">Enter your name, email and password to register with us</string>
     <string name="user_name">User Name</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="sign_in_description_text">Enter your email id and password to login</string>
+    <string name="sign_in_description_text">Enter your email and password to login</string>
     <string name="press_again_to_exit">Press again to exit</string>
     <string name="fill_in_username">Please fill in username</string>
     <string name="fill_in_email">Please fill in email</string>

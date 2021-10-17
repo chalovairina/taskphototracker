@@ -1,6 +1,10 @@
 package com.chari.ic.todoapp.binding
 
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.chari.ic.todoapp.data.database.entities.Priority
@@ -31,5 +35,18 @@ object TaskRowBinding {
     ) {
         val formattedDate = formatDate(date)
         dateChip.text = formattedDate
+    }
+
+    @BindingAdapter("setDescriptionVisibility")
+    @JvmStatic
+    fun setDescriptionVisibility(
+        descriptionTextView: TextView,
+        description: String?
+    ) {
+        if (description == null || description.isBlank()) {
+            descriptionTextView.visibility = GONE
+        } else {
+            descriptionTextView.visibility = VISIBLE
+        }
     }
 }

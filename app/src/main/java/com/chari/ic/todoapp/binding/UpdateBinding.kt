@@ -34,7 +34,7 @@ object UpdateBinding {
                 is EditText -> {
                     when(view.id) {
                         R.id.current_title_editText -> view.setText(taskToUpdate.title)
-                        R.id.description_textView -> view.setText(taskToUpdate.description)
+                        R.id.current_description_editText -> view.setText(taskToUpdate.description)
                     }
                 }
             }
