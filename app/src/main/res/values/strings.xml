@@ -1,12 +1,10 @@
 <resources>
-    <string name="app_name">TODOApp</string>
-    <string name="todo_list">TODO List</string>
-    <string name="add">Add</string>
+    <string name="app_name" translatable="false">TODOApp</string>
     <string name="update">Update</string>
-    <string name="title">Title</string>
+    <string name="title_hint">Enter Task title</string>
     <string name="add_description">Add task description</string>
     <string name="search">Search</string>
-    <string name="sort_by">Sort By</string>
+    <string name="sort_by">Sort</string>
     <string name="priority_high">High Priority</string>
     <string name="priority_medium">Medium Priority</string>
     <string name="priority_low">Low Priority</string>
@@ -14,11 +12,6 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="successfully_added">Successfully added!</string>
-    <string name="empty_data">Empty data!</string>
-    <string name="successfully_updated">Successfully updated!</string>
-    <string name="fill_in_title_field">Fill in the title field!</string>
-    <string name="items_selected">%s item(s) selected</string>
-    <string name="items_deleted">%s item(s) deleted</string>
     <string name="yes">YES</string>
     <string name="all_tasks_deleted">All tasks deleted</string>
     <string name="no">NO</string>
@@ -27,66 +20,66 @@
     <string name="no_data">No Tasks Saved</string>
     <string name="my_title">My Title</string>
     <string name="some_random_description">Some random description</string>
-    <string name="successfully_deleted_task">Successfully removed task: %s</string>
+    <string name="successfully_deleted_task">Successfully removed</string>
     <string name="deleted_task">Deleted: %s</string>
     <string name="undo">UNDO</string>
     <string name="search_task">Search for task</string>
-    <string name="reset">Reset</string>
-    <string name="todo_for_today">What\'s your\nTODO\nfor today?</string>
-    <string name="dont_forget_today">Don\'t forget\ntoday</string>
-    <string name="todo">TODO</string>
+    <string name="todo" translatable="false">TODO</string>
     <string name="sign_in_or_sign_up">Sign in or sign up</string>
     <string name="let_s_get_started">Let\'s Get Started</string>
-    <string name="sign_in_description">Sign In or Sign Up for your daily tasks</string>
-    <string name="sign_in">Sign In</string>
-    <string name="sign_up">Sign Up</string>
+    <string name="sign_in_description">Sign In for your daily tasks</string>
     <string name="your_today_planner">Your today planner</string>
     <string name="no_data_available">No data available</string>
     <string name="add_new_task">Add new task</string>
-    <string name="intro">Intro</string>
-    <string name="sign_up_description_text">Enter your name, email and password to register with us</string>
     <string name="user_name">User Name</string>
     <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="sign_in_description_text">Enter your email and password to login</string>
     <string name="press_again_to_exit">Press again to exit</string>
-    <string name="fill_in_username">Please fill in username</string>
-    <string name="fill_in_email">Please fill in email</string>
-    <string name="fill_in_password">Please fill in password</string>
-    <string name="successfully_registered">%s successfully registered</string>
+    <string name="login_successfull">Login successfull</string>
     <string name="ok">OK</string>
     <string name="todo_tasks">TODO tasks</string>
-    <string name="enter_account">Enter account</string>
-    <string name="email_from_incorrect">Email form incorrect</string>
-    <string name="please_wait">Please wait</string>
-    <string name="authentication_failed">Authentication failed</string>
-    <string name="registration_failed">Registration failed</string>
-    <string name="successfully_logged_in">You successfully logged in!</string>
     <string name="your_profile_photo">Your profile photo</string>
     <string name="sign_out">Sign Out</string>
     <string name="my_profile">My Profile</string>
-    <string name="password_restrictions">Passwords must be at least 8 characters long. The password must contain at least one uppercase character, one digit and one special character (like ~!@)</string>
-    <string name="password_not_strong_enough">Password not strong enough</string>
-    <string name="mobile">Mobile</string>
-    <string name="register_or_login">Please first register or log in</string>
+    <string name="login">Login</string>
     <string name="my_account">My Account</string>
     <string name="read_storage_permission_required">Storage permission required to choose profile image</string>
-    <string name="profile_updated">Profile successfully updated!</string>
-    <string name="failed_update_profile">Failed to update profile</string>
-    <string name="failed_image_upload">Failed to upload new profile image</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="next_week">Next week</string>
     <string name="today">Today</string>
     <string name="due_date">Due date</string>
-    <string name="task_title_example">e.g. take dog for a walk</string>
-    <string name="choose_due_date">Choose due date!</string>
+    <string name="choose_due_date">Choose due date</string>
     <string name="check_on_todo_list">Check on your to-do list</string>
-    <string name="no_tasks_for_today">No active tasks for today! Come in to add one!</string>
-    <string name="have_tasks_for_today">You have %d tasks for today. Come in and check!</string>
-
     <string-array name="priorities">
         <item name="priority_high">@string/priority_high</item>
         <item name="priority_medium">@string/priority_medium</item>
         <item name="priority_low">@string/priority_low</item>
     </string-array>
+
+    <string name="vk_sign_in">Sign In with VK Account</string>
+    <string name="not_authorized" type="id">Not authorized</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="old_date">Old first</string>
+    <string name="new_date">New first</string>
+    <string name="bottom_sheet_calendar" translatable="false">BottomSheetCalendar</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="empty_title">Empty title</string>
+    <string name="notification_disabled">Notifications disabled</string>
+    <string name="network_error">Network currently unavailable</string>
+    <string name="network_unavailable">Network unavailable</string>
+    <string name="past_date">Past date</string>
+    <string name="task_restored">Task restored</string>
+
+    <plurals name="tasks_selected">
+        <item quantity="one">%d task selected</item>
+        <item quantity="other">%d tasks selected</item>
+    </plurals>
+    <plurals name="tasks_deleted">
+        <item quantity="one">%d task deleted</item>
+        <item quantity="other">%d tasks deleted</item>
+    </plurals>
+    <plurals name="tasks_for_today">
+        <item quantity="one">You have %d task for today. Come in and check!</item>
+        <item quantity="other">You have %d tasks for today. Come in and check!</item>
+    </plurals>
+
 </resources>

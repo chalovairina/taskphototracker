@@ -5,7 +5,7 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
+    <color name="black">#000000</color>
 
     <color name="colorPrimary">#6200EA</color>
     <color name="colorPrimaryDark">#5502C8</color>
@@ -19,31 +19,28 @@
     <color name="darker">#151B20</color>
     <color name="darkGray">#4B4B4B</color>
     <color name="red">#FF4646</color>
-    <color name="yellow">#FFC114</color>
     <color name="green">#00C980</color>
 
-<!--    priorities-->
+    <!--    priorities-->
     <color name="highPriorityColor">#C91517</color>
     <color name="mediumPriorityColor">#FFB300</color>
     <color name="lowPriorityColor">@color/green</color>
 
-<!--    splash screen-->
-    <color name="splashScreenTitle">#402D29</color>
+    <!--    splash screen-->
 
-<!--    intro screen-->
+    <!--    intro screen-->
     <color name="signInBtnGradientStartColor">#0BCCEB</color>
     <color name="signInBtnGradientEndColor">#0A80F5</color>
-    <color name="signUpStrokeColor">#0C90F1</color>
     <color name="snackBarErrorColor">#F72400</color>
 
-<!--    Task item cardView-->
+    <!--    Task item cardView-->
     <color name="strokeColor">@color/lightMediumGray</color>
     <color name="cardBackgroundColor">@color/white</color>
     <color name="cardBackgroundLightColor">#106200EA</color>
     <color name="titleColor">@color/darker</color>
     <color name="descriptionColor">@color/darkGray</color>
 
-<!--    status bar-->
+    <!--    status bar-->
     <color name="statusBarColor">@color/colorPrimaryDark</color>
     <color name="actionModeStatusBarColor">@color/darker</color>
     <color name="actionModeActionBarColor">@color/dark</color>
@@ -51,9 +48,7 @@
 
     <color name="backgroundColor">@color/lightGray</color>
     <color name="placeholderColor">@color/mediumGray</color>
-    <color name="primaryTextColor">#363A43</color>
-    <color name="secondaryTextColor">#7A8089</color>
 
-<!--     bottom sheet dialog-->
-    <color name="iconTint">#DF003D</color>
+    <!--     bottom sheet dialog-->
+
 </resources>

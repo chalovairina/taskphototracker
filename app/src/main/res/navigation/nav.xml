@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/tasksFragment">
+
+    <fragment
+        android:id="@+id/tasksFragment"
+        android:name="com.chalova.irina.todoapp.tasks.ui.tasks.TasksFragment"
+        android:label="@string/todo_tasks"
+        tools:layout="@layout/fragment_tasks" >
+        <action
+            android:id="@+id/action_tasksFragment_to_addEditFragment"
+            app:destination="@id/addEditFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left">
+
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/addEditFragment"
+        android:name="com.chalova.irina.todoapp.tasks.ui.addedittask.AddEditTaskFragment"
+        android:label="@string/update"
+        tools:layout="@layout/fragment_add_edit_task"
+        >
+        <argument
+            android:name="currentTaskId"
+            app:argType="long" />
+        <argument
+            android:name="userId"
+            app:argType="string" />
+<!--        <action-->
+<!--            android:id="@+id/action_addEditFragment_to_tasksFragment"-->
+<!--            app:destination="@id/tasksFragment"-->
+<!--            app:popUpTo="@id/tasksFragment"-->
+<!--            app:popUpToInclusive="true"-->
+<!--            app:enterAnim="@anim/from_right"-->
+<!--            app:exitAnim="@anim/to_left" >-->
+<!--        </action>-->
+
+        <action
+            android:id="@+id/action_addEditFragment_to_bottomSheetCalendarDialog"
+            app:destination="@id/bottomSheetCalendarDialog" >
+        </action>
+    </fragment>
+    <dialog android:id="@+id/bottomSheetCalendarDialog"
+        android:name="com.chalova.irina.todoapp.tasks.ui.addedittask.CalendarBottomSheetFragment"
+        android:label="@string/bottom_sheet_calendar"
+        tools:layout="@layout/bottom_sheet_fragment" >
+        <argument
+            android:name="dueDate"
+            app:argType="string" />
+<!--        <action-->
+<!--            android:id="@+id/action_bottomSheetCalendarDialog_to_addEditFragment"-->
+<!--            app:destination="@id/addEditFragment" />-->
+    </dialog>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.chalova.irina.todoapp.login.ui.LoginFragment"
+        android:label="@string/login"
+        tools:layout="@layout/fragment_login" >
+    </fragment>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.chalova.irina.todoapp.user_profile.ui.UserProfileFragment"
+        android:label="@string/my_profile" >
+        <argument
+            android:name="userId"
+            app:argType="string" />
+    </fragment>
+
+    <action android:id="@+id/action_global_userProfileFragment"
+        app:destination="@id/userProfileFragment"/>
+</navigation>

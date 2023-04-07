@@ -16,6 +16,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:titleTextColor="@color/white"
         android:background="@color/actionBarBackgroundColor"
+        android:elevation="4dp"
+        android:theme="@style/Theme.TODOApp.AppBarOverlay"
         app:popupTheme="@style/Theme.TODOApp.PopupOverlay"
         />
     <androidx.fragment.app.FragmentContainerView
@@ -28,5 +30,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/my_nav" />
+        app:navGraph="@navigation/nav" />
 </androidx.constraintlayout.widget.ConstraintLayout>

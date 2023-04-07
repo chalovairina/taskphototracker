@@ -6,19 +6,19 @@
         android:icon="@drawable/ic_search"
         app:showAsAction="ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
-    <group android:checkableBehavior="single">
-        <item android:id="@+id/menu_sort_by"
-            android:title="@string/sort_by">
+        <item
+            android:title="@string/sort_by"
+            app:showAsAction="never" >
             <menu>
-                <item android:id="@+id/menu_priority_high"
-                    android:title="@string/priority_high"/>
-                <item android:id="@+id/menu_priority_low"
-                    android:title="@string/priority_low"/>
-                <item android:id="@+id/reset_sort"
-                    android:title="@string/reset"/>
+                <item android:id="@+id/high_priority_sort"
+                    android:title="@string/priority_high" />
+                <item android:id="@+id/old_date_sort"
+                    android:title="@string/old_date"/>
+                <item android:id="@+id/new_date_sort"
+                    android:title="@string/new_date"/>
             </menu>
         </item>
-    </group>
+<!--    </group>-->
 
     <item android:id="@+id/menu_delete_all"
         android:title="@string/delete_all"
