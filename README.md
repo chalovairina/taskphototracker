@@ -1,19 +1,37 @@
-Android проект TODOApp для создания заметок с использованием библиотеки AndroidX Jetpack 
+Android проект TODOApp для создания заметок
 ========================================================================================
 
-Данный проект построен на основе обучающего курса Udemy -[To-Do App & Clean Architecture -Android Development - Kotlin](https://www.udemy.com/course/to-do-app-clean-architecture-android-development-kotlin/).  
-Дополнительно к нему добавлена аутентификация пользователя с помощью FireBase Authentication, Shimmer Effect при загрузке данных из локального источника данных, оповещения с помощью WorkerManager о наличи задач на текущий день, выбор даты выполнения задачи и BottomSheetDialog для создания новой задачи.
+# Todo App
 
-## Что использовано в проекте  
+Todo App - это приложение, которое позволяет пользователям создавать список задач, которые нужно выполнить. 
+Приложение имеет архитектуру MVVM. UI представлен через Views и ViewGroups с использованием view и data binding, UI-state представлен в ViewModel через Kotlin Flows.
+В качестве DI-фреймворка используется Dagger2. Для навигации используется Navigation Component. 
+Уведомления пользователя о текущих задачах реализовано через WorkManager.
 
-Проект написан на языке Kotlin и построен с помощью современной библиотеки AndroidX Jetpack с использованием:
+## Основные экраны приложения
 
-FireBase Authentication | FireBase Storage | FireStore | WorkerManager| ROOM Database | Dependency Injection - Dagger-Hilt | Kotlin Coroutines | Navigation Component | DataStore Preferences | ViewModel | Data Binding | LiveData | Flow | DiffUtil | RecyclerView | Material Components | ShimmerLayout | Contextual Action Mode | Modal Bottom Sheet и др...
+TodoApp включает в себя следующие экраны:
 
-## Дальнейшее развитие проекта
+### Главный экран
 
-На данный момент планируется завершить написание тестов для проекта, текущие тесты проекта на данный момент не актуальны, т.к. не обновлены в соответствии с развитием проекта.
+Главный экран содержит список задач пользователя. Каждая задача состоит из названия, описания, даты, приоритета. Пользователь может добавлять новые задачи, редактировать и удалять существующие задачи (все или несколько), сортировать по дате и приоритету.
+Список задач предстален через RecyclerView с использованием DiffUtil и ShimmerLayout для отображения загрузки данных из персистентого хранилища (БД Room).
+Возможно удаление нсекольких задач через Contextual Action Mode.
+
+### Экран логина
+
+Аутентификация через VK-аккаунт, для проверки токена используется http-вызов через Retrofit. Данные о логине (идентификатор пользователя, токен и статус логина хранятся в Preferences DataStore)
+
+### Экран добавления/редактирования задачи
+
+Экран добавления/редактирования задачи позволяет пользователю добавить новую/отредактировать текущую задачу. Он содержит поля для ввода названия, описания задачи, выбора даты в календаре, выбора приоритета, а также кнопку для сохранения задачи.
+Календарь реализован в BottomSheetDialogFragment.
+
+### Экран редактирования профиля пользователя
+
+Экран редактирования профиля пользователя позволяет отредактировать общую инофрмацию о текущем авторизованном пользователе (выбрать фото, ввести email, имя).
+Загрузка фото происходит с помощью Glide. 
 
 ## Внешний вид проекта
 
-![splash_screen](img/splash_screen.png) ![sign_in](img/sign_in_screen.png) ![drag_and_drop_tasks_list](img/drag_and_drop_tasks_list_screen.png) ![add_new_task_bottom_sheet](img/add_new_task_bottom_sheet_screen.png)
+![splash_screen](img/splash_screen.png) ![login_screen](img/login_screen.png) ![tasks_list_screen](img/tasks_list_screen.png) ![calendar_bottom_sheet](img/calendar_bottom_sheet.png)
