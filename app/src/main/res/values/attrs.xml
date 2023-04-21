@@ -1,0 +1,5 @@
+<resources>
+    <attr name="colorActionModeStatusBar" format="color" />
+    <attr name="colorBackground" format="color" />
+    <attr name="colorPlaceholderBackground" format="color" />
+</resources>

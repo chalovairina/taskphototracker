@@ -16,7 +16,7 @@ const val TASKS_DB_NAME = "todo_db"
     version = 1,
     exportSchema = false
 )
-abstract class TaskDatabase: RoomDatabase() {
+abstract class TaskDatabase : RoomDatabase() {
 
     abstract val tasksDao: TasksDao
     abstract val userDao: UserDao

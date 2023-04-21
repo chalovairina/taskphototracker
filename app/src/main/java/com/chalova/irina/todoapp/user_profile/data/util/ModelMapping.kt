@@ -9,7 +9,8 @@ fun LocalUser.toExternal(): User {
         id = userId,
         name = userName,
         email = userEmail,
-        image = userImageUrl)
+        image = userImageUrl
+    )
 }
 
 fun User.toLocal(): LocalUser {
@@ -18,5 +19,6 @@ fun User.toLocal(): LocalUser {
         userId = id,
         userName = name,
         userEmail = email,
-        userImageUrl = image)
+        userImageUrl = image
+    )
 }

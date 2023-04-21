@@ -1,69 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="update">Обновить</string>
-    <string name="title_hint">Введите заголовок задачи</string>
-    <string name="add_description">Добавить описание задачи</string>
-    <string name="search">Поиск</string>
-    <string name="sort_by">Сортировать</string>
-    <string name="priority_high">Высокий приоритет</string>
-    <string name="priority_medium">Средний приоритет</string>
-    <string name="priority_low">Низкий приоритет</string>
-    <string name="delete_all">Удалить все</string>
-    <string name="save">Сохранить</string>
-    <string name="delete">Удалить</string>
-    <string name="successfully_added">Успешно добавлено!</string>
-    <!--    <string name="items_selected">%s записей выбрано</string>-->
-<!--    <string name="items_deleted">%s записей удалено</string>-->
-    <string name="yes">ДА</string>
-    <string name="all_tasks_deleted">Все задачи удалены</string>
-    <string name="no">НЕТ</string>
-    <string name="delete_tasks">Удалить все задачи</string>
-    <string name="sure_to_delete_all_tasks">Вы уверены, что хотите удалить все задачи?</string>
-    <string name="no_data">Нет сохраненных задач</string>
-    <string name="my_title">Мой заголовок</string>
-    <string name="some_random_description">Описание</string>
-    <string name="successfully_deleted_task">Успешно удалено</string>
-    <string name="deleted_task">Удалено: %s</string>
-    <string name="undo">ОТМЕНИТЬ</string>
-    <string name="search_task">Искать задачу</string>
-    <string name="sign_in_or_sign_up">Войти или зарегистрироваться</string>
-    <string name="let_s_get_started">Начнем</string>
-    <string name="sign_in_description">Войдите, чтобы просомтреть Ваши задачи</string>
-    <string name="your_today_planner">Ваш планировщик на сегодня</string>
-    <string name="no_data_available">Нет данных</string>
-    <string name="add_new_task">Добавить задачу</string>
-    <string name="user_name">Имя пользователя</string>
-    <string name="email">Email</string>
-    <string name="press_again_to_exit">Нажмите еще раз для выхода</string>
-    <string name="ok">ОК</string>
-    <string name="todo_tasks">Задачи</string>
-    <string name="your_profile_photo">Ваше фото для профиля</string>
-    <string name="sign_out">Выйти</string>
-    <string name="my_profile">Мой Профиль</string>
-    <string name="login">Логин</string>
-    <string name="my_account">Мой аккаунт</string>
-    <string name="read_storage_permission_required">Требуется разрешение к хранилищу для выбора фото</string>
-    <string name="tomorrow">Завтра</string>
-    <string name="next_week">Следующая неделя</string>
-    <string name="today">Сегодня</string>
-    <string name="due_date">Дата</string>
-    <string name="choose_due_date">Выберите дату</string>
-    <string name="check_on_todo_list">Проверьте ваши задачи</string>
-    <!--    <string name="have_tasks_for_today">У вас %d задач на сегодня. Заходите и проверьте!</string>-->
-    <string name="vk_sign_in">Войти через ВК</string>
-    <string name="not_authorized">Нет авторизации</string>
-    <string name="unknown_error">Неизвестная ошибка</string>
-    <string name="old_date">Сначала старые</string>
-    <string name="new_date">Сначала новые</string>
-    <string name="dismiss">Вернуться</string>
-    <string name="empty_title">Пустой заголовок</string>
-    <string name="notification_disabled">Уведомления отключены</string>
-    <string name="network_error">Сеть недоступна</string>
-    <string name="network_unavailable">Сеть недоступна</string>
-    <string name="login_successfull">Логин успешен</string>
-    <string name="past_date">Прошедшая дата</string>
-    <string name="task_restored">Задача восстановлена</string>
 
+    <!--  Tasks Screen  -->
+    <string name="main_unknown_error">Неизвестная ошибка</string>
+    <string name="tasks_todo_tasks">Задачи</string>
+    <string name="tasks_no_data">Нет сохраненных задач</string>
+    <string name="tasks_successfully_added_task">Успешно добавлено!</string>
+    <string name="tasks_successfully_deleted_task">Успешно удалено</string>
+    <string name="tasks_confirm_delete_all">Вы уверены, что хотите удалить все задачи?</string>
+    <string name="tasks_all_deleted">Все задачи удалены</string>
+    <string name="tasks_search">Поиск</string>
+    <string name="tasks_sort_by">Сортировать</string>
+    <string name="tasks_by_old_date">Сначала старые</string>
+    <string name="tasks_by_new_date">Сначала новые</string>
+    <string name="tasks_priority">Приоритет задачи</string>
+    <string name="tasks_priority_high">Высокий приоритет</string>
+    <string name="tasks_priority_medium">Средний приоритет</string>
+    <string name="tasks_priority_low">Низкий приоритет</string>
+    <string name="tasks_delete_all">Удалить все</string>
+    <string name="tasks_delete">Удалить</string>
+    <string name="tasks_task_restored">Задача восстановлена</string>
+    <string name="tasks_item_title">Мой заголовок</string>
+    <string name="tasks_item_description">Описание</string>
+    <string name="tasks_deleted">Удалено: %s</string>
+    <string name="tasks_undo">ОТМЕНИТЬ</string>
+    <string name="tasks_search_task">Искать задачу</string>
+    <string name="tasks_add_new_task">Добавить задачу</string>
+    <string name="tasks_yes">ДА</string>
+    <string name="tasks_no">НЕТ</string>
+    <string name="tasks_ok">ОК</string>
     <plurals name="tasks_selected">
         <item quantity="one">%d задача выбрана</item>
         <item quantity="few">%d задачи выбрано</item>
@@ -76,10 +41,63 @@
         <item quantity="many">%d задач удалено</item>
         <item quantity="other">%d задач удалено</item>
     </plurals>
-    <plurals name="tasks_for_today">
+    <string name="tasks_unknown_error">Неизвестная ошибка</string>
+    <string name="tasks_loading_error">Error while loading tasks</string>
+
+    <!--  AddEditTask Screen  -->
+    <string name="addedit_update">Обновить</string>
+    <string name="addedit_title_hint">Введите заголовок задачи</string>
+    <string name="addedit_add_description">Добавить описание задачи</string>
+    <string name="addedit_choose_due_date">Выберите дату</string>
+    <string name="addedit_empty_title">Пустой заголовок</string>
+    <string name="addedit_past_date">Прошедшая дата</string>
+    <string name="addedit_save">Сохранить</string>
+    <string name="addedit_unknown_error">Неизвестная ошибка</string>
+
+    <!--  Login Screen  -->
+    <string name="login">Логин</string>
+    <string name="login_let_s_get_started">Начнем</string>
+    <string name="login_sign_in_description">Войдите, чтобы просмотреть Ваши задачи</string>
+    <string name="login_your_today_planner">Ваш планировщик на сегодня</string>
+    <string name="login_sign_in">Войти в аккаунт</string>
+    <string name="login_vk_sign_in">Войти через ВК</string>
+    <string name="login_successful">Логин успешен</string>
+    <string name="login_logout_successful">Успешный выход</string>
+    <string name="login_not_authorized">Авторизация не прошла</string>
+    <string name="login_press_again_to_exit">Нажмите еще раз для выхода</string>
+    <string name="login_unknown_error">Неизвестная ошибка</string>
+    <string name="login_network_error">Сеть недоступна</string>
+    <string name="login_network_unavailable">Сеть недоступна</string>
+
+    <!-- UserProfile Screen  -->
+    <string name="user_name">Имя пользователя</string>
+    <string name="user_read_storage_permission_required">Требуется разрешение к хранилищу для выбора фото</string>
+    <string name="user_profile">Мой Профиль</string>
+    <string name="user_update">Обновить</string>
+    <string name="user_unknown_error">Неизвестная ошибка</string>
+
+    <!-- Drawer   -->
+    <string name="drawer_sign_out">Выйти</string>
+    <string name="drawer_my_profile">Мой Профиль</string>
+    <string name="drawer_my_account">Мой аккаунт</string>
+    <string name="drawer_profile_photo">Ваше фото для профиля</string>
+
+    <!--  BottomSheetCalendar  -->
+    <string name="calendar_today">Сегодня</string>
+    <string name="calendar_tomorrow">Завтра</string>
+    <string name="calendar_next_week">Следующая неделя</string>
+    <string name="calendar_due_date">Дата</string>
+    <string name="calendar_dismiss">Вернуться</string>
+    <string name="calendar_save">Сохранить</string>
+
+    <!--  Notifications  -->
+    <string name="notification_check_on_todo_list">Проверьте ваши задачи</string>
+    <string name="notification_disabled">Уведомления отключены</string>
+    <plurals name="notification_tasks_for_today">
         <item quantity="one">У вас %d задача на сегодня. Заходите и проверьте!</item>
         <item quantity="few">У вас %d задачи на сегодня. Заходите и проверьте!</item>
         <item quantity="many">У вас %d задач на сегодня. Заходите и проверьте!</item>
         <item quantity="other">У вас %d задач на сегодня. Заходите и проверьте!</item>
     </plurals>
+
 </resources>

@@ -1,12 +1,12 @@
 package com.chalova.irina.todoapp.utils
 
-import com.chalova.irina.todoapp.di.AppScope
+import com.chalova.irina.todoapp.di.app_scope.AppScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @AppScope
-class StandardDispatcherProvider @Inject constructor(): DispatcherProvider {
+class StandardDispatcherProvider @Inject constructor() : DispatcherProvider {
 
     override val main: CoroutineDispatcher
         get() = Dispatchers.Main

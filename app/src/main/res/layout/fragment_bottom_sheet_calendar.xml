@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheet"
+    style="@style/Animation.Design.BottomSheetDialog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff">
+
+    <LinearLayout
+        android:id="@+id/buttons_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/save_imageView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/calendar_save"
+            android:src="@drawable/ic_baseline_check_circle_24"
+            app:tint="@color/colorPrimary" />
+
+        <ImageButton
+            android:id="@+id/dialog_close_imageView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/calendar_dismiss"
+            android:src="@drawable/ic_arrow_drop_down_circle_24"
+            app:tint="@color/colorPrimary" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/due_date_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="48dp"
+        android:gravity="center_horizontal"
+        android:text="@string/calendar_due_date"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toBottomOf="@id/buttons_group"
+        app:layout_goneMarginTop="0dp" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/today_chip"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/calendar_today"
+        app:chipIcon="@drawable/ic_baseline_today_24"
+        app:layout_constraintEnd_toEndOf="@id/due_date_textView"
+        app:layout_constraintStart_toStartOf="@id/due_date_textView"
+        app:layout_constraintTop_toBottomOf="@id/due_date_textView" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/tomorrow_chip"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="@string/calendar_tomorrow"
+        app:chipIcon="@drawable/ic_baseline_wb_sunny_24"
+        app:layout_constraintEnd_toEndOf="@id/today_chip"
+        app:layout_constraintStart_toStartOf="@id/today_chip"
+        app:layout_constraintTop_toBottomOf="@id/today_chip" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/next_week_chip"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="@string/calendar_next_week"
+        app:chipIcon="@drawable/ic_baseline_next_week_24"
+        app:layout_constraintEnd_toEndOf="@id/tomorrow_chip"
+        app:layout_constraintStart_toStartOf="@id/tomorrow_chip"
+        app:layout_constraintTop_toBottomOf="@id/tomorrow_chip" />
+
+    <CalendarView
+        android:id="@+id/calendar_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/next_week_chip" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

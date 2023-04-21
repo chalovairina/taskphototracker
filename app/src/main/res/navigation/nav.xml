@@ -7,72 +7,74 @@
 
     <fragment
         android:id="@+id/tasksFragment"
-        android:name="com.chalova.irina.todoapp.tasks.ui.tasks.TasksFragment"
-        android:label="@string/todo_tasks"
-        tools:layout="@layout/fragment_tasks" >
+        android:name="com.chalova.irina.todoapp.tasks.presentation.tasks.TasksFragment"
+        android:label="@string/tasks_todo_tasks"
+        tools:layout="@layout/fragment_tasks">
         <action
             android:id="@+id/action_tasksFragment_to_addEditFragment"
             app:destination="@id/addEditFragment"
             app:enterAnim="@anim/from_left"
             app:exitAnim="@anim/to_right"
             app:popEnterAnim="@anim/from_right"
-            app:popExitAnim="@anim/to_left">
-
-        </action>
+            app:popExitAnim="@anim/to_left" />
     </fragment>
     <fragment
         android:id="@+id/addEditFragment"
-        android:name="com.chalova.irina.todoapp.tasks.ui.addedittask.AddEditTaskFragment"
-        android:label="@string/update"
-        tools:layout="@layout/fragment_add_edit_task"
-        >
+        android:name="com.chalova.irina.todoapp.tasks.presentation.addedittask.AddEditTaskFragment"
+        android:label="@string/addedit_update"
+        tools:layout="@layout/fragment_add_edit_task">
         <argument
             android:name="currentTaskId"
             app:argType="long" />
-        <argument
-            android:name="userId"
-            app:argType="string" />
-<!--        <action-->
-<!--            android:id="@+id/action_addEditFragment_to_tasksFragment"-->
-<!--            app:destination="@id/tasksFragment"-->
-<!--            app:popUpTo="@id/tasksFragment"-->
-<!--            app:popUpToInclusive="true"-->
-<!--            app:enterAnim="@anim/from_right"-->
-<!--            app:exitAnim="@anim/to_left" >-->
-<!--        </action>-->
-
         <action
             android:id="@+id/action_addEditFragment_to_bottomSheetCalendarDialog"
-            app:destination="@id/bottomSheetCalendarDialog" >
-        </action>
+            app:destination="@id/bottomSheetCalendarDialog" />
     </fragment>
-    <dialog android:id="@+id/bottomSheetCalendarDialog"
-        android:name="com.chalova.irina.todoapp.tasks.ui.addedittask.CalendarBottomSheetFragment"
-        android:label="@string/bottom_sheet_calendar"
-        tools:layout="@layout/bottom_sheet_fragment" >
+    <dialog
+        android:id="@+id/bottomSheetCalendarDialog"
+        android:name="com.chalova.irina.todoapp.tasks.presentation.addedittask.bottom_sheet_calendar.CalendarBottomSheetFragment"
+        android:label="@string/calendar_bottom_sheet"
+        tools:layout="@layout/fragment_bottom_sheet_calendar">
         <argument
             android:name="dueDate"
             app:argType="string" />
-<!--        <action-->
-<!--            android:id="@+id/action_bottomSheetCalendarDialog_to_addEditFragment"-->
-<!--            app:destination="@id/addEditFragment" />-->
     </dialog>
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.chalova.irina.todoapp.login.ui.LoginFragment"
+        android:name="com.chalova.irina.todoapp.login_auth.presentation.login.LoginFragment"
         android:label="@string/login"
-        tools:layout="@layout/fragment_login" >
-    </fragment>
+        tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/userProfileFragment"
-        android:name="com.chalova.irina.todoapp.user_profile.ui.UserProfileFragment"
-        android:label="@string/my_profile" >
-        <argument
-            android:name="userId"
-            app:argType="string" />
-    </fragment>
+        android:name="com.chalova.irina.todoapp.user_profile.presentation.UserProfileFragment"
+        android:label="@string/user_profile" />
 
-    <action android:id="@+id/action_global_userProfileFragment"
-        app:destination="@id/userProfileFragment"/>
+    <action
+        android:id="@+id/action_global_userProfileFragment"
+        app:destination="@id/userProfileFragment"
+        app:enterAnim="@anim/from_left"
+        app:exitAnim="@anim/to_right"
+        app:popEnterAnim="@anim/from_right"
+        app:popExitAnim="@anim/to_left" />
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"
+
+        app:enterAnim="@anim/from_left"
+        app:exitAnim="@anim/to_right"
+        app:popEnterAnim="@anim/from_right"
+        app:popExitAnim="@anim/to_left" />
+    <action
+        android:id="@+id/action_global_startDestination"
+        app:destination="@id/tasksFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true"
+        app:launchSingleTop="true"
+        app:enterAnim="@anim/from_left"
+        app:exitAnim="@anim/to_right"
+        app:popEnterAnim="@anim/from_right"
+        app:popExitAnim="@anim/to_left" />
 </navigation>

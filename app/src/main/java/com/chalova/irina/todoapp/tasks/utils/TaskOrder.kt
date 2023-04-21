@@ -1,25 +1,12 @@
 package com.chalova.irina.todoapp.tasks.utils
 
-sealed class TaskOrder(val orderTitle: Orders, val orderType: OrderType) {
+sealed class TaskOrder(val orderType: OrderType) {
 
-    class Priority(orderType: OrderType): TaskOrder(Orders.Priority, orderType)
-    class Date(orderType: OrderType): TaskOrder(Orders.Date, orderType)
-
-    sealed class OrderType(val type: OrderTypes) {
-        object Ascending: OrderType(OrderTypes.Ascending)
-        object Descending: OrderType(OrderTypes.Descending)
-
-        companion object {
-            fun getOrderTypeByName(name: String): OrderType {
-                return when (OrderTypes.valueOf(name)) {
-                    OrderTypes.Ascending -> Ascending
-                    OrderTypes.Descending -> Descending
-                }
-            }
-        }
-    }
+    class Priority(orderType: OrderType) : TaskOrder(orderType)
+    class Date(orderType: OrderType) : TaskOrder(orderType)
 
     companion object {
+        @JvmStatic
         fun getTaskOrderByName(orderName: String, orderTypeName: String): TaskOrder {
             val orderType = (OrderType.getOrderTypeByName(orderTypeName))
             return when (Orders.valueOf(orderName)) {
@@ -29,13 +16,32 @@ sealed class TaskOrder(val orderTitle: Orders, val orderType: OrderType) {
         }
     }
 
-    enum class OrderTypes {
+    enum class OrderType {
         Ascending,
-        Descending
+        Descending;
+
+        companion object {
+            @JvmStatic
+            fun getOrderTypeByName(type: String): OrderType {
+                val orderType = values().find { it.name == type }
+                return orderType ?: throw IllegalArgumentException("no such order type")
+            }
+        }
     }
 
     enum class Orders {
         Priority,
-        Date
+        Date;
+
+        companion object {
+
+            @JvmStatic
+            fun getOrderByTaskOrder(taskOrder: TaskOrder): Orders {
+                return when (taskOrder) {
+                    is TaskOrder.Date -> Date
+                    is TaskOrder.Priority -> Priority
+                }
+            }
+        }
     }
 }

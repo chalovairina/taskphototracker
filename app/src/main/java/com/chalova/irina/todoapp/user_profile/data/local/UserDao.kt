@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface UserDao {
 
     @Query("SELECT * FROM users WHERE id=:userId")
-    fun getUser(userId: String): Flow<LocalUser?>
+    fun observeUser(userId: String): Flow<LocalUser?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: LocalUser)

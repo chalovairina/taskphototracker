@@ -1,74 +1,37 @@
 <resources>
     <string name="app_name" translatable="false">TODOApp</string>
-    <string name="update">Update</string>
-    <string name="title_hint">Enter Task title</string>
-    <string name="add_description">Add task description</string>
-    <string name="search">Search</string>
-    <string name="sort_by">Sort</string>
-    <string name="priority_high">High Priority</string>
-    <string name="priority_medium">Medium Priority</string>
-    <string name="priority_low">Low Priority</string>
-    <string name="delete_all">Delete All</string>
-    <string name="save">Save</string>
-    <string name="delete">Delete</string>
-    <string name="successfully_added">Successfully added!</string>
-    <string name="yes">YES</string>
-    <string name="all_tasks_deleted">All tasks deleted</string>
-    <string name="no">NO</string>
-    <string name="delete_tasks">Delete all tasks</string>
-    <string name="sure_to_delete_all_tasks">Are you sure you want to delete all tasks?</string>
-    <string name="no_data">No Tasks Saved</string>
-    <string name="my_title">My Title</string>
-    <string name="some_random_description">Some random description</string>
-    <string name="successfully_deleted_task">Successfully removed</string>
-    <string name="deleted_task">Deleted: %s</string>
-    <string name="undo">UNDO</string>
-    <string name="search_task">Search for task</string>
     <string name="todo" translatable="false">TODO</string>
-    <string name="sign_in_or_sign_up">Sign in or sign up</string>
-    <string name="let_s_get_started">Let\'s Get Started</string>
-    <string name="sign_in_description">Sign In for your daily tasks</string>
-    <string name="your_today_planner">Your today planner</string>
-    <string name="no_data_available">No data available</string>
-    <string name="add_new_task">Add new task</string>
-    <string name="user_name">User Name</string>
-    <string name="email">Email</string>
-    <string name="press_again_to_exit">Press again to exit</string>
-    <string name="login_successfull">Login successfull</string>
-    <string name="ok">OK</string>
-    <string name="todo_tasks">TODO tasks</string>
-    <string name="your_profile_photo">Your profile photo</string>
-    <string name="sign_out">Sign Out</string>
-    <string name="my_profile">My Profile</string>
-    <string name="login">Login</string>
-    <string name="my_account">My Account</string>
-    <string name="read_storage_permission_required">Storage permission required to choose profile image</string>
-    <string name="tomorrow">Tomorrow</string>
-    <string name="next_week">Next week</string>
-    <string name="today">Today</string>
-    <string name="due_date">Due date</string>
-    <string name="choose_due_date">Choose due date</string>
-    <string name="check_on_todo_list">Check on your to-do list</string>
-    <string-array name="priorities">
-        <item name="priority_high">@string/priority_high</item>
-        <item name="priority_medium">@string/priority_medium</item>
-        <item name="priority_low">@string/priority_low</item>
-    </string-array>
 
-    <string name="vk_sign_in">Sign In with VK Account</string>
-    <string name="not_authorized" type="id">Not authorized</string>
-    <string name="unknown_error">Unknown error</string>
-    <string name="old_date">Old first</string>
-    <string name="new_date">New first</string>
-    <string name="bottom_sheet_calendar" translatable="false">BottomSheetCalendar</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="empty_title">Empty title</string>
-    <string name="notification_disabled">Notifications disabled</string>
-    <string name="network_error">Network currently unavailable</string>
-    <string name="network_unavailable">Network unavailable</string>
-    <string name="past_date">Past date</string>
-    <string name="task_restored">Task restored</string>
+    <!-- MainActivity   -->
+    <string name="main_unknown_error">Unknown error</string>"
 
+    <!--  Tasks Screen  -->
+    <string name="tasks_todo_tasks">TODO tasks</string>
+    <string name="tasks_no_data">No Tasks Saved</string>
+    <string name="tasks_successfully_added_task">Successfully added!</string>
+    <string name="tasks_successfully_deleted_task">Successfully removed</string>
+    <string name="tasks_confirm_delete_all">Are you sure you want to delete all tasks?</string>
+    <string name="tasks_all_deleted">All tasks deleted</string>
+    <string name="tasks_search">Search</string>
+    <string name="tasks_sort_by">Sort</string>
+    <string name="tasks_by_old_date">Old first</string>
+    <string name="tasks_by_new_date">New first</string>
+    <string name="tasks_priority">Task Priority</string>
+    <string name="tasks_priority_high">High Priority</string>
+    <string name="tasks_priority_medium">Medium Priority</string>
+    <string name="tasks_priority_low">Low Priority</string>
+    <string name="tasks_delete_all">Delete All</string>
+    <string name="tasks_delete">Delete</string>
+    <string name="tasks_task_restored">Task restored</string>
+    <string name="tasks_item_title">My Title</string>
+    <string name="tasks_item_description">Some random description</string>
+    <string name="tasks_deleted">Deleted: %s</string>
+    <string name="tasks_undo">UNDO</string>
+    <string name="tasks_search_task">Search for task</string>
+    <string name="tasks_add_new_task">Add new task</string>
+    <string name="tasks_yes">YES</string>
+    <string name="tasks_no">NO</string>
+    <string name="tasks_ok">OK</string>
     <plurals name="tasks_selected">
         <item quantity="one">%d task selected</item>
         <item quantity="other">%d tasks selected</item>
@@ -77,7 +40,67 @@
         <item quantity="one">%d task deleted</item>
         <item quantity="other">%d tasks deleted</item>
     </plurals>
-    <plurals name="tasks_for_today">
+    <string name="tasks_unknown_error">Unknown error</string>
+
+    <!--  AddEditTask Screen  -->
+    <string name="addedit_update">Update</string>
+    <string name="addedit_title_hint">Enter Task title</string>
+    <string name="addedit_add_description">Add task description</string>
+    <string name="addedit_choose_due_date">Choose due date</string>
+    <string name="addedit_empty_title">Empty title</string>
+    <string name="addedit_past_date">Past date</string>
+    <string name="addedit_save">Save</string>
+    <string-array name="priorities">
+        <item name="priority_high">@string/tasks_priority_high</item>
+        <item name="priority_medium">@string/tasks_priority_medium</item>
+        <item name="priority_low">@string/tasks_priority_low</item>
+    </string-array>
+    <string name="addedit_unknown_error">Unknown error</string>
+
+    <!--  Login Screen  -->
+    <string name="login">Login</string>
+    <string name="login_let_s_get_started">Let\'s Get Started</string>
+    <string name="login_sign_in_description">Sign In for your daily tasks</string>
+    <string name="login_your_today_planner">Your today planner</string>
+    <string name="login_sign_in">Sign in</string>
+    <string name="login_vk_sign_in">Sign In with VK Account</string>
+    <string name="login_successful">Login successful</string>
+    <string name="login_logout_successful">Logout successful</string>
+    <string name="login_not_authorized">Not authorized</string>
+    <string name="login_press_again_to_exit">Press again to exit</string>
+    <string name="login_unknown_error">Unknown error</string>
+    <string name="login_network_error">Network currently unavailable</string>
+    <string name="login_network_unavailable">Network unavailable</string>
+
+    <!-- UserProfile Screen  -->
+    <string name="user_name">User Name</string>
+    <string name="user_read_storage_permission_required">Storage permission required to choose profile image</string>
+    <string name="user_profile">My Profile</string>
+    <string name="user_email" translatable="false">Email</string>
+    <string name="user_update">Update</string>
+    <string name="user_unknown_error">Unknown error</string>
+
+    <!-- Drawer   -->
+    <string name="drawer_sign_out">Sign Out</string>
+    <string name="drawer_my_profile">My Profile</string>
+    <string name="drawer_my_account">My Account</string>
+    <string name="drawer_email" translatable="false">Email</string>
+    <string name="drawer_profile_photo">Your profile photo</string>
+
+    <!--  BottomSheetCalendar  -->
+    <string name="calendar_bottom_sheet" translatable="false">BottomSheetCalendar</string>
+    <string name="calendar_today">Today</string>
+    <string name="calendar_tomorrow">Tomorrow</string>
+    <string name="calendar_next_week">Next week</string>
+    <string name="calendar_due_date">Due date</string>
+    <string name="calendar_dismiss">Dismiss</string>
+    <string name="calendar_save">Save</string>
+
+    <!--  Notifications  -->
+    <string name="notification_check_on_todo_list">Check on your to-do list</string>
+    <string name="notification_disabled">Notifications disabled</string>
+    <string name="tasks_loading_error">Error while loading tasks</string>
+    <plurals name="notification_tasks_for_today">
         <item quantity="one">You have %d task for today. Come in and check!</item>
         <item quantity="other">You have %d tasks for today. Come in and check!</item>
     </plurals>

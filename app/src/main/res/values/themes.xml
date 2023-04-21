@@ -2,19 +2,29 @@
     <!-- Base application theme. -->
     <style name="Theme.TODOApp" parent="NoActionBarStyle">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status and Action bar colors. -->
-  <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+
+        <!-- Status bar colors. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Action mode colors. -->
         <item name="actionModeBackground">@color/actionModeActionBarColor</item>
         <item name="colorControlNormal">@color/white</item>
- <!-- Customize your theme here. -->
         <item name="windowActionModeOverlay">true</item>
+        <item name="colorActionModeStatusBar">@color/actionModeStatusBarColor</item>
+
+        <!--  UI elements colors      -->
+        <item name="colorPlaceholderBackground">@color/placeholderColor</item>
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
@@ -25,10 +35,11 @@
         <!-- Set the theme of the Activity that follows the splash screen -->
         <item name="postSplashScreenTheme">@style/Theme.TODOApp</item>
     </style>
-    
-    <style name="NoActionBarStyle" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
 
-    <style name="Theme.TODOApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="NoActionBarStyle" parent="Theme.Material3.DayNight.NoActionBar" />
+
+    <style name="Theme.TODOApp.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar" />
 
     <style name="Theme.TODOApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

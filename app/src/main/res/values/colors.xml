@@ -1,54 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#000000</color>
+    <color name="atomic_tangerine">#FF9966</color>
+    <color name="sea_shell">#FFF5EE</color>
+    <color name="persimmon">#EC5800</color>
+    <color name="light_red">#FFCCCB</color>
+    <color name="cosmonaut">#DEDEDE</color>
 
-    <color name="colorPrimary">#6200EA</color>
-    <color name="colorPrimaryDark">#5502C8</color>
-    <color name="colorAccent">#9D46FF</color>
+    <color name="dark_cyan">#0A888A</color>
+    <color name="pantone">#006060</color>
+    <color name="white">#FFFFFF</color>
+    <color name="peach_puff">#FFDAB9</color>
 
-    <color name="white">#FFFFFFFF</color>
-    <color name="lightGray">#E6E6E6</color>
-    <color name="lightMediumGray">#80D1D1D1</color>
-    <color name="mediumGray">#D1D1D1</color>
-    <color name="dark">#313C44</color>
-    <color name="darker">#151B20</color>
-    <color name="darkGray">#4B4B4B</color>
-    <color name="red">#FF4646</color>
+    <color name="blueberry">#4F86F7</color>
+    <color name="tawny">#CD5700</color>
+
+    <color name="colorPrimary">@color/atomic_tangerine</color>
+    <color name="colorPrimaryVariant">@color/persimmon</color>
+    <color name="colorOnPrimary">@color/cosmonaut</color>
+    <color name="colorAccent">@color/light_red</color>
+
+    <color name="colorSecondary">@color/dark_cyan</color>
+    <color name="colorSecondaryVariant">@color/pantone</color>
+    <color name="colorOnSecondary">@color/dark</color>
+
+    <color name="atomic_tangerine_dark">#FFB26B</color>
+    <color name="sea_shell_dark">#FFD1BC</color>
+    <color name="persimmon_dark">#FF8500</color>
+    <color name="light_red_dark">#FFBDBD</color>
+    <color name="cosmonaut_dark">#B8B8B8</color>
+
+    <color name="dark_cyan_dark">#19C4C4</color>
+    <color name="pantone_dark">#009292</color>
+    <color name="dark">#000000</color>
+    <color name="peach_puff_dark">#FFC2A3</color>
+
+    <color name="blueberry_dark">#6B94FF</color>
+    <color name="tawny_dark">#FF772E</color>
+
+    <color name="colorPrimaryDark">@color/atomic_tangerine_dark</color>
+    <color name="colorPrimaryVariantDark">@color/persimmon_dark</color>
+    <color name="colorOnPrimaryDark">@color/cosmonaut_dark</color>
+    <color name="colorAccentDark">@color/light_red_dark</color>
+
+    <color name="colorSecondaryDark">@color/dark_cyan_dark</color>
+    <color name="colorSecondaryVariantDark">@color/pantone_dark</color>
+    <color name="colorOnSecondaryDark">@color/dark</color>
+
+    <color name="very_light_grey">#CDCDCD</color>
+    <color name="light_grey">#D8DCD6</color>
+    <color name="medium_grey">#7D7F7C</color>
+    <color name="coarse_wool">#181B26</color>
+    <color name="dark_grey">#363737</color>
+    <color name="candy_apple_red">#FF0800</color>
+    <color name="venetian_red">#C80815</color>
     <color name="green">#00C980</color>
+    <color name="ucla_gold">#FFB300</color>
 
     <!--    priorities-->
-    <color name="highPriorityColor">#C91517</color>
-    <color name="mediumPriorityColor">#FFB300</color>
+    <color name="highPriorityColor">@color/venetian_red</color>
+    <color name="mediumPriorityColor">@color/ucla_gold</color>
     <color name="lowPriorityColor">@color/green</color>
 
-    <!--    splash screen-->
-
     <!--    intro screen-->
-    <color name="signInBtnGradientStartColor">#0BCCEB</color>
-    <color name="signInBtnGradientEndColor">#0A80F5</color>
-    <color name="snackBarErrorColor">#F72400</color>
+    <color name="signInBtnGradientStartColor">@color/colorPrimary</color>
+    <color name="signInBtnGradientEndColor">@color/colorPrimaryVariant</color>
+    <color name="snackBarErrorColor">@color/candy_apple_red</color>
 
     <!--    Task item cardView-->
-    <color name="strokeColor">@color/lightMediumGray</color>
+    <color name="strokeColor">@color/light_grey</color>
     <color name="cardBackgroundColor">@color/white</color>
-    <color name="cardBackgroundLightColor">#106200EA</color>
-    <color name="titleColor">@color/darker</color>
-    <color name="descriptionColor">@color/darkGray</color>
+    <color name="cardBackgroundLightColor">@color/very_light_grey</color>
+    <color name="titleColor">@color/coarse_wool</color>
+    <color name="descriptionColor">@color/dark_grey</color>
 
     <!--    status bar-->
-    <color name="statusBarColor">@color/colorPrimaryDark</color>
-    <color name="actionModeStatusBarColor">@color/darker</color>
+    <color name="statusBarColor">@color/colorAccent</color>
+    <color name="statusBarColorDark">@color/colorAccentDark</color>
+    <color name="actionModeStatusBarColor">@color/coarse_wool</color>
     <color name="actionModeActionBarColor">@color/dark</color>
     <color name="actionBarBackgroundColor">@color/colorPrimary</color>
 
-    <color name="backgroundColor">@color/lightGray</color>
-    <color name="placeholderColor">@color/mediumGray</color>
-
-    <!--     bottom sheet dialog-->
+    <color name="backgroundColor">@color/sea_shell</color>
+    <color name="placeholderColor">@color/medium_grey</color>
 
 </resources>

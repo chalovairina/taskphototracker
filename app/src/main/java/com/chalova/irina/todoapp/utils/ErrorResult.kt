@@ -1,9 +1,10 @@
 package com.chalova.irina.todoapp.utils
 
-sealed class ErrorResult(val message: Int? = null) {
+sealed class ErrorResult(val t: Throwable? = null) {
 
-    class NetworkError(message: Int? = null): ErrorResult(message)
-    class OAuthError(message: Int? = null): ErrorResult(message)
-    class DatabaseError(message: Int? = null): ErrorResult(message)
-    class UnknownError(message: Int? = null): ErrorResult(message)
+    class NetworkError(throwable: Throwable? = null) : ErrorResult(throwable)
+    class OAuthError(throwable: Throwable? = null) : ErrorResult(throwable)
+    class DatabaseError(throwable: Throwable? = null) : ErrorResult(throwable)
+    class UserError(throwable: Throwable? = null) : ErrorResult(throwable)
+    class UnknownError(throwable: Throwable? = null) : ErrorResult(throwable)
 }

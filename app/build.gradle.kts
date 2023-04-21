@@ -4,7 +4,6 @@ plugins {
     id("kotlin-kapt")
     id("androidx.navigation.safeargs")
     id("kotlin-parcelize")
-    id("org.jetbrains.kotlin.android")
 }
 
 val vkApiVersion by extra("\"5.131\"")
@@ -64,6 +63,8 @@ android {
 
 dependencies {
 
+    implementation("com.jakewharton.timber:timber:5.0.1")
+
     val appcompat_version = "1.6.1"
     implementation("androidx.appcompat:appcompat:$appcompat_version")
     implementation("androidx.appcompat:appcompat-resources:$appcompat_version")
@@ -72,7 +73,7 @@ dependencies {
     implementation("androidx.annotation:annotation:1.5.0")
 
     // SplashScreen
-    implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // RecyclerView selection
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
@@ -126,21 +127,21 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycle_version")
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
 
-    // Shimmer
-    implementation("com.facebook.shimmer:shimmer:0.5.0")
+//    for java time lib
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
 //    implementation("androidx.test.espresso:espresso-idling-resource:$espresso_version")
 
     // CircleImageView
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
+    // For Window Insets
+    implementation("dev.chrisbanes.insetter:insetter:0.6.1")
+
     // Glide
     val glide_version = "4.12.0"
     implementation("com.github.bumptech.glide:glide:$glide_version")
     kapt("com.github.bumptech.glide:compiler:$glide_version")
-
-    //    for java time lib
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
     // Worker
     implementation("androidx.work:work-runtime-ktx:2.7.1")

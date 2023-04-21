@@ -9,29 +9,37 @@ import android.media.RingtoneManager
 import android.os.Build
 import androidx.work.Configuration
 import androidx.work.WorkManager
-import com.chalova.irina.todoapp.di.AppComponent
-import com.chalova.irina.todoapp.di.DaggerAppComponent
+import com.chalova.irina.todoapp.di.app_scope.AppComponent
+import com.chalova.irina.todoapp.di.app_scope.DaggerAppComponent
 import com.chalova.irina.todoapp.reminder_work.ReminderWorker
+import timber.log.Timber
 import javax.inject.Inject
 
-class ToDoApplication: Application(), Configuration.Provider {
+class ToDoApplication : Application(), Configuration.Provider {
 
     lateinit var appComponent: AppComponent
         private set
 
     override fun onCreate() {
         super.onCreate()
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+
         appComponent = DaggerAppComponent.factory()
             .create(this)
         appComponent.inject(this)
 
         WorkManager.initialize(
-            this, workManagerConfiguration)
+            this, workManagerConfiguration
+        )
 
         createNotificationChannel()
     }
 
-    @Inject lateinit var workerConfiguration: Configuration
+    @Inject
+    lateinit var workerConfiguration: Configuration
 
     override fun getWorkManagerConfiguration(): Configuration {
         return workerConfiguration
@@ -46,8 +54,9 @@ class ToDoApplication: Application(), Configuration.Provider {
             )
 
             val ringtoneManager = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-            val audioAttributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
+            val audioAttributes =
+                AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
 
             channel.apply {
                 enableLights(true)
@@ -57,7 +66,9 @@ class ToDoApplication: Application(), Configuration.Provider {
                 setSound(ringtoneManager, audioAttributes)
             }
 
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(channel)
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+                channel
+            )
         }
     }
 }

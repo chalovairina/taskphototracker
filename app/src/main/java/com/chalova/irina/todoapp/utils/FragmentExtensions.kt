@@ -49,8 +49,10 @@ fun Fragment.showKeyboard(view: View) {
         .showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
 }
 
-fun Fragment.showLongSnackBarWithAction(view: View, message: String, @StringRes actionStringRes: Int,
-                                        listener: View.OnClickListener?) {
+fun Fragment.showLongSnackBarWithAction(
+    view: View, message: String, @StringRes actionStringRes: Int,
+    listener: View.OnClickListener?
+) {
     Snackbar.make(view, message, Snackbar.LENGTH_SHORT)
         .setAction(getString(actionStringRes), listener)
         .show()
