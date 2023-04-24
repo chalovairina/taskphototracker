@@ -41,8 +41,6 @@ class WebViewLoginActivity : AppCompatActivity() {
         _binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        webView = binding.webView
-
         loginViewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
 
         setWebView()
@@ -89,6 +87,7 @@ class WebViewLoginActivity : AppCompatActivity() {
     }
 
     private fun setWebView() {
+        webView = binding.webView
         webView.apply {
             webView.clearCache(true)
             val cookieManager = CookieManager.getInstance()

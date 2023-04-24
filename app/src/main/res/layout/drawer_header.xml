@@ -18,7 +18,7 @@
         android:contentDescription="@string/drawer_profile_photo"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_user_placeholder"
-        app:civ_border_color="@color/white"
+        app:civ_border_color="?attr/colorCircleImageBorder"
         app:civ_border_width="1dp" />
 
     <TextView
@@ -29,12 +29,12 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorTextContrast"
         android:textSize="18sp"
         tools:text="@string/drawer_email" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorAccent" />
+        android:background="?attr/colorAccent" />
 </LinearLayout>

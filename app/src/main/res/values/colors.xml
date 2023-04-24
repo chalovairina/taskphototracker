@@ -23,6 +23,8 @@
     <color name="colorSecondaryVariant">@color/pantone</color>
     <color name="colorOnSecondary">@color/dark</color>
 
+    <color name="colorControlNormal">@color/white</color>
+
     <color name="atomic_tangerine_dark">#FFB26B</color>
     <color name="sea_shell_dark">#FFD1BC</color>
     <color name="persimmon_dark">#FF8500</color>
@@ -56,6 +58,13 @@
     <color name="green">#00C980</color>
     <color name="ucla_gold">#FFB300</color>
 
+    <!--  main colors  -->
+    <color name="colorBackgroundNormal">@color/white</color>
+    <color name="colorTextNormal">@color/dark</color>
+    <color name="colorTextNormalLight">@color/dark_grey</color>
+    <color name="colorTextContrast">@color/white</color>
+    <color name="colorCircleImageBorder">@color/white</color>
+
     <!--    priorities-->
     <color name="highPriorityColor">@color/venetian_red</color>
     <color name="mediumPriorityColor">@color/ucla_gold</color>
@@ -80,7 +89,8 @@
     <color name="actionModeActionBarColor">@color/dark</color>
     <color name="actionBarBackgroundColor">@color/colorPrimary</color>
 
-    <color name="backgroundColor">@color/sea_shell</color>
+    <color name="itemStrokeColor">@color/light_grey</color>
+    <color name="listBackgroundColor">@color/sea_shell</color>
     <color name="placeholderColor">@color/medium_grey</color>
 
 </resources>

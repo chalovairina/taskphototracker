@@ -1,5 +1,13 @@
 <resources>
-    <attr name="colorActionModeStatusBar" format="color" />
-    <attr name="colorBackground" format="color" />
-    <attr name="colorPlaceholderBackground" format="color" />
+    <attr name="colorActionModeStatusBar" format="reference|color" />
+    <attr name="colorActionBarBackground" format="reference|color" />
+    <attr name="colorListBackground" format="reference|color" />
+    <attr name="colorItemStroke" format="reference|color" />
+    <attr name="colorItemBackground" format="reference|color" />
+    <attr name="colorBackgroundNormal" format="reference|color" />
+    <attr name="colorCircleImageBorder" format="reference|color" />
+    <attr name="colorTextNormal" format="reference|color" />
+    <attr name="colorTextNormalLight" format="reference|color" />
+    <attr name="colorTextContrast" format="reference|color" />
+    <attr name="colorPlaceholderBackground" format="reference|color" />
 </resources>

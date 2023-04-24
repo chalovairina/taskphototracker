@@ -16,9 +16,9 @@
         android:layout_gravity="center"
         android:layout_margin="32dp"
         android:indeterminate="true"
-        app:indicatorColor="@color/colorAccent"
+        app:indicatorColor="?attr/colorAccent"
         app:indicatorSize="64dp"
-        app:trackColor="@color/colorPrimary"
+        app:trackColor="?attr/colorPrimary"
         app:trackThickness="8dp" />
 
 </FrameLayout>

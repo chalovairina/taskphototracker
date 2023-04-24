@@ -97,14 +97,6 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-//    override fun extractToken(responseUrl: String): String? {
-//        return authManager.getToken(responseUrl)
-//    }
-//
-//    override fun extractUserId(responseUrl: String): String? {
-//        return authManager.getUserId(responseUrl)
-//    }
-
     override val loginStatusStream: Flow<LoginStatus?> = authDataSource.observeLoginStatus()
         .map { status ->
             status?.ifEmpty { null }?.let {

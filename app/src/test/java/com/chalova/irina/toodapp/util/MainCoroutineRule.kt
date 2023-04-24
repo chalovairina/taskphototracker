@@ -1,4 +1,4 @@
-package com.chalova.irina.toodapp
+package com.chalova.irina.toodapp.util
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

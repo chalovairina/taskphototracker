@@ -14,8 +14,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:titleTextColor="@color/white"
-        android:background="@color/actionBarBackgroundColor"
+        app:titleTextColor="?attr/colorTextContrast"
+        android:background="?attr/colorActionBarBackground"
         android:elevation="4dp"
         android:theme="@style/Theme.TODOApp.AppBarOverlay"
         app:popupTheme="@style/Theme.TODOApp.PopupOverlay" />

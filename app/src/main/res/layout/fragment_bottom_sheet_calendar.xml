@@ -23,7 +23,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/calendar_save"
             android:src="@drawable/ic_baseline_check_circle_24"
-            app:tint="@color/colorPrimary" />
+            app:tint="?attr/colorPrimary" />
 
         <ImageButton
             android:id="@+id/dialog_close_imageView"
@@ -33,7 +33,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/calendar_dismiss"
             android:src="@drawable/ic_arrow_drop_down_circle_24"
-            app:tint="@color/colorPrimary" />
+            app:tint="?attr/colorPrimary" />
     </LinearLayout>
 
     <TextView

@@ -46,10 +46,7 @@ class AuthViewModel @Inject constructor(
                 if (!authData.token.isNullOrEmpty() && !authData.userId.isNullOrEmpty()) {
                     authenticateToken(authData.userId, authData.token)
                 } else {
-                    when (userUseCases.logout()) {
-                        is Result.Error -> _userMessage.emit(R.string.main_unknown_error)
-                        is Result.Success -> _userMessage.emit(R.string.login_logout_successful)
-                    }
+                    logout()
                 }
             } finally {
                 authenticateJob = null
@@ -61,7 +58,6 @@ class AuthViewModel @Inject constructor(
         when (val result = userUseCases.authenticateToken(userId, token)) {
             is Result.Error -> {
                 _isTokenValid.update { false }
-
                 when (result.errorResult) {
                     is ErrorResult.OAuthError -> {
                         logout()
@@ -92,7 +88,10 @@ class AuthViewModel @Inject constructor(
         when (authEvent) {
             is AuthEvent.LoginFailed -> {
                 viewModelScope.launch {
-                    userUseCases.updateLoginStatus(LoginStatus.LoggedOut)
+                    when (userUseCases.updateLoginStatus(LoginStatus.LoggedIn)) {
+                        is Result.Success -> _userMessage.emit(R.string.login_logout_successful)
+                        is Result.Error -> _userMessage.emit(R.string.login_unknown_error)
+                    }
                 }
             }
             is AuthEvent.Logout -> {
@@ -107,7 +106,9 @@ class AuthViewModel @Inject constructor(
     }
 
     private suspend fun logout() {
-        _isTokenValid.update { false }
-        userUseCases.logout()
+        when (userUseCases.logout()) {
+            is Result.Error -> _userMessage.emit(R.string.main_unknown_error)
+            is Result.Success -> _userMessage.emit(R.string.login_logout_successful)
+        }
     }
 }

@@ -19,8 +19,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "com.chalova.irina.todoapp.CustomInstrumentationRunner"
-
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "VK_API_URL", vkApiUrl)
         buildConfigField("String", "VK_API_VER", vkApiVersion)
@@ -28,7 +27,8 @@ android {
 
     buildTypes {
         getByName("debug") {
-
+            @Suppress("UnstableApiUsage")
+            isMinifyEnabled = true
         }
         getByName("release") {
             @Suppress("UnstableApiUsage")
@@ -55,9 +55,13 @@ android {
         jvmTarget = "11"
     }
 
-    testOptions.unitTests {
-        isIncludeAndroidResources = true
-        isReturnDefaultValues = true
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        animationsDisabled = true
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
     }
 }
 
@@ -173,6 +177,12 @@ dependencies {
 
     // Instrumented testing
 
+//    androidTestImplementation("androidx.test.runner:1.3.0")
+    // Espresso dependencies
+    val espresso_version = "3.4.0"
+    androidTestImplementation("androidx.test.espresso:espresso-core:$espresso_version")
+
+    // dagger
     kaptAndroidTest("com.google.dagger:dagger-compiler:$dagger2_version")
     androidTestImplementation("com.google.dagger:dagger:$dagger2_version")
 
@@ -197,9 +207,7 @@ dependencies {
     // contains / doesNotContains used
     androidTestImplementation("com.google.truth:truth:1.1.3")
 
-    // Espresso dependencies
-    val espresso_version = "3.4.0"
-    androidTestImplementation("androidx.test.espresso:espresso-core:$espresso_version")
+
     // for recyclerViewActions
 //    androidTestImplementation ("androidx.test.espresso:espresso-contrib:$espresso_version") {
 //        exclude("protobuf-lite")

@@ -12,19 +12,23 @@
         <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
         <item name="colorOnSecondary">@color/colorOnSecondary</item>
 
-        <!-- Status bar colors. -->
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">true</item>
-
         <!-- Action mode colors. -->
+        <item name="colorActionBarBackground">@color/actionBarBackgroundColor</item>
         <item name="actionModeBackground">@color/actionModeActionBarColor</item>
-        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlNormal">@color/colorControlNormal</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="colorActionModeStatusBar">@color/actionModeStatusBarColor</item>
 
         <!--  UI elements colors      -->
         <item name="colorPlaceholderBackground">@color/placeholderColor</item>
+        <item name="colorListBackground">@color/listBackgroundColor</item>
+        <item name="colorBackgroundNormal">@color/colorBackgroundNormal</item>
+        <item name="colorCircleImageBorder">@color/colorCircleImageBorder</item>
+        <item name="colorTextNormal">@color/colorTextNormal</item>
+        <item name="colorTextNormalLight">@color/colorTextNormalLight</item>
+        <item name="colorTextContrast">@color/colorTextContrast</item>
+        <item name="colorItemBackground">@color/cardBackgroundColor</item>
+        <item name="colorItemStroke">@color/itemStrokeColor</item>
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
@@ -34,6 +38,12 @@
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_screen_with_title</item>
         <!-- Set the theme of the Activity that follows the splash screen -->
         <item name="postSplashScreenTheme">@style/Theme.TODOApp</item>
+    </style>
+
+    <style name="SplashScreenStyle" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/ic_splash_screen_with_title</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="NoActionBarStyle" parent="Theme.Material3.DayNight.NoActionBar" />

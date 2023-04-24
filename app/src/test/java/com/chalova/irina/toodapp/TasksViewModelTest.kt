@@ -4,20 +4,21 @@ import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.chalova.irina.todoapp.config.AppConfig
-import com.chalova.irina.todoapp.login_auth.data.repository.AuthRepository
 import com.chalova.irina.todoapp.login_auth.domain.*
-import com.chalova.irina.todoapp.tasks.data.Task
-import com.chalova.irina.todoapp.tasks.data.repository.TaskRepository
 import com.chalova.irina.todoapp.tasks.data.util.Priority
+import com.chalova.irina.todoapp.tasks.domain.*
 import com.chalova.irina.todoapp.tasks.presentation.tasks.TasksEvent
 import com.chalova.irina.todoapp.tasks.presentation.tasks.TasksViewModel
 import com.chalova.irina.todoapp.tasks.utils.TaskOrder
+import com.chalova.irina.toodapp.domain.*
+import com.chalova.irina.toodapp.domain.login_auth.*
+import com.chalova.irina.toodapp.domain.tasks.*
+import com.chalova.irina.toodapp.util.MainCoroutineRule
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.*
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -26,9 +27,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.time.Instant
-import kotlin.random.Random
 
-@OptIn(ExperimentalCoroutinesApi::class)
+const val testAuthority = "example.com"
+const val testUri = "http://example.com"
+
 @RunWith(JUnit4::class)
 @ExperimentalCoroutinesApi
 class TasksViewModelTest {
@@ -37,10 +39,9 @@ class TasksViewModelTest {
     var mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var viewModel: TasksViewModel
-
+    private lateinit var tasksProvider: TasksProvider
     private lateinit var userUseCases: UserUseCases
-    private lateinit var fakeAuthRepository: AuthRepository
-    private lateinit var fakeTaskRepository: TaskRepository
+    private lateinit var tasksUseCases: TasksUseCases
     private lateinit var savedStateHandle: SavedStateHandle
 
     private val testUserId = "userId"
@@ -48,37 +49,26 @@ class TasksViewModelTest {
     private val testDescription = "description"
     private val testDueDate = Instant.now()
     private val testPriority = Priority.LOW
-    private val testUri = "http://example.com"
 
     @Before
     fun setUp() {
         mockkStatic(Uri::class)
         val uriMock = mockk<Uri>()
         every { Uri.parse(testUri) } returns uriMock
-        fakeAuthRepository = FakeAuthRepository()
-        fakeTaskRepository = FakeTasksRepository()
+        tasksProvider = TasksProvider()
         userUseCases = UserUseCases(
-            GetCurrentUserIdImpl(), GetCurrentAuthDataImpl(), GetLoginStatusImpl(),
-            GetUserIdImpl(), LogoutImpl(), AuthenticateTokenImpl(), UpdateTokenImpl(), UpdateLoginStatusImpl(),
-            GetAuthServiceDataImpl()
+            FakeGetCurrentUserId(), FakeGetCurrentAuthData(), FakeGetLoginStatus(),
+            FakeGetUserId(), FakeLogout(), FakeAuthenticateToken(), FakeUpdateToken(), FakeUpdateLoginStatus(),
+            FakeGetAuthServiceData()
         )
+        tasksUseCases = TasksUseCases(
+            FakeAddTask(tasksProvider), FakeDeleteTask(tasksProvider),
+            FakeDeleteTasks(tasksProvider), FakeDeleteAllTasks(tasksProvider),
+            FakeGetTask(tasksProvider), FakeGetTasks(tasksProvider),
+            FakeGetSearchQueryTasks(tasksProvider))
         savedStateHandle = SavedStateHandle()
         savedStateHandle[AppConfig.USER_ID] = testUserId
-        viewModel = TasksViewModel(fakeTaskRepository, savedStateHandle)
-
-        val tasks = mutableListOf<Task>()
-        ('a'..'z').forEachIndexed { i, c ->
-            tasks.add(
-                i, Task(
-                    id = i.toLong(),
-                    userId = testUserId, title = c.toString(),
-                    priority = Priority.values()[Random(0).nextInt(Priority.values().size)],
-                    dueDate = testDueDate.plusMillis(i.toLong())
-                )
-            )
-        }
-        tasks.shuffle()
-        runTest { fakeTaskRepository.insertTasks(tasks) }
+        viewModel = TasksViewModel(tasksUseCases, userUseCases, savedStateHandle)
     }
 
     @Test
@@ -87,20 +77,15 @@ class TasksViewModelTest {
         viewModel.tasksState.test {
             awaitItem() // default empty emission
             // given
-            val task =
-                fakeTaskRepository.getTasksStream(testUserId).map { it.find { t -> t.title == "a" } }
-                    .firstOrNull()
-            var emission = awaitItem() // first initialized emission
+            val task = tasksUseCases.getTasks().firstOrNull()?.find { t -> t.title == "a" }
+
             // when
             viewModel.onEvent(TasksEvent.DeleteTask(task!!))
-            emission = awaitItem() // userMessage updated after delete
-//            assertTrue(emission != null)
 
             // then
-            emission = awaitItem()
+            val emission = awaitItem()
             val tasks = emission.tasksList!!
             assertTrue(tasks.find { it.title == "a" } == null)
-
         }
     }
 
@@ -108,16 +93,14 @@ class TasksViewModelTest {
     fun `onEvent DeleteAll no tasks returned`() = runTest {
 
         viewModel.tasksState.test {
-            awaitItem() // default empty emission
             // given
-            var emission = awaitItem() // first initialized emission
+            awaitItem() // default empty emission
+
             // when
             viewModel.onEvent(TasksEvent.DeleteAll)
-            emission = awaitItem() // userMessage updated after delete
-//            assertTrue(emission.userMessage != null)
 
             // then
-            emission = awaitItem()
+            val emission = awaitItem()
             val tasks = emission.tasksList
             assertTrue(tasks.isEmpty())
         }
@@ -128,24 +111,16 @@ class TasksViewModelTest {
         viewModel.tasksState.test {
             awaitItem() // default empty emission
             // given
-            val task =
-                fakeTaskRepository.getTasksStream(testUserId).map { it.find { t -> t.title == "a" } }
-                    .firstOrNull()
-            var emission = awaitItem() // first initialized emission
+            val task = tasksUseCases.getTasks().firstOrNull()?.find { t -> t.title == "a" }
             // when
             viewModel.onEvent(TasksEvent.DeleteTask(task!!))
-            emission = awaitItem() // userMessage updated after delete
-//            assertTrue(emission.userMessage != null)
-            emission = awaitItem() // list updated with deleted task
-            var tasks = emission.tasksList!!
-            assertTrue(tasks.find { it.title == "a" } == null)
-            viewModel.onEvent(TasksEvent.RestoreTask)
-            // then
-            emission = awaitItem() // userMessage updated after restore
-//            assertTrue(emission.userMessage != null)
+            var emission = awaitItem() // updated list with task deleted
 
-            emission = awaitItem() // insert restored task
-            tasks = emission.tasksList!!
+            viewModel.onEvent(TasksEvent.RestoreTask)
+
+            // then
+            emission = awaitItem()
+            val tasks = emission.tasksList
             assertTrue(tasks.find { it.title == "a" } != null)
         }
     }
@@ -158,10 +133,11 @@ class TasksViewModelTest {
         // when
         viewModel.onEvent(TasksEvent.OnOrderChanged(newOrder))
         viewModel.tasksState.test {
-            awaitItem()
-            val emission = awaitItem()
+            var emission = awaitItem() // default value
+            emission = awaitItem() // first loaded value
+            emission = awaitItem() // order changed
 
-            val tasks = emission.tasksList!!
+            val tasks = emission.tasksList
 
             // then
             for (i in 0..tasks.size - 2) {
@@ -174,12 +150,12 @@ class TasksViewModelTest {
     fun `onEvent OnSearchQueryChanged required tasks returned`() = runTest {
         viewModel.tasksState.test {
             // given
-            awaitItem() // default empty emission
+            var emission = awaitItem() // default empty emission
             // when
-            viewModel.onEvent(TasksEvent.OnSearchQueryChanged("z"))
+            viewModel.onEvent(TasksEvent.OnSearchQueryChanged("b"))
 
             // then
-            val emission = awaitItem()
+            emission = awaitItem() // search query changed
             val tasks = emission.tasksList
             assertTrue(tasks.size == 1)
         }

@@ -16,11 +16,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@color/strokeColor"
+        app:strokeColor="?attr/colorItemStroke"
         app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:background="@color/cardBackgroundColor"
+            android:background="?attr/colorItemBackground"
             android:id="@+id/task_row_background"
             android:layout_height="match_parent"
             android:paddingStart="24dp"
@@ -47,7 +47,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_width="0dp"
                 android:maxLines="1"
-                android:textColor="@color/dark"
+                android:textColor="?attr/colorTextNormal"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +80,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_width="0dp"
                 android:maxLines="3"
-                android:textColor="@color/dark_grey"
+                android:textColor="?attr/colorTextNormalLight"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/title_textView"

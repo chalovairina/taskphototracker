@@ -36,14 +36,6 @@ class TasksViewModel @AssistedInject constructor(
         savedStateHandle.getStateFlow(AppConfig.TASK_ORDER, TaskOrder.Orders.Date.name),
         savedStateHandle.getStateFlow(AppConfig.ORDER_TYPE, TaskOrder.OrderType.Descending.name)
     ) { taskOrder, orderType ->
-        Timber.d(
-            "new order state: $taskOrder $orderType -> ${
-                TaskOrder.getTaskOrderByName(
-                    taskOrder,
-                    orderType
-                )
-            }"
-        )
         TaskOrder.getTaskOrderByName(taskOrder, orderType)
     }.stateIn(
         scope = viewModelScope,
@@ -92,6 +84,7 @@ class TasksViewModel @AssistedInject constructor(
         loadTasksJob?.cancel()
         loadTasksJob = viewModelScope.launch {
             tasksUseCases.getTasks().collect { tasks ->
+                println("new tasks $tasks")
                 _tasksResultState.update { tasks }
                 _isLoading.update { false }
             }
@@ -139,7 +132,7 @@ class TasksViewModel @AssistedInject constructor(
             is TasksEvent.DeleteAll -> {
                 deleteAll()
             }
-            TasksEvent.RestoreTask -> {
+            is TasksEvent.RestoreTask -> {
                 restoreTask()
             }
             is TasksEvent.OnSearchQueryChanged -> {
@@ -218,6 +211,7 @@ class TasksViewModel @AssistedInject constructor(
         searchQueryJob = viewModelScope.launch {
             _isLoading.update { true }
             tasksUseCases.searchQueryTasks(searchQuery).collect { tasks ->
+                println("searchQueryTasks $tasks")
                 orderTasks(tasks, tasksState.value.taskOrder)
                 _tasksResultState.update { tasks }
                 _isLoading.update { false }

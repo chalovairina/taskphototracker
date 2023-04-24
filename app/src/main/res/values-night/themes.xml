@@ -16,6 +16,24 @@
         <!--    status bar-->
         <item name="android:statusBarColor">@color/statusBarColorDark</item>
         <item name="android:navigationBarColor">@color/statusBarColorDark</item>
+
+        <!-- Action mode colors. -->
+        <item name="colorActionBarBackground">@color/actionBarBackgroundColor</item>
+        <item name="actionModeBackground">@color/actionModeActionBarColor</item>
+        <item name="colorControlNormal">@color/colorControlNormal</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorActionModeStatusBar">@color/actionModeStatusBarColor</item>
+
+        <!--  UI elements colors      -->
+        <item name="colorPlaceholderBackground">@color/placeholderColor</item>
+        <item name="colorListBackground">@color/listBackgroundColor</item>
+        <item name="colorBackgroundNormal">@color/colorBackgroundNormal</item>
+        <item name="colorCircleImageBorder">@color/colorCircleImageBorder</item>
+        <item name="colorTextNormal">@color/colorTextNormal</item>
+        <item name="colorTextNormalLight">@color/colorTextNormalLight</item>
+        <item name="colorTextContrast">@color/colorTextContrast</item>
+        <item name="colorItemBackground">@color/cardBackgroundColor</item>
+        <item name="colorItemStroke">@color/itemStrokeColor</item>
     </style>
 
     <style name="DarkActionBarStyle" parent="Theme.Material3.DayNight.NoActionBar" />

@@ -12,7 +12,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="48dp"
-        android:background="@color/placeholderColor"
+        android:background="?attr/colorPlaceholderBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/due_date_chip_placeholder" />
 
@@ -22,7 +22,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:background="@color/placeholderColor"
+        android:background="?attr/colorPlaceholderBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/title_placeholder"

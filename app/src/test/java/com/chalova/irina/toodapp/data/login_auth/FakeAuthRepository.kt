@@ -1,4 +1,4 @@
-package com.chalova.irina.toodapp
+package com.chalova.irina.toodapp.data.login_auth
 
 import com.chalova.irina.todoapp.login_auth.data.AuthData
 import com.chalova.irina.todoapp.login_auth.data.repository.AuthRepository
@@ -12,7 +12,6 @@ class FakeAuthRepository : AuthRepository {
     private var status: LoginStatus = LoginStatus.LoggedIn
     private var userId: String? = "userId"
     private var token: String? = "123abc"
-    private val testUri = "http://example.com"
 
     override suspend fun updateAuthData(userId: String, token: String, loginStatus: LoginStatus): Result<String> {
         this.userId = userId
@@ -40,18 +39,6 @@ class FakeAuthRepository : AuthRepository {
         return Result.Success()
     }
 
-//    override suspend fun <T> authenticate(userId: String, token: T): Result<T> {
-//        return Result.Success(token)
-//    }
-//
-//    override fun extractToken(responseUrl: String): String {
-//        return "123abc"
-//    }
-
-//    override fun extractUserId(responseUrl: String): String {
-//        return "userId"
-//    }
-
     override val loginStatusStream: Flow<LoginStatus?> = flow { status }
     override suspend fun getAuthData(): AuthData {
         return AuthData(userId, token)
@@ -73,5 +60,4 @@ class FakeAuthRepository : AuthRepository {
         status = LoginStatus.LoggedOut
         return Result.Success()
     }
-
 }
