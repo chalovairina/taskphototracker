@@ -2,4 +2,5 @@
 <resources>
     <dimen name="icon_width">24dp</dimen>
     <dimen name="icon_height">24dp</dimen>
+    <dimen name="text_large">20sp</dimen>
 </resources>

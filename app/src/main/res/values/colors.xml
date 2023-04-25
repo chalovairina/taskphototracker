@@ -24,6 +24,7 @@
     <color name="colorOnSecondary">@color/dark</color>
 
     <color name="colorControlNormal">@color/white</color>
+    <color name="colorControlNormalDark">@color/dark</color>
 
     <color name="atomic_tangerine_dark">#FFB26B</color>
     <color name="sea_shell_dark">#FFD1BC</color>
@@ -63,6 +64,7 @@
     <color name="colorTextNormal">@color/dark</color>
     <color name="colorTextNormalLight">@color/dark_grey</color>
     <color name="colorTextContrast">@color/white</color>
+    <color name="colorTextContrastDark">@color/dark</color>
     <color name="colorCircleImageBorder">@color/white</color>
 
     <!--    priorities-->
@@ -83,10 +85,12 @@
     <color name="descriptionColor">@color/dark_grey</color>
 
     <!--    status bar-->
-    <color name="statusBarColor">@color/colorAccent</color>
-    <color name="statusBarColorDark">@color/colorAccentDark</color>
-    <color name="actionModeStatusBarColor">@color/coarse_wool</color>
-    <color name="actionModeActionBarColor">@color/dark</color>
+    <color name="statusBarColor">@android:color/transparent</color>
+    <color name="statusBarColorDark">@android:color/transparent</color>
+    <color name="navigationBarColor">@android:color/transparent</color>
+    <color name="navigationBarColorDark">@android:color/transparent</color>
+    <color name="actionModeStatusBarColor">@color/colorPrimaryVariant</color>
+    <color name="actionModeActionBarColor">@color/colorPrimaryVariant</color>
     <color name="actionBarBackgroundColor">@color/colorPrimary</color>
 
     <color name="itemStrokeColor">@color/light_grey</color>

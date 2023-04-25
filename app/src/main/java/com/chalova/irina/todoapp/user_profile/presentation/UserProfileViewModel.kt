@@ -29,12 +29,23 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _userName: MutableStateFlow<String?> = MutableStateFlow(null)
     private val _userEmail: MutableStateFlow<String?> = MutableStateFlow(null)
     private val _userImageUri: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val userProfile = userProfileUseCases.getUserProfile()
     val userProfileState =
-        combine(userProfileUseCases.getUserProfile(), _isSaved) { user, isSaved ->
+        combine(
+            userProfile,
+            _userName,
+            _userEmail,
+            _userImageUri,
+            _isSaved
+        ) { user, name, email, uri, isSaved ->
             UserProfileState(
-                userName = user?.name,
-                userEmail = user?.email,
-                imageUri = user?.image?.let { Uri.parse(it) },
+                userName = if (!name.isNullOrEmpty()) name else user?.name,
+                userEmail = if (!email.isNullOrEmpty()) email else user?.email,
+                imageUri = if (!uri.isNullOrEmpty()) Uri.parse(uri) else user?.image?.let {
+                    Uri.parse(
+                        it
+                    )
+                },
                 isSaved = isSaved
             )
         }.stateIn(
@@ -70,13 +81,13 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun updateUser() {
         viewModelScope.launch {
             val result = userProfileUseCases.updateUserProfile(
-                userName = _userName.value,
-                userEmail = _userEmail.value,
-                userImageUri = _userImageUri.value
+                userName = userProfileState.value.userName,
+                userEmail = userProfileState.value.userEmail,
+                userImageUri = userProfileState.value.imageUri?.toString()
             )
             when (result) {
-                is Result.Error -> _userMessage.emit(R.string.user_unknown_error)
                 is Result.Success -> _isSaved.update { true }
+                is Result.Error -> _userMessage.emit(R.string.user_unknown_error)
             }
         }
     }

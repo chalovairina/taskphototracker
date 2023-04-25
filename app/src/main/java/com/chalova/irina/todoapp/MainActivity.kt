@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -43,6 +44,7 @@ import com.chalova.irina.todoapp.utils.longToast
 import com.chalova.irina.todoapp.utils.repeatOnState
 import com.chalova.irina.todoapp.utils.shortToast
 import com.google.android.material.navigation.NavigationView
+import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -100,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         authViewModel = ViewModelProvider(this, viewModelFactory)[AuthViewModel::class.java]
         drawerViewModel = ViewModelProvider(this, viewModelFactory)[DrawerViewModel::class.java]
@@ -290,11 +292,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setToolbar() {
         toolbar = findViewById(R.id.toolbar)
-//        toolbar.applyInsetter {
-//            type(navigationBars = true, statusBars = true) {
-//                padding(horizontal = true, top = true)
-//            }
-//        }
+        toolbar.applyInsetter {
+            type(navigationBars = true, statusBars = true) {
+                padding(horizontal = true, top = true)
+            }
+        }
         setSupportActionBar(toolbar)
         toolbar.setupWithNavController(navController, appBarConfiguration)
     }

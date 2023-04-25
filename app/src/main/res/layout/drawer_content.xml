@@ -9,16 +9,13 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
+        style="@style/ToolbarTheme"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:titleTextColor="?attr/colorTextContrast"
-        android:background="?attr/colorActionBarBackground"
-        android:elevation="4dp"
-        android:theme="@style/Theme.TODOApp.AppBarOverlay"
-        app:popupTheme="@style/Theme.TODOApp.PopupOverlay" />
+        android:elevation="4dp" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_container"

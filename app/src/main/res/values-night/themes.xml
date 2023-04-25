@@ -13,14 +13,13 @@
         <item name="colorSecondaryVariant">@color/colorSecondaryVariantDark</item>
         <item name="colorOnSecondary">@color/colorOnSecondaryDark</item>
 
-        <!--    status bar-->
+        <!-- Status bar colors. -->
         <item name="android:statusBarColor">@color/statusBarColorDark</item>
-        <item name="android:navigationBarColor">@color/statusBarColorDark</item>
+        <item name="android:navigationBarColor">@color/navigationBarColorDark</item>
+
 
         <!-- Action mode colors. -->
-        <item name="colorActionBarBackground">@color/actionBarBackgroundColor</item>
-        <item name="actionModeBackground">@color/actionModeActionBarColor</item>
-        <item name="colorControlNormal">@color/colorControlNormal</item>
+        <item name="actionModeStyle">@style/ActionModeStyle</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="colorActionModeStatusBar">@color/actionModeStatusBarColor</item>
 
@@ -31,10 +30,11 @@
         <item name="colorCircleImageBorder">@color/colorCircleImageBorder</item>
         <item name="colorTextNormal">@color/colorTextNormal</item>
         <item name="colorTextNormalLight">@color/colorTextNormalLight</item>
-        <item name="colorTextContrast">@color/colorTextContrast</item>
+        <item name="colorTextContrast">@color/colorTextContrastDark</item>
         <item name="colorItemBackground">@color/cardBackgroundColor</item>
         <item name="colorItemStroke">@color/itemStrokeColor</item>
     </style>
 
-    <style name="DarkActionBarStyle" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="DarkActionBarStyle" parent="Theme.AppCompat.DayNight.NoActionBar" />
+
 </resources>

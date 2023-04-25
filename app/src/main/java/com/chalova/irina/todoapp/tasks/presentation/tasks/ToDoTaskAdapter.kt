@@ -50,13 +50,16 @@ class ToDoTaskAdapter(
         private fun setupUI(currentTask: Task) {
             taskBinding.titleTextView.text = currentTask.title
             taskBinding.descriptionTextView.text = currentTask.description
-            taskBinding.priorityIndicator.background.setTint(ContextCompat.getColor(
+            taskBinding.priorityIndicator.background.setTint(
+                ContextCompat.getColor(
                     taskBinding.root.context, PriorityUtils.getColorByPriority(
                         currentTask.priority
-                    ))
+                    )
+                )
             )
             taskBinding.dueDateChip.text = formatDate(currentTask.dueDate)
-            taskBinding.descriptionTextView.visibility = if (currentTask.description.isNullOrBlank())
+            taskBinding.descriptionTextView.visibility =
+                if (currentTask.description.isNullOrBlank())
                     View.GONE else View.VISIBLE
         }
 
@@ -100,13 +103,13 @@ class ToDoTaskAdapter(
 
     fun getItemByPosition(position: Int): Task = getItem(position)
 
-    class TaskKeyProvider(private val adapter: ToDoTaskAdapter):
+    class TaskKeyProvider(private val adapter: ToDoTaskAdapter) :
         ItemKeyProvider<Long>(SCOPE_CACHED) {
         override fun getKey(position: Int) = adapter.getItem(position).id
         override fun getPosition(key: Long) = adapter.currentList.indexOfFirst { it.id == key }
     }
 
-    class TaskDetailLookup(private val recyclerView: RecyclerView): ItemDetailsLookup<Long>() {
+    class TaskDetailLookup(private val recyclerView: RecyclerView) : ItemDetailsLookup<Long>() {
         override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
             val view = recyclerView.findChildViewUnder(e.x, e.y)
             return view?.let {

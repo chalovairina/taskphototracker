@@ -84,7 +84,6 @@ class TasksViewModel @AssistedInject constructor(
         loadTasksJob?.cancel()
         loadTasksJob = viewModelScope.launch {
             tasksUseCases.getTasks().collect { tasks ->
-                println("new tasks $tasks")
                 _tasksResultState.update { tasks }
                 _isLoading.update { false }
             }
@@ -211,7 +210,6 @@ class TasksViewModel @AssistedInject constructor(
         searchQueryJob = viewModelScope.launch {
             _isLoading.update { true }
             tasksUseCases.searchQueryTasks(searchQuery).collect { tasks ->
-                println("searchQueryTasks $tasks")
                 orderTasks(tasks, tasksState.value.taskOrder)
                 _tasksResultState.update { tasks }
                 _isLoading.update { false }

@@ -14,8 +14,7 @@ import javax.inject.Inject
 
 @AppScope
 class UserRepositoryImpl @Inject constructor(
-    private val userDao: UserDao,
-    private val dispatcherProvider: StandardDispatcherProvider
+    private val userDao: UserDao
 ) : UserRepository {
 
     override fun getUserStream(userId: String): Flow<User?> {
@@ -32,17 +31,4 @@ class UserRepositoryImpl @Inject constructor(
             Result.Error(ErrorResult.DatabaseError(e))
         }
     }
-
-//    override suspend fun updateUserName(userId: String, userName: String?) {
-//        userDao.updateUserName(userId, userName)
-//    }
-//
-//    override suspend fun updateUserEmail(userId: String, userEmail: String?) {
-//        userDao.updateUserEmail(userId, userEmail)
-//    }
-//
-//    override suspend fun updateUserImageUrl(userId: String, userImageUrl: String?) {
-//        userDao.updateUserImageUrl(userId, userImageUrl)
-//    }
-
 }

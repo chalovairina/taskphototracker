@@ -28,6 +28,7 @@ import com.chalova.irina.todoapp.di.provideTasksFactory
 import com.chalova.irina.todoapp.tasks.data.Task
 import com.chalova.irina.todoapp.tasks.presentation.utils.SelectionTrackerProvider
 import com.chalova.irina.todoapp.tasks.utils.TaskOrder
+import com.chalova.irina.todoapp.utils.getColorFromAttr
 import com.chalova.irina.todoapp.utils.repeatOnState
 import com.chalova.irina.todoapp.utils.shortToast
 import com.chalova.irina.todoapp.utils.showLongSnackBarWithAction
@@ -112,8 +113,10 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
                 menuInflater.inflate(R.menu.fragment_tasks, menu)
 
                 searchMenu = menu.findItem(R.id.menu_search)
-                    .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM or
-                                MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW)
+                    .setShowAsActionFlags(
+                        MenuItem.SHOW_AS_ACTION_IF_ROOM or
+                                MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW
+                    )
                 val searchView = searchMenu?.actionView as? SearchView
                 searchView?.apply {
                     isSubmitButtonEnabled = true
@@ -237,7 +240,8 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun tryToRestoreDeletedTask(deletedTask: Task) {
-        showLongSnackBarWithAction(binding.root,
+        showLongSnackBarWithAction(
+            binding.root,
             String.format(getString(R.string.tasks_deleted), deletedTask.title), R.string.tasks_undo
         ) {
             tasksViewModel.onEvent(TasksEvent.RestoreTask)
@@ -293,7 +297,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
         _binding = null
     }
 
-    inner class ActionModeSelectionTracker:
+    inner class ActionModeSelectionTracker :
         ActionMode.Callback, SelectionTrackerProvider<Long> {
 
         private lateinit var tracker: SelectionTracker<Long>
@@ -330,6 +334,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
                             actionMode = (activity as MainActivity).startSupportActionMode(
                                 this@ActionModeSelectionTracker
                             )
+                            applyStatusBarColor(R.attr.colorActionModeStatusBar)
                         }
                         val items = tracker.selection.size()
                         if (items > 0) {
@@ -372,6 +377,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
                     )
                     mode?.finish()
                     actionMode = null
+                    applyStatusBarColor(android.R.attr.statusBarColor)
                 }
             }
 
@@ -379,6 +385,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
         }
 
         override fun onDestroyActionMode(mode: ActionMode?) {
+            applyStatusBarColor(android.R.attr.statusBarColor)
             tracker.clearSelection()
             actionMode = null
         }
@@ -391,12 +398,17 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
             tracker.onRestoreInstanceState(savedInstanceState)
             if (tracker.hasSelection()) {
                 actionMode = (activity as MainActivity).startSupportActionMode(this)
+                applyStatusBarColor(R.attr.colorActionModeStatusBar)
                 actionMode?.title = resources.getQuantityString(
                     R.plurals.tasks_selected,
                     tracker.selection.size(),
                     tracker.selection.size()
                 )
             }
+        }
+
+        private fun applyStatusBarColor(statusBarColor: Int) {
+            activity?.window?.statusBarColor = requireActivity().getColorFromAttr(statusBarColor)
         }
     }
 

@@ -94,10 +94,10 @@ class UserProfileFragment : Fragment() {
         viewLifecycleOwner.repeatOnState(Lifecycle.State.STARTED) {
             launch {
                 userProfileViewModel.userProfileState.collect { userProfileState ->
-                    setupUiElements(userProfileState)
                     if (userProfileState.isSaved) {
                         findNavController().popBackStack()
                     }
+                    setupUiElements(userProfileState)
                 }
             }
             launch {
@@ -109,11 +109,11 @@ class UserProfileFragment : Fragment() {
     }
 
     private fun setupUiElements(state: UserProfileState) {
-        setupImage(state)
-        setupTextFields(state)
+        setImage(state)
+        setTextFields(state)
     }
 
-    private fun setupImage(state: UserProfileState) {
+    private fun setImage(state: UserProfileState) {
         state.imageUri?.let { uri ->
             val requestOptions = RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL)
             Glide
@@ -129,9 +129,11 @@ class UserProfileFragment : Fragment() {
         }
     }
 
-    private fun setupTextFields(state: UserProfileState) {
-        binding.userProfileName.setText(state.userName ?: "")
-        binding.userProfileEmail.setText(state.userEmail ?: "")
+    private fun setTextFields(state: UserProfileState) {
+        if (binding.userProfileName.text.toString() != state.userName)
+            binding.userProfileName.setText(state.userName ?: "")
+        if (binding.userProfileEmail.text.toString() != state.userEmail)
+            binding.userProfileEmail.setText(state.userEmail ?: "")
     }
 
     private fun setupUI() {

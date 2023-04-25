@@ -39,7 +39,6 @@ class FakeTasksRepository
 
         newTasks.addAll(tasks)
 
-        println("insert tasks " + newTasks.size)
         _tasksFlow.update { newTasks.toList() }
 
         return Result.Success()
@@ -67,10 +66,6 @@ class FakeTasksRepository
         tasks.removeIf { it.id == taskId }
 
         _tasksFlow.update { tasks.toList() }
-
-        println(tasks.size)
-        println(this.tasks.size)
-        println(_tasksFlow.value.size)
 
         return Result.Success()
     }

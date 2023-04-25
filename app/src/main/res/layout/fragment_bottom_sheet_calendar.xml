@@ -5,7 +5,7 @@
     style="@style/Animation.Design.BottomSheetDialog"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff">
+    android:background="?attr/colorBackgroundNormal">
 
     <LinearLayout
         android:id="@+id/buttons_group"

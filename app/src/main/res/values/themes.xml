@@ -11,11 +11,15 @@
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
         <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorControlNormal">@color/colorControlNormal</item>
+
+        <!-- Status bar colors. -->
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:navigationBarColor">@color/navigationBarColor</item>
+        <item name="android:windowLightStatusBar">true</item>
 
         <!-- Action mode colors. -->
-        <item name="colorActionBarBackground">@color/actionBarBackgroundColor</item>
-        <item name="actionModeBackground">@color/actionModeActionBarColor</item>
-        <item name="colorControlNormal">@color/colorControlNormal</item>
+        <item name="actionModeStyle">@style/ActionModeStyle</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="colorActionModeStatusBar">@color/actionModeStatusBarColor</item>
 
@@ -35,15 +39,9 @@
         <!-- Set a specific background color -->
         <item name="windowSplashScreenBackground">@android:color/white</item>
         <!-- Set an icon and it will be shown in the center of screen -->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_screen_with_title</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_login</item>
         <!-- Set the theme of the Activity that follows the splash screen -->
         <item name="postSplashScreenTheme">@style/Theme.TODOApp</item>
-    </style>
-
-    <style name="SplashScreenStyle" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowBackground">@drawable/ic_splash_screen_with_title</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="NoActionBarStyle" parent="Theme.Material3.DayNight.NoActionBar" />
@@ -51,5 +49,30 @@
     <style name="Theme.TODOApp.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar" />
 
     <style name="Theme.TODOApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/actionBarBackgroundColor</item>
+        <item name="background">@color/actionBarBackgroundColor</item>
+        <item name="titleTextAppearance">@style/ToolbarTitleTheme</item>
+        <item name="popupTheme">@style/Theme.TODOApp.PopupOverlay</item>
+        <item name="theme">@style/Theme.TODOApp.AppBarOverlay</item>
+    </style>
+
+    <style name="ToolbarTitleTheme">
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="android:textColor">@color/colorTextContrast</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ActionModeStyle" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="background">?attr/colorActionModeStatusBar</item>
+        <item name="android:backgroundSplit">?android:attr/actionModeSplitBackground</item>
+        <item name="android:height">?android:attr/actionBarSize</item>
+        <item name="android:titleTextStyle">@style/TitleTextStyle</item>
+    </style>
+
+    <style name="TitleTextStyle" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
 
 </resources>

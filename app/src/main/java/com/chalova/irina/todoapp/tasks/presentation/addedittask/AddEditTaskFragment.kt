@@ -150,7 +150,7 @@ class AddEditTaskFragment : Fragment() {
         }
 
         // priority
-        binding.currentPrioritySpinner.setOnItemSelectedListener(
+        binding.currentPrioritySpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>?,
@@ -172,7 +172,7 @@ class AddEditTaskFragment : Fragment() {
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
-            })
+            }
 
         // due date
         binding.currentDueDateChip.setOnClickListener {
