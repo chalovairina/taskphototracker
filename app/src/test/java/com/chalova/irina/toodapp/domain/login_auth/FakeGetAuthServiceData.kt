@@ -1,8 +1,8 @@
 package com.chalova.irina.toodapp.domain.login_auth
 
 import android.net.Uri
-import com.chalova.irina.todoapp.login_auth.data.AuthServiceData
-import com.chalova.irina.todoapp.login_auth.domain.GetAuthServiceData
+import com.chalova.irina.taskphototracker.login_auth.data.AuthServiceData
+import com.chalova.irina.taskphototracker.login_auth.domain.GetAuthServiceData
 import com.chalova.irina.toodapp.testAuthority
 import com.chalova.irina.toodapp.testUri
 

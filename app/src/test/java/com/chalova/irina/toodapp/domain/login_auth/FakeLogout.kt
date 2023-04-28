@@ -1,7 +1,7 @@
 package com.chalova.irina.toodapp.domain.login_auth
 
-import com.chalova.irina.todoapp.login_auth.domain.Logout
-import com.chalova.irina.todoapp.utils.Result
+import com.chalova.irina.taskphototracker.login_auth.domain.Logout
+import com.chalova.irina.taskphototracker.utils.Result
 
 class FakeLogout: Logout {
 

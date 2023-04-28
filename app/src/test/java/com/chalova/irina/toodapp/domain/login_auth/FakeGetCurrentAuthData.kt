@@ -1,7 +1,7 @@
 package com.chalova.irina.toodapp.domain.login_auth
 
-import com.chalova.irina.todoapp.login_auth.data.AuthData
-import com.chalova.irina.todoapp.login_auth.domain.GetCurrentAuthData
+import com.chalova.irina.taskphototracker.login_auth.data.AuthData
+import com.chalova.irina.taskphototracker.login_auth.domain.GetCurrentAuthData
 
 class FakeGetCurrentAuthData: GetCurrentAuthData {
 

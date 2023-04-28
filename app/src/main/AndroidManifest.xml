@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.chalova.irina.todoapp">
+    package="com.chalova.irina.taskphototracker">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,13 +14,13 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name=".ToDoApplication"
+        android:name=".TaskPhotoTrackerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TODOApp">
+        android:theme="@style/Theme.TaskPhotoTrackerApp">
 
         <!--  disable WorkManager initialization thru androidx.startup lib
         for workManager greater than 2.6.0 to use custom initialization
@@ -38,7 +38,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/todo"
+            android:label="@string/photo_tracker"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

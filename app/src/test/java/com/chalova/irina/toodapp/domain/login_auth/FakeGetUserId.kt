@@ -1,6 +1,6 @@
 package com.chalova.irina.toodapp.domain.login_auth
 
-import com.chalova.irina.todoapp.login_auth.domain.GetUserId
+import com.chalova.irina.taskphototracker.login_auth.domain.GetUserId
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

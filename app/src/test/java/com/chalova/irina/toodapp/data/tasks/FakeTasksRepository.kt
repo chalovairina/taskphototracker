@@ -1,8 +1,8 @@
 package com.chalova.irina.toodapp.data.tasks
 
-import com.chalova.irina.todoapp.tasks.data.Task
-import com.chalova.irina.todoapp.tasks.data.repository.TaskRepository
-import com.chalova.irina.todoapp.utils.Result
+import com.chalova.irina.taskphototracker.tasks.data.Task
+import com.chalova.irina.taskphototracker.tasks.data.repository.TaskRepository
+import com.chalova.irina.taskphototracker.utils.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf

@@ -1,7 +1,7 @@
 package com.chalova.irina.toodapp.domain.tasks
 
-import com.chalova.irina.todoapp.tasks.domain.DeleteTasks
-import com.chalova.irina.todoapp.utils.Result
+import com.chalova.irina.taskphototracker.tasks.domain.DeleteTasks
+import com.chalova.irina.taskphototracker.utils.Result
 
 class FakeDeleteTasks(private val tasksProvider: TasksProvider): DeleteTasks {
 

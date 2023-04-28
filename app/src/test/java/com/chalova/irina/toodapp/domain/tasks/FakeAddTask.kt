@@ -1,10 +1,10 @@
 package com.chalova.irina.toodapp.domain.tasks
 
-import com.chalova.irina.todoapp.tasks.data.Task
-import com.chalova.irina.todoapp.tasks.data.util.DateTimeUtil
-import com.chalova.irina.todoapp.tasks.data.util.Priority
-import com.chalova.irina.todoapp.tasks.domain.AddTask
-import com.chalova.irina.todoapp.utils.Result
+import com.chalova.irina.taskphototracker.tasks.data.Task
+import com.chalova.irina.taskphototracker.tasks.data.util.DateTimeUtil
+import com.chalova.irina.taskphototracker.tasks.data.util.Priority
+import com.chalova.irina.taskphototracker.tasks.domain.AddTask
+import com.chalova.irina.taskphototracker.utils.Result
 import java.time.LocalDate
 
 class FakeAddTask(private val tasksProvider: TasksProvider): AddTask {

@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.TODOApp" parent="DarkActionBarStyle">
+    <style name="Theme.TaskPhotoTrackerApp" parent="DarkActionBarStyle">
 
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/colorPrimaryDark</item>

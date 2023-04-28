@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/tasksFragment"
-        android:name="com.chalova.irina.todoapp.tasks.presentation.tasks.TasksFragment"
+        android:name="com.chalova.irina.taskphototracker.tasks.presentation.tasks.TasksFragment"
         android:label="@string/tasks_todo_tasks"
         tools:layout="@layout/fragment_tasks">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/addEditFragment"
-        android:name="com.chalova.irina.todoapp.tasks.presentation.addedittask.AddEditTaskFragment"
+        android:name="com.chalova.irina.taskphototracker.tasks.presentation.addedittask.AddEditTaskFragment"
         android:label="@string/addedit_update"
         tools:layout="@layout/fragment_add_edit_task">
         <argument
@@ -33,7 +33,7 @@
     </fragment>
     <dialog
         android:id="@+id/bottomSheetCalendarDialog"
-        android:name="com.chalova.irina.todoapp.tasks.presentation.addedittask.bottom_sheet_calendar.CalendarBottomSheetFragment"
+        android:name="com.chalova.irina.taskphototracker.tasks.presentation.addedittask.bottom_sheet_calendar.CalendarBottomSheetFragment"
         android:label="@string/calendar_bottom_sheet"
         tools:layout="@layout/fragment_bottom_sheet_calendar">
         <argument
@@ -43,18 +43,18 @@
 
     <fragment
         android:id="@+id/reportsFragment"
-        android:name="com.chalova.irina.todoapp.photo_reports.presentation.ReportsFragment"
+        android:name="com.chalova.irina.taskphototracker.photo_reports.presentation.ReportsFragment"
         android:label="@string/photo_report_reports"
         tools:layout="@layout/fragment_photo_reports" />
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.chalova.irina.todoapp.login_auth.presentation.login.LoginFragment"
+        android:name="com.chalova.irina.taskphototracker.login_auth.presentation.login.LoginFragment"
         android:label="@string/login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/userProfileFragment"
-        android:name="com.chalova.irina.todoapp.user_profile.presentation.UserProfileFragment"
+        android:name="com.chalova.irina.taskphototracker.user_profile.presentation.UserProfileFragment"
         android:label="@string/user_profile" />
 
     <action

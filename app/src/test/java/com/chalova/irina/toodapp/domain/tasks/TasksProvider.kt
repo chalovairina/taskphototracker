@@ -1,7 +1,7 @@
 package com.chalova.irina.toodapp.domain.tasks
 
-import com.chalova.irina.todoapp.tasks.data.Task
-import com.chalova.irina.todoapp.tasks.data.util.Priority
+import com.chalova.irina.taskphototracker.tasks.data.Task
+import com.chalova.irina.taskphototracker.tasks.data.util.Priority
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.Instant
@@ -28,6 +28,16 @@ class TasksProvider {
         val updated = mutableListOf<Task>()
         updated.addAll(tasks)
         updated.add(task)
+        _tasksFlow.emit(updated)
+    }
+
+    suspend fun updateTask(task: Task) {
+        val updated = mutableListOf<Task>()
+        updated.addAll(tasks)
+        updated.find { it.id == task.id }?.let {
+            updated.remove(it)
+            updated.add(task)
+        }
         _tasksFlow.emit(updated)
     }
 

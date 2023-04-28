@@ -1,9 +1,9 @@
 package com.chalova.irina.toodapp.data.login_auth
 
-import com.chalova.irina.todoapp.login_auth.data.AuthData
-import com.chalova.irina.todoapp.login_auth.data.repository.AuthRepository
-import com.chalova.irina.todoapp.login_auth.presentation.login.LoginStatus
-import com.chalova.irina.todoapp.utils.Result
+import com.chalova.irina.taskphototracker.login_auth.data.AuthData
+import com.chalova.irina.taskphototracker.login_auth.data.repository.AuthRepository
+import com.chalova.irina.taskphototracker.login_auth.presentation.login.LoginStatus
+import com.chalova.irina.taskphototracker.utils.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

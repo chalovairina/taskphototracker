@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.TODOApp" parent="NoActionBarStyle">
+    <style name="Theme.TaskPhotoTrackerApp" parent="NoActionBarStyle">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
@@ -41,21 +41,21 @@
         <!-- Set an icon and it will be shown in the center of screen -->
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_login</item>
         <!-- Set the theme of the Activity that follows the splash screen -->
-        <item name="postSplashScreenTheme">@style/Theme.TODOApp</item>
+        <item name="postSplashScreenTheme">@style/Theme.TaskPhotoTrackerApp</item>
     </style>
 
     <style name="NoActionBarStyle" parent="Theme.Material3.DayNight.NoActionBar" />
 
-    <style name="Theme.TODOApp.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar" />
+    <style name="Theme.TaskPhotoTrackerApp.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar" />
 
-    <style name="Theme.TODOApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.TaskPhotoTrackerApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
         <item name="android:background">@color/actionBarBackgroundColor</item>
         <item name="background">@color/actionBarBackgroundColor</item>
         <item name="titleTextAppearance">@style/ToolbarTitleTheme</item>
-        <item name="popupTheme">@style/Theme.TODOApp.PopupOverlay</item>
-        <item name="theme">@style/Theme.TODOApp.AppBarOverlay</item>
+        <item name="popupTheme">@style/Theme.TaskPhotoTrackerApp.PopupOverlay</item>
+        <item name="theme">@style/Theme.TaskPhotoTrackerApp.AppBarOverlay</item>
     </style>
 
     <style name="ToolbarTitleTheme">

@@ -13,7 +13,7 @@ android {
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.chalova.irina.todoapp"
+        applicationId = "com.chalova.irina.taskphototracker"
         minSdk = 23
         targetSdk = 33
         versionCode = 1

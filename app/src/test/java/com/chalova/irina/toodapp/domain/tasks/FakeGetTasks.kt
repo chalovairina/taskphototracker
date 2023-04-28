@@ -1,7 +1,7 @@
 package com.chalova.irina.toodapp.domain.tasks
 
-import com.chalova.irina.todoapp.tasks.data.Task
-import com.chalova.irina.todoapp.tasks.domain.GetTasks
+import com.chalova.irina.taskphototracker.tasks.data.Task
+import com.chalova.irina.taskphototracker.tasks.domain.GetTasks
 import kotlinx.coroutines.flow.Flow
 
 class FakeGetTasks(private val tasksProvider: TasksProvider): GetTasks {

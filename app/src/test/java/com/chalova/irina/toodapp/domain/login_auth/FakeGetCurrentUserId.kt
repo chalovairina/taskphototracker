@@ -1,6 +1,6 @@
 package com.chalova.irina.toodapp.domain.login_auth
 
-import com.chalova.irina.todoapp.login_auth.domain.GetCurrentUserId
+import com.chalova.irina.taskphototracker.login_auth.domain.GetCurrentUserId
 
 class FakeGetCurrentUserId: GetCurrentUserId {
 
