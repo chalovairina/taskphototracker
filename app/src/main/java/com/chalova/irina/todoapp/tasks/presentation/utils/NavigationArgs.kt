@@ -4,5 +4,4 @@ object NavigationArgs {
 
     const val CURRENT_TASK_ID = "currentTaskId"
     const val TASK_DUE_DATE = "taskDueDate"
-    const val LOGIN_SUCCESSFUL = "loginSuccessfull"
 }

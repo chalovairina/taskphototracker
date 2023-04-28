@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.TODOApp" parent="NoActionBarStyle">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorControlNormal">@color/colorControlNormal</item>
+
+        <!-- Status bar colors. -->
+        <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="android:navigationBarColor">@color/navigationBarColor</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
+        <!-- Action mode colors. -->
+        <item name="actionModeStyle">@style/ActionModeStyle</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorActionModeStatusBar">@color/actionModeStatusBarColor</item>
+
+        <!--  UI elements colors      -->
+        <item name="colorPlaceholderBackground">@color/placeholderColor</item>
+        <item name="colorListBackground">@color/listBackgroundColor</item>
+        <item name="colorBackgroundNormal">@color/colorBackgroundNormal</item>
+        <item name="colorCircleImageBorder">@color/colorCircleImageBorder</item>
+        <item name="colorTextNormal">@color/colorTextNormal</item>
+        <item name="colorTextNormalLight">@color/colorTextNormalLight</item>
+        <item name="colorTextContrast">@color/colorTextContrast</item>
+        <item name="colorItemBackground">@color/cardBackgroundColor</item>
+        <item name="colorItemStroke">@color/itemStrokeColor</item>
+    </style>
+</resources>

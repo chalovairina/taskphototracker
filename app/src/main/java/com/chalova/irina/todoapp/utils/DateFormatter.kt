@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun formatDate(date: Instant): String {
-    val format = DateTimeFormatter.ofPattern("EEE, MMM dd")
+    val format = DateTimeFormatter.ofPattern("EEE, dd MMM")
         .withLocale(Locale.getDefault())
         .withZone(ZoneId.systemDefault())
 

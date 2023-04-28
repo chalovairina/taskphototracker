@@ -17,5 +17,6 @@ data class LocalTask(
     val description: String? = null,
     @ColumnInfo(name = "due_date") val dueDate: Instant,
     @ColumnInfo(name = "created_at") val createdAt: Instant,
-    @ColumnInfo(name = "completed") val isCompleted: Boolean = false
+    @ColumnInfo(name = "completed") val isCompleted: Boolean = false,
+    @ColumnInfo(name = "photo_name") val reportPhoto: String? = null
 )

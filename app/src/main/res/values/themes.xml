@@ -64,15 +64,15 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ActionModeStyle" parent="@style/Widget.AppCompat.ActionMode">
+    <style name="ActionModeStyle" parent="@style/Widget.Material3.ActionMode">
         <item name="background">?attr/colorActionModeStatusBar</item>
         <item name="android:backgroundSplit">?android:attr/actionModeSplitBackground</item>
         <item name="android:height">?android:attr/actionBarSize</item>
         <item name="android:titleTextStyle">@style/TitleTextStyle</item>
     </style>
 
-    <style name="TitleTextStyle" parent="@style/Widget.AppCompat.ActionMode">
-        <item name="android:textColor">@color/colorPrimary</item>
+    <style name="TitleTextStyle" parent="@style/Widget.Material3.ActionMode">
+        <item name="android:textColor">@color/colorTextContrast</item>
     </style>
 
 </resources>

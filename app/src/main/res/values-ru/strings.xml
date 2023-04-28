@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--  Tasks Screen  -->
+    <!--  Main Activity  -->
     <string name="main_unknown_error">Неизвестная ошибка</string>
+
+    <!--  Tasks Screen  -->
     <string name="tasks_todo_tasks">Задачи</string>
     <string name="tasks_no_data">Нет сохраненных задач</string>
     <string name="tasks_successfully_added_task">Успешно добавлено!</string>
@@ -19,6 +21,7 @@
     <string name="tasks_priority_low">Низкий приоритет</string>
     <string name="tasks_delete_all">Удалить все</string>
     <string name="tasks_delete">Удалить</string>
+    <string name="tasks_task_updated">Задача обновлена</string>
     <string name="tasks_task_restored">Задача восстановлена</string>
     <string name="tasks_item_title">Мой заголовок</string>
     <string name="tasks_item_description">Описание</string>
@@ -42,7 +45,11 @@
         <item quantity="other">%d задач удалено</item>
     </plurals>
     <string name="tasks_unknown_error">Неизвестная ошибка</string>
-    <string name="tasks_loading_error">Error while loading tasks</string>
+    <string name="tasks_loading_error">Ошибка загрузки задач</string>
+    <string name="tasks_complete">Complete</string>
+    <string name="tasks_add_photo_report">Фото отчет</string>
+    <string name="tasks_completed">Завершено</string>
+    <string name="tasks_task_completed">Задача завершена</string>
 
     <!--  AddEditTask Screen  -->
     <string name="addedit_update">Обновить</string>
@@ -99,5 +106,16 @@
         <item quantity="many">У вас %d задач на сегодня. Заходите и проверьте!</item>
         <item quantity="other">У вас %d задач на сегодня. Заходите и проверьте!</item>
     </plurals>
+
+    <!-- Photo reports   -->
+    <string name="photo_report_photos">Фото отчеты</string>
+    <string name="photo_report_reports">Отчеты</string>
+    <string name="photo_report_no_reports">Нет фото отчетов</string>
+    <string name="photo_report_unknown_error">Неизвестная ошибка</string>
+    <string name="photo_report_save_failed">Не удалось сохранить фото</string>
+    <string name="photo_report_loading_error">Ошибка при загрузке фото</string>
+    <string name="photo_report_saved_successfully">Фото успешно сохранены</string>
+    <string name="photo_report_deleted_successfully">Фото успешно удалены</string>
+    <string name="photo_report_permission_required">Требуется разрешение на чтение фото</string>
 
 </resources>

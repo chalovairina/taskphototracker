@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/tasksFragment"
+        android:icon="@drawable/ic_fact_check"
+        android:title="@string/tasks_todo_tasks" />
+
+    <item
+        android:id="@+id/reportsFragment"
+        android:icon="@drawable/ic_photo_library"
+        android:title="@string/photo_report_reports" />
+</menu>

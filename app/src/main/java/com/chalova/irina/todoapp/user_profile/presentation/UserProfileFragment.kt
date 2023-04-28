@@ -1,18 +1,16 @@
 package com.chalova.irina.todoapp.user_profile.presentation
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -54,12 +52,9 @@ class UserProfileFragment : Fragment() {
         }
     }
     private val pickPhotoLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val imageUri = result.data?.data
-                imageUri?.let {
-                    userProfileViewModel.onEvent(UserProfileEvent.ImageUriChanged(imageUri))
-                }
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { result ->
+            result?.let {
+                userProfileViewModel.onEvent(UserProfileEvent.ImageUriChanged(it))
             }
         }
 
@@ -219,11 +214,8 @@ class UserProfileFragment : Fragment() {
     }
 
     private fun showPhotoChooser() {
-        val photoGalleryIntent = Intent(
-            Intent.ACTION_PICK,
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        )
-        pickPhotoLauncher.launch(photoGalleryIntent)
+        val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+        pickPhotoLauncher.launch(request)
     }
 
     override fun onDestroyView() {

@@ -67,7 +67,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun checkForAuthRedirect(url: String) {
-        if (url.contains(loginState.value.redirectUrl.toString())) {
+        if (url.startsWith(loginState.value.redirectUrl.toString())) {
             val token = userUseCases.getAuthServiceData.extractToken(url)
             token?.let {
                 val userId = userUseCases.getAuthServiceData.extractUserId(url)

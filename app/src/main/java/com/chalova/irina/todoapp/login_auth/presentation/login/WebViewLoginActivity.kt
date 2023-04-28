@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.chalova.irina.todoapp.ToDoApplication
 import com.chalova.irina.todoapp.databinding.ActivityAuthBinding
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class WebViewLoginActivity : AppCompatActivity() {
@@ -78,6 +79,7 @@ class WebViewLoginActivity : AppCompatActivity() {
     }
 
     private fun loadUrl(authUrl: Uri) {
+        Timber.d("loadUrl $authUrl")
         try {
             webView.loadUrl(authUrl.toString())
         } catch (e: Exception) {
@@ -100,7 +102,7 @@ class WebViewLoginActivity : AppCompatActivity() {
             webView.webViewClient = webClient
         }
         webView.settings.apply {
-            javaScriptEnabled = false
+            javaScriptEnabled = true
         }
     }
 
@@ -117,8 +119,10 @@ class WebViewLoginActivity : AppCompatActivity() {
             view: WebView?,
             request: WebResourceRequest?
         ): Boolean {
+            Timber.d("shouldOverrideUrlLoading ${request?.url}")
             request?.let { req ->
                 loginViewModel.onLoginEvent(LoginEvent.UrlLoadStart(req.url.toString()))
+
                 return (!req.url.toString().contains(
                     loginViewModel.loginState.value.authUrlAuthority
                 ))
@@ -127,11 +131,12 @@ class WebViewLoginActivity : AppCompatActivity() {
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-
+            Timber.d("onPageStarted $url")
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
+            Timber.d("onPageFinished $url")
             url?.let {
                 loginViewModel.onLoginEvent(LoginEvent.UrlLoaded(url))
             }

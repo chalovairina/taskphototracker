@@ -13,26 +13,52 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.chalova.irina.todoapp.R
-import com.chalova.irina.todoapp.databinding.ItemLayoutBinding
+import com.chalova.irina.todoapp.databinding.ItemTaskBinding
 import com.chalova.irina.todoapp.tasks.data.Task
 import com.chalova.irina.todoapp.utils.PriorityUtils
 import com.chalova.irina.todoapp.utils.formatDate
 
-class ToDoTaskAdapter(
+class TasksAdapter(
     private val activity: FragmentActivity,
-    diffUtil: DiffUtil.ItemCallback<Task>,
-    private val action: (items: List<Task>, changed: Task) -> Unit
-) : ListAdapter<Task, ToDoTaskAdapter.ToDoViewHolder>(diffUtil) {
+    private val action: (items: List<Task>, changed: Task) -> Unit,
+    private val onTaskCompleteChange: (changed: Task) -> Unit,
+    private val takePhoto: (changed: Task) -> Unit,
+) : ListAdapter<Task, TasksAdapter.TaskViewHolder>(Companion) {
+
+    companion object : DiffUtil.ItemCallback<Task>() {
+        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem.userId == newItem.userId && oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+            return oldItem.description == newItem.description &&
+                    oldItem.title == newItem.title &&
+                    oldItem.priority == newItem.priority &&
+                    oldItem.dueDate == newItem.dueDate
+        }
+    }
 
     var tracker: SelectionTracker<Long>? = null
 
-    inner class ToDoViewHolder(private val taskBinding: ItemLayoutBinding) :
+    inner class TaskViewHolder(private val taskBinding: ItemTaskBinding) :
         RecyclerView.ViewHolder(taskBinding.root), View.OnClickListener {
 
         private var currentTask: Task? = null
 
         init {
             taskBinding.root.setOnClickListener(this)
+            taskBinding.materialSwitch.setOnClickListener {
+                currentTask = currentTask!!.copy(isCompleted = taskBinding.materialSwitch.isChecked)
+                onTaskCompleteChange(currentTask!!)
+                if (taskBinding.materialSwitch.isChecked) {
+                    takePhoto(currentTask!!)
+                    taskBinding.materialSwitch.setText(R.string.tasks_completed)
+                } else {
+                    taskBinding.materialSwitch.setText(R.string.tasks_add_photo_report)
+                }
+            }
+            taskBinding.materialSwitch.setOnCheckedChangeListener { v, isChecked ->
+            }
         }
 
         override fun onClick(v: View?) {
@@ -48,6 +74,12 @@ class ToDoTaskAdapter(
         }
 
         private fun setupUI(currentTask: Task) {
+            taskBinding.materialSwitch.apply {
+                isChecked = currentTask.isCompleted
+                text = activity.getString(
+                    if (isChecked) R.string.tasks_completed else R.string.tasks_add_photo_report
+                )
+            }
             taskBinding.titleTextView.text = currentTask.title
             taskBinding.descriptionTextView.text = currentTask.description
             taskBinding.priorityIndicator.background.setTint(
@@ -91,19 +123,19 @@ class ToDoTaskAdapter(
             }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val binding = ItemLayoutBinding.inflate(inflater, parent, false)
-        return ToDoViewHolder(binding)
+        val binding = ItemTaskBinding.inflate(inflater, parent, false)
+        return TaskViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ToDoViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
     fun getItemByPosition(position: Int): Task = getItem(position)
 
-    class TaskKeyProvider(private val adapter: ToDoTaskAdapter) :
+    class TaskKeyProvider(private val adapter: TasksAdapter) :
         ItemKeyProvider<Long>(SCOPE_CACHED) {
         override fun getKey(position: Int) = adapter.getItem(position).id
         override fun getPosition(key: Long) = adapter.currentList.indexOfFirst { it.id == key }
@@ -113,7 +145,7 @@ class ToDoTaskAdapter(
         override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
             val view = recyclerView.findChildViewUnder(e.x, e.y)
             return view?.let {
-                (recyclerView.getChildViewHolder(view) as ToDoTaskAdapter.ToDoViewHolder)
+                (recyclerView.getChildViewHolder(view) as TasksAdapter.TaskViewHolder)
                     .getItemDetails()
             } ?: run {
                 return null

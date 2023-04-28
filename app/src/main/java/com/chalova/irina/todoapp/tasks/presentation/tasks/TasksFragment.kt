@@ -1,9 +1,17 @@
 package com.chalova.irina.todoapp.tasks.presentation.tasks
 
+import android.content.ContentValues
 import android.content.Context
+import android.graphics.Bitmap
+import android.os.Build
+import android.os.Build.VERSION_CODES.Q
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
@@ -16,7 +24,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,11 +35,11 @@ import com.chalova.irina.todoapp.di.provideTasksFactory
 import com.chalova.irina.todoapp.tasks.data.Task
 import com.chalova.irina.todoapp.tasks.presentation.utils.SelectionTrackerProvider
 import com.chalova.irina.todoapp.tasks.utils.TaskOrder
-import com.chalova.irina.todoapp.utils.getColorFromAttr
-import com.chalova.irina.todoapp.utils.repeatOnState
-import com.chalova.irina.todoapp.utils.shortToast
-import com.chalova.irina.todoapp.utils.showLongSnackBarWithAction
+import com.chalova.irina.todoapp.utils.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.io.IOException
+import java.util.*
 import javax.inject.Inject
 
 class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -48,38 +55,49 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
     private var _binding: FragmentTasksBinding? = null
     private val binding get() = _binding!!
 
+    private val menuHost: MenuHost get() = requireActivity()
+    private var searchMenu: MenuItem? = null
+
     private val actionModeSelectionTracker: ActionModeSelectionTracker by lazy {
         ActionModeSelectionTracker()
     }
 
-    private object TODO_TASKS_DIFF_UTIL : DiffUtil.ItemCallback<Task>() {
-        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
-            return oldItem.userId == newItem.userId && oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
-            return oldItem.description == newItem.description &&
-                    oldItem.title == newItem.title &&
-                    oldItem.priority == newItem.priority &&
-                    oldItem.dueDate == newItem.dueDate
-        }
+    private val tasksAdapter: TasksAdapter by lazy {
+        TasksAdapter(
+            requireActivity(), { items: List<Task>, changed: Task ->
+                val task = items.first { it.id == changed.id }
+                findNavController().navigate(
+                    TasksFragmentDirections
+                        .actionTasksFragmentToAddEditFragment(task.id)
+                )
+            }, { task: Task ->
+                tasksViewModel.onEvent(TasksEvent.UpdateTask(task))
+            }, { completing: Task ->
+                tasksViewModel.onEvent(TasksEvent.CompletingTask(completing))
+                takePhoto.launch()
+            }
+        )
     }
 
-    private val adapter: ToDoTaskAdapter by lazy {
-        ToDoTaskAdapter(
-            requireActivity(),
-            TODO_TASKS_DIFF_UTIL
-        ) { items: List<Task>, changed: Task ->
-            val task = items.first { it.id == changed.id }
+    private val takePhoto =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bmp ->
+            bmp?.let {
 
-            val action =
-                TasksFragmentDirections.actionTasksFragmentToAddEditFragment(task.id)
-            findNavController().navigate(action)
+                val fileName = UUID.randomUUID().toString()
+                Timber.d("takePhoto $it $fileName")
+                val result = if (Build.VERSION.SDK_INT >= Q)
+                    savePhotoToInternalStorage(fileName, it)
+                else savePhotoToExternalStorage(fileName, it)
+                Timber.d("savePhoto")
+                when (result) {
+                    is Result.Success -> {
+                        tasksViewModel.onEvent(TasksEvent.CompletePhotoReport(fileName))
+                        shortToast(R.string.photo_report_saved_successfully)
+                    }
+                    is Result.Error -> shortToast(R.string.photo_report_save_failed)
+                }
+            }
         }
-    }
-
-    private val menuHost: MenuHost get() = requireActivity()
-    private var searchMenu: MenuItem? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -129,13 +147,13 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
                 when (menuItem.itemId) {
                     R.id.menu_delete_all -> confirmRemoveAll()
                     R.id.high_priority_sort -> tasksViewModel.onEvent(
-                        TasksEvent.OnOrderChanged(TaskOrder.Priority(TaskOrder.OrderType.Descending))
+                        TasksEvent.OrderChanged(TaskOrder.Priority(TaskOrder.OrderType.Descending))
                     )
                     R.id.old_date_sort -> tasksViewModel.onEvent(
-                        TasksEvent.OnOrderChanged(TaskOrder.Date(TaskOrder.OrderType.Ascending))
+                        TasksEvent.OrderChanged(TaskOrder.Date(TaskOrder.OrderType.Ascending))
                     )
                     R.id.new_date_sort -> tasksViewModel.onEvent(
-                        TasksEvent.OnOrderChanged(TaskOrder.Date(TaskOrder.OrderType.Descending))
+                        TasksEvent.OrderChanged(TaskOrder.Date(TaskOrder.OrderType.Descending))
                     )
                 }
 
@@ -155,8 +173,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
             launch {
                 tasksViewModel.tasksState.collect { state ->
                     setupUiElements(state)
-                    adapter.submitList(state.tasksList)
-                    binding.recyclerView.smoothScrollToPosition(0)
+                    tasksAdapter.submitList(state.tasksList)
                 }
             }
             launch {
@@ -192,22 +209,24 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun setupUiElementsVisibility(state: TasksState) {
         with(binding) {
-            recyclerView.isVisible = state.tasksList.isNotEmpty()
+            rvTasks.isVisible = state.tasksList.isNotEmpty()
             noDataImageView.isVisible = state.tasksList.isEmpty()
             noDataTextView.isVisible = state.tasksList.isEmpty()
         }
     }
 
     private fun setupAdapter() {
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
+        binding.rvTasks.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = tasksAdapter
+        }
 
         setupSelectionTracker()
         setTouchActions()
     }
 
     private fun setupSelectionTracker() {
-        adapter.tracker = actionModeSelectionTracker.provideSelectionTracker()
+        tasksAdapter.tracker = actionModeSelectionTracker.provideSelectionTracker()
     }
 
     private fun setTouchActions() {
@@ -225,14 +244,57 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.absoluteAdapterPosition
-                val taskToDelete = adapter.getItemByPosition(position)
+                val taskToDelete = tasksAdapter.getItemByPosition(position)
 
                 deleteSwipedTask(taskToDelete)
                 tryToRestoreDeletedTask(taskToDelete)
             }
         })
 
-        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
+        itemTouchHelper.attachToRecyclerView(binding.rvTasks)
+    }
+
+    private fun savePhotoToInternalStorage(filename: String, bmp: Bitmap): Result<Nothing> {
+        Timber.d("savePhotoToInternalStorage")
+        return try {
+            requireActivity().openFileOutput("$filename.jpg", AppCompatActivity.MODE_PRIVATE)
+                .use { stream ->
+                    if (!bmp.compress(Bitmap.CompressFormat.JPEG, 95, stream)) {
+                        throw IOException("Couldn't save bitmap")
+                    }
+                }
+            Result.Success()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Result.Error(ErrorResult.UnknownError())
+        }
+    }
+
+    private fun savePhotoToExternalStorage(displayName: String, bitmap: Bitmap): Result<Nothing> {
+        val imageCollection = sdk29AndUp {
+            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        } ?: MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, "$displayName.jpg")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/.jpeg")
+            put(MediaStore.Images.Media.WIDTH, bitmap.width)
+            put(MediaStore.Images.Media.HEIGHT, bitmap.height)
+        }
+
+        return try {
+            requireActivity().contentResolver.insert(imageCollection, contentValues)?.let { uri ->
+                requireActivity().contentResolver.openOutputStream(uri).use { outputStream ->
+                    if (!bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)) {
+                        throw IOException("Couldn't save bitmap")
+                    }
+                }
+            } ?: throw IOException("Couldn't create MediaStore entry")
+            Result.Success()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Result.Error(ErrorResult.UnknownError())
+        }
     }
 
     private fun deleteSwipedTask(taskToDelete: Task) {
@@ -254,7 +316,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
                 tasksViewModel.onEvent(TasksEvent.DeleteAll)
             }
             .setNegativeButton(getString(R.string.tasks_no)) { _, _ -> }
-            .setTitle(String.format(getString(R.string.tasks_delete), adapter.itemCount))
+            .setTitle(String.format(getString(R.string.tasks_delete), tasksAdapter.itemCount))
             .setMessage(getString(R.string.tasks_confirm_delete_all))
             .create()
             .show()
@@ -274,7 +336,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun searchQuery(query: String?) {
-        tasksViewModel.onEvent(TasksEvent.OnSearchQueryChanged(query))
+        tasksViewModel.onEvent(TasksEvent.SearchQueryChanged(query))
     }
 
     private fun collapseSearchView() {
@@ -292,7 +354,7 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onDestroyView() {
-        binding.recyclerView.adapter = null
+        binding.rvTasks.adapter = null
         super.onDestroyView()
         _binding = null
     }
@@ -314,9 +376,9 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
         private fun setupSelectionTracker() {
             tracker = SelectionTracker.Builder(
                 ACTION_MODE_SELECTION,
-                binding.recyclerView,
-                ToDoTaskAdapter.TaskKeyProvider(binding.recyclerView.adapter as ToDoTaskAdapter),
-                ToDoTaskAdapter.TaskDetailLookup(binding.recyclerView),
+                binding.rvTasks,
+                TasksAdapter.TaskKeyProvider(binding.rvTasks.adapter as TasksAdapter),
+                TasksAdapter.TaskDetailLookup(binding.rvTasks),
                 StorageStrategy.createLongStorage()
             ).withSelectionPredicate(
                 SelectionPredicates.createSelectAnything()
@@ -411,5 +473,4 @@ class TasksFragment : Fragment(), SearchView.OnQueryTextListener {
             activity?.window?.statusBarColor = requireActivity().getColorFromAttr(statusBarColor)
         }
     }
-
 }

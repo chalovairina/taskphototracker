@@ -12,6 +12,7 @@ import kotlin.reflect.KClass
 class ViewModelFactory @Inject constructor(
     private val viewModels: MutableMap<Class<out ViewModel>, Provider<ViewModel>>
 ) : ViewModelProvider.Factory {
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         var viewModel: Provider<ViewModel>? = viewModels[modelClass]
         if (viewModel == null) {

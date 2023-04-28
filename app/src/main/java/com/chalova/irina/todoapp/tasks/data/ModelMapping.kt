@@ -11,7 +11,8 @@ fun Task.toLocal() = LocalTask(
     description = description,
     dueDate = dueDate,
     createdAt = createdAt,
-    isCompleted = isCompleted
+    isCompleted = isCompleted,
+    reportPhoto = reportPhoto
 )
 
 fun List<Task>.toLocal() = map(Task::toLocal)
@@ -25,7 +26,8 @@ fun LocalTask.toExternal() = Task(
     description = description,
     dueDate = dueDate,
     createdAt = createdAt,
-    isCompleted = isCompleted
+    isCompleted = isCompleted,
+    reportPhoto = reportPhoto
 )
 
 fun List<LocalTask>.toExternal() = map(LocalTask::toExternal)

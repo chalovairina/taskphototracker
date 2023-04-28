@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,6 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -36,13 +36,13 @@ import com.chalova.irina.todoapp.login_auth.presentation.login.LoginFragmentDire
 import com.chalova.irina.todoapp.login_auth.presentation.login.LoginStatus
 import com.chalova.irina.todoapp.reminder_work.ReminderWorker
 import com.chalova.irina.todoapp.reminder_work.ReminderWorker.Companion.NOTIFICATION_WORK
-import com.chalova.irina.todoapp.tasks.presentation.utils.NavigationArgs.LOGIN_SUCCESSFUL
 import com.chalova.irina.todoapp.user_drawer.presentation.DrawerState
 import com.chalova.irina.todoapp.user_drawer.presentation.DrawerViewModel
 import com.chalova.irina.todoapp.user_profile.presentation.UserProfileFragmentDirections
 import com.chalova.irina.todoapp.utils.longToast
 import com.chalova.irina.todoapp.utils.repeatOnState
 import com.chalova.irina.todoapp.utils.shortToast
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.CoroutineScope
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         private set
 
     private lateinit var navController: NavController
-    private lateinit var drawerNavView: NavigationView
+    private lateinit var navView: NavigationView
     private lateinit var toolbar: Toolbar
     private lateinit var drawer: DrawerLayout
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
     private fun startNotificationWork() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
-                applicationContext,
+                this,
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -198,15 +198,29 @@ class MainActivity : AppCompatActivity() {
         if (enable) {
             signOutItem?.isVisible = true
             profileItem?.isEnabled = true
+            findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = true
         } else {
             signOutItem?.isVisible = false
             profileItem?.isEnabled = false
+            findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
         }
     }
 
     private fun setupUI() {
         setupNavigation()
-        setDrawer()
+        setupDrawer()
+        setupBottomNavigation()
+    }
+
+    private fun setupBottomNavigation() {
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNavigation.setupWithNavController(navController)
+        repeatOnState(Lifecycle.State.STARTED) {
+            navController.currentBackStackEntryFlow.collect {
+                bottomNavigation.isVisible =
+                    it.destination.id == R.id.tasksFragment || it.destination.id == R.id.reportsFragment
+            }
+        }
     }
 
     private fun setupNavigation() {
@@ -216,13 +230,14 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
     }
 
-    private fun setDrawer() {
+    private fun setupDrawer() {
         drawer = binding.drawerLayout
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.tasksFragment,
-                R.id.loginFragment
+                R.id.loginFragment,
+                R.id.reportsFragment
             ),
             drawerLayout = drawer
         )
@@ -265,12 +280,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setDrawerView() {
-        drawerNavView = binding.navView
-        drawerNavView.setupWithNavController(navController)
+        navView = binding.navView
+        navView.setupWithNavController(navController)
 
-        _navViewHeaderBinding = DrawerHeaderBinding.inflate(layoutInflater, drawerNavView, true)
+        _navViewHeaderBinding = DrawerHeaderBinding.inflate(layoutInflater, navView, true)
 
-        signOutItem = drawerNavView.menu.findItem(R.id.nav_sign_out).apply {
+        signOutItem = navView.menu.findItem(R.id.nav_sign_out).apply {
             setOnMenuItemClickListener {
                 drawer.closeDrawer(DRAWER_GRAVITY)
                 authViewModel.onAuthEvent(AuthEvent.Logout)
@@ -278,7 +293,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
         }
-        profileItem = drawerNavView.menu.findItem(R.id.nav_user_profile).apply {
+        profileItem = navView.menu.findItem(R.id.nav_user_profile).apply {
             setOnMenuItemClickListener {
                 drawer.closeDrawer(DRAWER_GRAVITY)
                 navController.navigate(
@@ -303,14 +318,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun signOut() {
         navController.navigate(LoginFragmentDirections.actionGlobalLoginFragment())
-    }
-
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        outState.putBoolean(
-            LOGIN_SUCCESSFUL,
-            authViewModel.authState.value.loginStatus == LoginStatus.LoggedIn
-        )
-        super.onSaveInstanceState(outState, outPersistentState)
     }
 
     override fun onDestroy() {

@@ -32,11 +32,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val userProfile = userProfileUseCases.getUserProfile()
     val userProfileState =
         combine(
-            userProfile,
-            _userName,
-            _userEmail,
-            _userImageUri,
-            _isSaved
+            userProfile, _userName, _userEmail, _userImageUri, _isSaved
         ) { user, name, email, uri, isSaved ->
             UserProfileState(
                 userName = if (!name.isNullOrEmpty()) name else user?.name,

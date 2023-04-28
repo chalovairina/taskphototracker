@@ -10,7 +10,7 @@ class DeleteAllTasksImpl(
     private val taskRepository: TaskRepository
 ) : DeleteAllTasks {
 
-    override suspend fun invoke(): Result<String> {
+    override suspend fun invoke(): Result<Nothing> {
         return getCurrentUserId()?.let { userId ->
             taskRepository.deleteAllTasks(userId)
         } ?: Result.Error(ErrorResult.UserError())

@@ -22,10 +22,22 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="?attr/colorPrimary"
+        android:backgroundTint="@color/colorPrimaryVariant"
+        app:menu="@menu/bottom_tabs"
+        app:itemBackground="?attr/colorPrimary"
+        app:itemIconTint="?attr/colorControlNormal"
+        app:itemTextColor="?attr/colorControlNormal" />
 </androidx.constraintlayout.widget.ConstraintLayout>

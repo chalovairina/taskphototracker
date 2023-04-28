@@ -13,8 +13,11 @@ import com.chalova.irina.todoapp.login_auth.data.repository.AuthRepository
 import com.chalova.irina.todoapp.login_auth.data.repository.AuthRepositoryImpl
 import com.chalova.irina.todoapp.login_auth.data.repository.VkAuthManager
 import com.chalova.irina.todoapp.login_auth.util.dataStore
+import com.chalova.irina.todoapp.photo_reports.data.repository.ReportRepository
+import com.chalova.irina.todoapp.photo_reports.data.repository.ReportRepositoryImpl
 import com.chalova.irina.todoapp.tasks.data.repository.TaskRepository
 import com.chalova.irina.todoapp.tasks.data.repository.TaskRepositoryImpl
+import com.chalova.irina.todoapp.tasks.data.source.local.MIGRATION_1_2
 import com.chalova.irina.todoapp.tasks.data.source.local.TASKS_DB_NAME
 import com.chalova.irina.todoapp.tasks.data.source.local.TaskDatabase
 import com.chalova.irina.todoapp.user_profile.data.repository.UserRepository
@@ -35,7 +38,9 @@ object DatabaseModule {
             context,
             TaskDatabase::class.java,
             TASKS_DB_NAME
-        ).build()
+        )
+            .addMigrations(MIGRATION_1_2)
+            .build()
 
     @Provides
     @AppScope
@@ -65,6 +70,10 @@ interface RepositoryModule {
     @Binds
     @AppScope
     fun bindAuthRepository(authRepository: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    @AppScope
+    fun bindReportsRepository(reportRepositoryImpl: ReportRepositoryImpl): ReportRepository
 
     @Binds
     @AppScope

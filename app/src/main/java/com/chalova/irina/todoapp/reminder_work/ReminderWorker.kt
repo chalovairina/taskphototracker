@@ -1,5 +1,6 @@
 package com.chalova.irina.todoapp.reminder_work
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -53,12 +54,11 @@ class ReminderWorker(
                 tasksForTodayCount
             )
 
-
         val notification = createTaskNotification(notifText)
 
         if (ContextCompat.checkSelfPermission(
                 context,
-                "android.permission.POST_NOTIFICATIONS"
+                Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             failure()

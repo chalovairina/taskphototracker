@@ -22,6 +22,7 @@
     <string name="tasks_priority_low">Low Priority</string>
     <string name="tasks_delete_all">Delete All</string>
     <string name="tasks_delete">Delete</string>
+    <string name="tasks_task_updated">Task updated</string>
     <string name="tasks_task_restored">Task restored</string>
     <string name="tasks_item_title">My Title</string>
     <string name="tasks_item_description">Some random description</string>
@@ -41,6 +42,11 @@
         <item quantity="other">%d tasks deleted</item>
     </plurals>
     <string name="tasks_unknown_error">Unknown error</string>
+    <string name="tasks_loading_error">Error while loading tasks</string>
+    <string name="tasks_complete">Complete</string>
+    <string name="tasks_add_photo_report">Add Photo Report</string>
+    <string name="tasks_completed">Completed</string>
+    <string name="tasks_task_completed">Task completed</string>
 
     <!--  AddEditTask Screen  -->
     <string name="addedit_update">Update</string>
@@ -99,10 +105,20 @@
     <!--  Notifications  -->
     <string name="notification_check_on_todo_list">Check on your to-do list</string>
     <string name="notification_disabled">Notifications disabled</string>
-    <string name="tasks_loading_error">Error while loading tasks</string>
     <plurals name="notification_tasks_for_today">
         <item quantity="one">You have %d task for today. Come in and check!</item>
         <item quantity="other">You have %d tasks for today. Come in and check!</item>
     </plurals>
+
+    <!-- Photo reports   -->
+    <string name="photo_report_photos">Photo reports</string>
+    <string name="photo_report_reports">Reports</string>
+    <string name="photo_report_no_reports">No Photo Reports</string>
+    <string name="photo_report_unknown_error">Unknown error</string>
+    <string name="photo_report_save_failed">Failed to save photo</string>
+    <string name="photo_report_loading_error">Error while loading photos</string>
+    <string name="photo_report_saved_successfully">Photos saved successfully</string>
+    <string name="photo_report_deleted_successfully">Photos deleted successfully</string>
+    <string name="photo_report_permission_required">Can\'t read photos without permission</string>
 
 </resources>

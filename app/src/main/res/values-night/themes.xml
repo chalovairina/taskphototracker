@@ -16,7 +16,7 @@
         <!-- Status bar colors. -->
         <item name="android:statusBarColor">@color/statusBarColorDark</item>
         <item name="android:navigationBarColor">@color/navigationBarColorDark</item>
-
+        <item name="android:windowLightStatusBar">true</item>
 
         <!-- Action mode colors. -->
         <item name="actionModeStyle">@style/ActionModeStyle</item>

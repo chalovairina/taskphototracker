@@ -11,5 +11,6 @@ data class Task(
     val description: String? = null,
     val dueDate: Instant,
     val createdAt: Instant = Instant.now(),
-    val isCompleted: Boolean = false
+    val isCompleted: Boolean = false,
+    val reportPhoto: String? = null
 )

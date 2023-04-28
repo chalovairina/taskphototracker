@@ -18,6 +18,7 @@
             app:popEnterAnim="@anim/from_right"
             app:popExitAnim="@anim/to_left" />
     </fragment>
+
     <fragment
         android:id="@+id/addEditFragment"
         android:name="com.chalova.irina.todoapp.tasks.presentation.addedittask.AddEditTaskFragment"
@@ -39,6 +40,12 @@
             android:name="dueDate"
             app:argType="string" />
     </dialog>
+
+    <fragment
+        android:id="@+id/reportsFragment"
+        android:name="com.chalova.irina.todoapp.photo_reports.presentation.ReportsFragment"
+        android:label="@string/photo_report_reports"
+        tools:layout="@layout/fragment_photo_reports" />
 
     <fragment
         android:id="@+id/loginFragment"

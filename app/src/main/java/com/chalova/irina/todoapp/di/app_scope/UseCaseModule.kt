@@ -40,9 +40,11 @@ object UseCaseModule {
         externalScope: CoroutineScope
     ): TasksUseCases = TasksUseCases(
         AddTaskImpl(userUseCases, taskRepository),
+        UpdateTaskImpl(taskRepository),
         DeleteTaskImpl(userUseCases.getCurrentUserId, taskRepository),
         DeleteTasksImpl(userUseCases.getCurrentUserId, taskRepository),
         DeleteAllTasksImpl(userUseCases.getCurrentUserId, taskRepository),
+        CompleteTaskImpl(taskRepository),
         GetTaskImpl(userUseCases.getCurrentUserId, taskRepository),
         GetTasksImpl(externalScope, userUseCases.getUserId, taskRepository),
         GetSearchQueryTasksImpl(userUseCases.getCurrentUserId, taskRepository)

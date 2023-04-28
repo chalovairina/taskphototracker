@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chalova.irina.todoapp.R
 import com.chalova.irina.todoapp.config.AppConfig
-import com.chalova.irina.todoapp.config.AppConfig.SEARCH_QUERY
 import com.chalova.irina.todoapp.login_auth.domain.UserUseCases
 import com.chalova.irina.todoapp.tasks.data.Task
 import com.chalova.irina.todoapp.tasks.domain.TasksUseCases
@@ -31,7 +30,6 @@ class TasksViewModel @AssistedInject constructor(
         fun create(savedStateHandle: SavedStateHandle): TasksViewModel
     }
 
-    private val searchQueryState: Flow<String?> = savedStateHandle.getStateFlow(SEARCH_QUERY, null)
     private val taskOrder: Flow<TaskOrder> = combine(
         savedStateHandle.getStateFlow(AppConfig.TASK_ORDER, TaskOrder.Orders.Date.name),
         savedStateHandle.getStateFlow(AppConfig.ORDER_TYPE, TaskOrder.OrderType.Descending.name)
@@ -53,9 +51,9 @@ class TasksViewModel @AssistedInject constructor(
         _isLoading, _tasksResultState, taskOrder
     ) { isLoading, tasks, taskOrder ->
         TasksState(
+            isLoading = isLoading,
             tasksList = orderTasks(tasks, taskOrder),
-            taskOrder = taskOrder,
-            isLoading = isLoading
+            taskOrder = taskOrder
         )
     }.stateIn(
         scope = viewModelScope,
@@ -68,14 +66,13 @@ class TasksViewModel @AssistedInject constructor(
     private var recentlyDeletedTask: Task? = null
 
     private var lastSearchQuery: String? = null
-
     private var searchQueryJob: Job? = null
+
+    private var completingTask: Task? = null
 
     init {
         viewModelScope.launch {
-            searchQueryState.collect { query ->
-                searchQuery(query)
-            }
+            loadTasks()
         }
     }
 
@@ -109,8 +106,7 @@ class TasksViewModel @AssistedInject constructor(
 
     fun onEvent(event: TasksEvent) {
         when (event) {
-            is TasksEvent.OnOrderChanged -> {
-                Timber.d("TasksEvent.OnOrderChanged ${event.newOrder}")
+            is TasksEvent.OrderChanged -> {
                 if (event.newOrder::class == tasksState.value.taskOrder::class &&
                     event.newOrder.orderType == tasksState.value.taskOrder.orderType
                 ) {
@@ -121,6 +117,7 @@ class TasksViewModel @AssistedInject constructor(
                     TaskOrder.Orders.getOrderByTaskOrder(event.newOrder).name
                 savedStateHandle[AppConfig.ORDER_TYPE] = event.newOrder.orderType.name
             }
+            is TasksEvent.UpdateTask -> updateTask(event.updatedTask)
             is TasksEvent.DeleteTask -> {
                 recentlyDeletedTask = event.task
                 deleteTask(event.task)
@@ -134,10 +131,47 @@ class TasksViewModel @AssistedInject constructor(
             is TasksEvent.RestoreTask -> {
                 restoreTask()
             }
-            is TasksEvent.OnSearchQueryChanged -> {
+            is TasksEvent.SearchQueryChanged -> {
                 event.query?.let {
                     updateSearchQuery(it)
                 }
+            }
+            is TasksEvent.CompletingTask -> {
+                Timber.d("CompletingTask ${event.completingTask}")
+                completingTask = event.completingTask
+            }
+            is TasksEvent.CompletePhotoReport -> {
+                Timber.d("CompletePhotoReport ${event.photoName}")
+                completingTask?.let {
+                    completePhotoReport(
+                        it.copy(
+                            reportPhoto = event.photoName, isCompleted = true
+                        )
+                    )
+                }
+                    ?: throw IllegalArgumentException("No task completing!")
+            }
+        }
+    }
+
+    private fun completePhotoReport(task: Task) {
+        Timber.d("completePhotoReport for $task")
+        viewModelScope.launch {
+            when (tasksUseCases.updateTask(task)) {
+                is Result.Success -> {
+                    completingTask = null
+                }
+                is Result.Error -> _userMessage.emit(R.string.tasks_unknown_error)
+            }
+        }
+    }
+
+    private fun updateTask(updatedTask: Task) {
+        viewModelScope.launch {
+            when (tasksUseCases.updateTask(updatedTask)) {
+                is Result.Success -> {
+                }
+                is Result.Error -> _userMessage.emit(R.string.tasks_unknown_error)
             }
         }
     }
@@ -190,12 +224,21 @@ class TasksViewModel @AssistedInject constructor(
         }
     }
 
+    private fun completeTask(updatedTask: Task) {
+        viewModelScope.launch {
+            when (tasksUseCases.completeTask(updatedTask)) {
+                is Result.Success -> _userMessage.emit(R.string.tasks_task_completed)
+                is Result.Error -> _userMessage.emit(R.string.tasks_unknown_error)
+            }
+        }
+    }
+
     private fun updateSearchQuery(searchQuery: String) {
         if (lastSearchQuery == searchQuery) {
             return
         }
         lastSearchQuery = searchQuery
-        savedStateHandle[SEARCH_QUERY] = searchQuery
+        searchQuery(searchQuery)
     }
 
     private fun searchQuery(searchQuery: String?) {

@@ -23,17 +23,6 @@ import timber.log.Timber
 
 class LoginFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.d("LoginFragment onCreate $this")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        Timber.d("LoginFragment onDestroy $this")
-    }
-
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
@@ -54,7 +43,6 @@ class LoginFragment : Fragment() {
         } else {
             longToast(R.string.login_not_authorized)
         }
-
     }
 
     override fun onCreateView(

@@ -131,7 +131,7 @@ class TasksViewModelTest {
         val newOrder = TaskOrder.Date(TaskOrder.OrderType.Ascending)
 
         // when
-        viewModel.onEvent(TasksEvent.OnOrderChanged(newOrder))
+        viewModel.onEvent(TasksEvent.OrderChanged(newOrder))
         viewModel.tasksState.test {
             var emission = awaitItem() // default value
             emission = awaitItem() // first loaded value
@@ -152,7 +152,7 @@ class TasksViewModelTest {
             // given
             var emission = awaitItem() // default empty emission
             // when
-            viewModel.onEvent(TasksEvent.OnSearchQueryChanged("b"))
+            viewModel.onEvent(TasksEvent.SearchQueryChanged("b"))
 
             // then
             emission = awaitItem() // search query changed
